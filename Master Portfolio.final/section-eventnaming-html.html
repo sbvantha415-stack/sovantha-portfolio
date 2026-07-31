@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customizable Newsletter Studio &amp; Automation Engine</title>
+
+  <!-- Google Fonts: On-Brand Portfolio Typography Stacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+
+  <style>
+    /* ==========================================================================
+       1. COLOR-COORDINATED THEME TOKENS (ON-BRAND PALETTE)
+       ========================================================================== */
+    :root {
+      /* Studio Dark Backgrounds */
+      --studio-bg: #0e0b09;            /* Charcoal Document Base */
+      --panel-bg: #161210;             /* Dark Slate Control Panel */
+      --card-bg: #1c1815;              /* Inner Card Background */
+      
+      /* Dynamic Accent Palette (Customizable via Controls) */
+      --brass-gold: #b8923a;           /* Primary Brass Gold Accent */
+      --brass-light: #d4aa52;          /* Light Gold Text Highlight */
+      --oxblood-red: #7a1a1a;          /* Deep Oxblood CTA Accent */
+      --oxblood-hover: #8a2020;        /* Oxblood Hover State */
+      
+      /* Typography & Border Tokens */
+      --bone-white: #f0e8d8;           /* Warm Cream Headline Text */
+      --bone-muted: #a09080;           /* Muted Tan Body Copy */
+      --slate-gray: #8a8070;           /* Border Gray */
+      --border-line: rgba(184, 146, 58, 0.22);
+      
+      /* Font Families */
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    /* Global Reset Rules */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--studio-bg);
+      color: var(--bone-muted);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 1.5rem;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ==========================================================================
+       2. WORKSPACE GRID LAYOUT
+       ========================================================================== */
+    .studio-workspace {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .studio-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Control Sidebar Panel */
+    .control-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-line);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      color: var(--bone-white);
+      margin-bottom: 0.25rem;
+    }
+
+    .panel-subtitle {
+      font-size: 0.8rem;
+      color: var(--bone-muted);
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-line);
+    }
+
+    /* Control Accordion Blocks */
+    .control-block {
+      margin-bottom: 1.25rem;
+      background: var(--studio-bg);
+      border: 1px solid var(--border-line);
+      border-radius: 6px;
+      padding: 1rem;
+    }
+
+    .block-header {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--brass-gold);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 0.85rem;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--bone-white);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-line);
+      color: var(--bone-white);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--brass-light);
+    }
+
+    /* Color Customizer Row */
+    .color-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .color-picker-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-line);
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .color-picker-box input[type="color"] {
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .color-picker-box span {
+      font-size: 0.75rem;
+      color: var(--bone-white);
+    }
+
+    /* Automation Simulator Terminal */
+    .terminal-console {
+      background: #000000;
+      border: 1px solid var(--border-line);
+      border-radius: 6px;
+      padding: 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: #2ecc71;
+      height: 130px;
+      overflow-y: auto;
+      margin-top: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .log-line {
+      margin-bottom: 0.3rem;
+    }
+
+    .log-timestamp {
+      color: var(--brass-light);
+    }
+
+    /* ==========================================================================
+       3. LIVE STAGE PREVIEW CANVAS
+       ========================================================================== */
+    .preview-stage {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-line);
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .newsletter-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-line);
+      border-radius: 6px;
+      overflow: hidden;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .newsletter-header {
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.8) 100%);
+    }
+
+    .newsletter-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--brass-gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .newsletter-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 300;
+      color: var(--bone-white);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .btn-action {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #ffffff;
+      background: var(--oxblood-red);
+      border: 1px solid var(--brass-gold);
+      padding: 0.75rem 1.75rem;
+      border-radius: 2px;
+      margin-top: 1rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-action:hover {
+      background: var(--oxblood-hover);
+    }
+
+    /* 4-Column Summary Details Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      border-top: 1px solid var(--border-line);
+      border-bottom: 1px solid var(--border-line);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .info-col {
+      padding: 1.25rem 1rem;
+      border-right: 1px solid var(--border-line);
+      text-align: center;
+    }
+
+    .info-col:last-child {
+      border-right: none;
+    }
+
+    .info-col h4 {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--brass-gold);
+      margin-bottom: 0.35rem;
+    }
+
+    .info-col p {
+      font-size: 0.8rem;
+      color: var(--bone-white);
+      line-height: 1.4;
+    }
+
+    .newsletter-body {
+      padding: 2rem 1.5rem;
+    }
+
+    .newsletter-footer {
+      border-top: 1px solid var(--border-line);
+      padding: 1.25rem;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: rgba(160, 144, 128, 0.6);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="studio-workspace">
+    
+    <!-- LEFT CONTROL SIDEBAR (CUSTOMIZER & AUTOMATION SIMULATOR) -->
+    <aside class="control-panel">
+      <h2 class="panel-title">Newsletter Studio</h2>
+      <p class="panel-subtitle">Customize fonts, colors, preset events, and run live automation webhooks.</p>
+
+      <!-- 1. Event Preset Selection Dropdown -->
+      <div class="control-block">
+        <div class="block-header">
+          <i class="fas fa-list-check"></i> 1. Event Preset Dropdown
+        </div>
+        <div class="form-group">
+          <label for="presetSelect">Load Event Preset</label>
+          <select id="presetSelect" class="form-control">
+            <option value="derby">Kentucky Derby 14th Annual Party</option>
+            <option value="obscura">Amador Obscura x Peaches Christ</option>
+            <option value="folsom">Folsom Skin Shade Lab Launch</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 2. On-Brand Theme Customizer -->
+      <div class="control-block">
+        <div class="block-header">
+          <i class="fas fa-palette"></i> 2. Theme &amp; Typography
+        </div>
+        <div class="form-group">
+          <label for="fontSelect">Headline Font Family</label>
+          <select id="fontSelect" class="form-control">
+            <option value="'Cormorant Garamond', Georgia, serif">Classic Serif (Cormorant Garamond)</option>
+            <option value="'Playfair Display', Georgia, serif">Elegant Serif (Playfair Display)</option>
+            <option value="'DM Sans', sans-serif">Modern Sans (DM Sans)</option>
+            <option value="'DM Mono', monospace">Editorial Mono (DM Mono)</option>
+          </select>
+        </div>
+        <div class="color-row">
+          <div class="color-picker-box">
+            <input type="color" id="pickerGold" value="#b8923a">
+            <span>Accent Gold</span>
+          </div>
+          <div class="color-picker-box">
+            <input type="color" id="pickerRed" value="#7a1a1a">
+            <span>Button Red</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Live Field Binding -->
+      <div class="control-block">
+        <div class="block-header">
+          <i class="fas fa-pen-to-square"></i> 3. Live Field Binding
+        </div>
+        <div class="form-group">
+          <label for="inputEyebrow">Eyebrow Category</label>
+          <input type="text" id="inputEyebrow" class="form-control" value="Exclusive Invitation · The Bank at Amador">
+        </div>
+        <div class="form-group">
+          <label for="inputTitle">Headline Title</label>
+          <input type="text" id="inputTitle" class="form-control" value="The 14th Annual Kentucky Derby Party">
+        </div>
+        <div class="form-group">
+          <label for="inputTime">Time / Schedule</label>
+          <input type="text" id="inputTime" class="form-control" value="Doors at 2:00 PM · Race at 6:57 PM ET">
+        </div>
+        <div class="form-group">
+          <label for="inputLocation">Location Venue</label>
+          <input type="text" id="inputLocation" class="form-control" value="The Amador Club · San Francisco, CA">
+        </div>
+      </div>
+
+      <!-- 4. Real-Life Automation Simulation -->
+      <div class="control-block">
+        <div class="block-header">
+          <i class="fas fa-robot"></i> 4. Automation Trigger Demo
+        </div>
+        <div class="form-group">
+          <label for="inputWebhookTag">Member Tag Attribution</label>
+          <input type="text" id="inputWebhookTag" class="form-control" value="VIP_DERBY_GUEST">
+        </div>
+        <button class="form-control" style="background: var(--oxblood-red); color: var(--bone-white); font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; cursor: pointer; border-color: var(--brass-gold);" onclick="triggerSimulation()">
+          <i class="fas fa-play"></i> Dispatch Webhook Simulation
+        </button>
+
+        <!-- Console Log Terminal -->
+        <div class="terminal-console" id="terminalConsole">
+          <div class="log-line"><span class="log-timestamp">[SYSTEM]</span> Studio initialized. Ready for simulation triggers.</div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT LIVE PREVIEW CANVAS STAGE -->
+    <main class="preview-stage">
+      
+      <article class="newsletter-card" id="newsletterCard">
+        
+        <!-- Header Hero -->
+        <header class="newsletter-header">
+          <p class="newsletter-eyebrow" id="viewEyebrow">Exclusive Invitation · The Bank at Amador</p>
+          <h1 class="newsletter-title" id="viewTitle">The 14th Annual Kentucky Derby Party</h1>
+          <button class="btn-action" id="viewBtn" onclick="dispatchRSVP()">Reserve Your Spot &rarr;</button>
+        </header>
+
+        <!-- 4-Column Details Grid -->
+        <div class="info-grid">
+          <div class="info-col">
+            <h4>Schedule</h4>
+            <p id="viewTime">Doors at 2:00 PM · Race at 6:57 PM ET</p>
+          </div>
+          <div class="info-col">
+            <h4>Location</h4>
+            <p id="viewLocation">The Amador Club · San Francisco, CA</p>
+          </div>
+          <div class="info-col">
+            <h4>Attire</h4>
+            <p id="viewAttire">Derby Best · Hats &amp; Bowties</p>
+          </div>
+          <div class="info-col">
+            <h4>Fare</h4>
+            <p id="viewFare">Southern Bites &amp; Mint Juleps</p>
+          </div>
+        </div>
+
+        <!-- Body Copy -->
+        <section class="newsletter-body">
+          <p style="font-size: 0.9rem; color: var(--bone-white); margin-bottom: 1rem;" id="viewDescription">
+            Join us at The Amador Club for an exclusive day of high-stakes excitement. Enjoy perfectly crafted Woodford Reserve Mint Juleps paired with live race coverage.
+          </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="newsletter-footer">
+          Amador | 550 Montgomery Street, 10th Floor | San Francisco, CA 94111<br>
+          Automated trigger dispatched via Active Campaign Manager Engine.
+        </footer>
+
+      </article>
+
+    </main>
+
+  </div>
+
+  <!-- INTERACTIVE LOGIC & BINDING SCRIPT -->
+  <script>
+    (function () {
+      // 1. Preset Data Objects
+      const eventPresets = {
+        derby: {
+          eyebrow: "Exclusive Invitation · The Bank at Amador",
+          title: "The 14th Annual Kentucky Derby Party",
+          time: "Doors at 2:00 PM · Race at 6:57 PM ET",
+          location: "The Amador Club · San Francisco, CA",
+          attire: "Derby Best · Hats & Bowties",
+          fare: "Southern Bites & Mint Juleps",
+          desc: "Join us at The Amador Club for an exclusive day of high-stakes excitement. Enjoy perfectly crafted Woodford Reserve Mint Juleps paired with live race coverage.",
+          tag: "VIP_DERBY_GUEST"
+        },
+        obscura: {
+          eyebrow: "One Night Only · Whole Club Takeover",
+          title: "Amador Obscura x Peaches Christ",
+          time: "May 30, 2026 · Doors at 5:00 PM",
+          location: "3 Floors · Amador Club SoMa",
+          attire: "Masquerade / Dark Luxury",
+          fare: "Craft Cocktails & Passed Bites",
+          desc: "Queer LifeSpace and Peaches Christ Productions turn three floors into an immersive night of performance. Experience scenes inspired by the Seven Deadly Sins.",
+          tag: "OBSCURA_TICKET_HOLDER"
+        },
+        folsom: {
+          eyebrow: "Folsom Skin Shade Lab · Launch Event",
+          title: "Complexion Studio VIP Diagnostic Night",
+          time: "June 15, 2026 · 6:00 PM PST",
+          location: "Folsom St Studio · SoMa, SF",
+          attire: "Elevated Casual",
+          fare: "Skin Cocktails & Analysis",
+          desc: "Celebrate the launch of our 3,000+ foundation matching engine. Get live 1-on-1 undertone diagnostics from California-licensed estheticians.",
+          tag: "FOLSOM_VIP_MEMBER"
+        }
+      };
+
+      // 2. DOM Control Cache
+      const presetSelect = document.getElementById('presetSelect');
+      const fontSelect = document.getElementById('fontSelect');
+      const pickerGold = document.getElementById('pickerGold');
+      const pickerRed = document.getElementById('pickerRed');
+
+      const inputEyebrow = document.getElementById('inputEyebrow');
+      const inputTitle = document.getElementById('inputTitle');
+      const inputTime = document.getElementById('inputTime');
+      const inputLocation = document.getElementById('inputLocation');
+      const inputWebhookTag = document.getElementById('inputWebhookTag');
+
+      const viewEyebrow = document.getElementById('viewEyebrow');
+      const viewTitle = document.getElementById('viewTitle');
+      const viewTime = document.getElementById('viewTime');
+      const viewLocation = document.getElementById('viewLocation');
+      const viewAttire = document.getElementById('viewAttire');
+      const viewFare = document.getElementById('viewFare');
+      const viewDescription = document.getElementById('viewDescription');
+      const terminalConsole = document.getElementById('terminalConsole');
+
+      // 3. Terminal Logger Function
+      function logConsole(msg) {
+        const timeStr = new Date().toLocaleTimeString();
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        line.innerHTML = `<span class="log-timestamp">[${timeStr}]</span> ${msg}`;
+        terminalConsole.appendChild(line);
+        terminalConsole.scrollTop = terminalConsole.scrollHeight;
+      }
+
+      // 4. Color & Font Bindings
+      pickerGold.addEventListener('input', (e) => {
+        document.documentElement.style.setProperty('--brass-gold', e.target.value);
+      });
+      pickerRed.addEventListener('input', (e) => {
+        document.documentElement.style.setProperty('--oxblood-red', e.target.value);
+      });
+      fontSelect.addEventListener('change', (e) => {
+        document.documentElement.style.setProperty('--font-serif', e.target.value);
+      });
+
+      // 5. Load Preset Event Handler
+      presetSelect.addEventListener('change', (e) => {
+        const p = eventPresets[e.target.value];
+        if (p) {
+          inputEyebrow.value = p.eyebrow;
+          inputTitle.value = p.title;
+          inputTime.value = p.time;
+          inputLocation.value = p.location;
+          inputWebhookTag.value = p.tag;
+
+          viewEyebrow.textContent = p.eyebrow;
+          viewTitle.textContent = p.title;
+          viewTime.textContent = p.time;
+          viewLocation.textContent = p.location;
+          viewAttire.textContent = p.attire;
+          viewFare.textContent = p.fare;
+          viewDescription.innerHTML = p.desc;
+
+          logConsole(`Loaded event preset: <strong>${p.title}</strong>`);
+        }
+      });
+
+      // 6. Live Text Field Binding
+      inputEyebrow.addEventListener('input', (e) => viewEyebrow.textContent = e.target.value);
+      inputTitle.addEventListener('input', (e) => viewTitle.textContent = e.target.value);
+      inputTime.addEventListener('input', (e) => viewTime.textContent = e.target.value);
+      inputLocation.addEventListener('input', (e) => viewLocation.textContent = e.target.value);
+
+      // 7. Automation Simulation Handlers
+      window.triggerSimulation = function() {
+        const tag = inputWebhookTag.value;
+        logConsole(`Triggering automation payload for tag: <code>${tag}</code>...`);
+        setTimeout(() => {
+          logConsole(`HTTP 200 OK -> Webhook payload dispatched successfully.`);
+          logConsole(`Automated RSVP confirmation &amp; SMS queued for user.`);
+        }, 500);
+      };
+
+      window.dispatchRSVP = function() {
+        logConsole(`User clicked RSVP CTA button.`);
+        triggerSimulation();
+      };
+    })();
+  </script>
+
+</body>
+
+</html>
