@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Member Experience, Service Systems & Club Operations</title>
+  <meta name="description" content="Portfolio supporting experience in member onboarding, training systems, hospitality operations, and club communications." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#0b0b0a;
+      --surface:#12110f;
+      --surface-2:#171613;
+      --text:#f2eee7;
+      --muted:#ada79d;
+      --faint:#7b766d;
+      --line:rgba(255,255,255,.08);
+      --line-strong:rgba(255,255,255,.14);
+      --accent:#b79b6a;
+      --accent-soft:rgba(183,155,106,.1);
+      --max:1240px;
+      --radius:18px;
+      --shadow:0 18px 40px rgba(0,0,0,.24);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+    button,input,textarea,select{font:inherit}
+    .page{width:min(var(--max), calc(100% - 32px)); margin:0 auto}
+    .topbar{
+      display:flex; justify-content:space-between; align-items:center; gap:16px;
+      padding:22px 0; border-bottom:1px solid var(--line);
+    }
+    .brand{display:flex; align-items:center; gap:12px; min-width:0}
+    .brand-mark{
+      width:30px; height:30px; border:1px solid var(--line-strong); border-radius:50%;
+      display:grid; place-items:center; color:var(--accent); font-size:12px; letter-spacing:.08em; flex:0 0 auto;
+    }
+    .brand-name{font-size:12px; letter-spacing:.18em; text-transform:uppercase}
+    .brand-sub{margin-top:2px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)}
+    .nav{display:flex; flex-wrap:wrap; gap:18px}
+    .nav a{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid transparent; padding-bottom:2px}
+    .nav a:hover,.nav a:focus-visible{color:var(--text); border-bottom-color:var(--accent); outline:none}
+    .hero{padding:86px 0 84px; border-bottom:1px solid var(--line)}
+    .eyebrow{margin:0 0 18px; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent)}
+    h1,h2,h3,h4{font-family:"Source Serif 4", Georgia, serif; font-weight:500}
+    .hero h1{margin:0 0 18px; max-width:10ch; font-size:clamp(3rem, 7vw, 5.3rem); line-height:.94; letter-spacing:-.04em}
+    .hero-copy{max-width:760px}
+    .hero-copy p{margin:0 0 16px; color:var(--muted); font-size:1.06rem; line-height:1.74}
+    .hero-meta{margin-top:34px; padding-top:18px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:14px 22px}
+    .hero-meta span{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)}
+    section{padding:84px 0; border-bottom:1px solid var(--line)}
+    .section-head{margin-bottom:26px}
+    .section-label{margin:0 0 10px; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--faint)}
+    .section-title{margin:0; font-size:clamp(1.8rem,3.5vw,2.35rem); line-height:1.06; letter-spacing:-.03em}
+    .section-intro{max-width:760px; margin:14px 0 0; color:var(--muted); font-size:1rem; line-height:1.72}
+    .profile-copy{max-width:760px; color:var(--muted); font-size:1.03rem; line-height:1.74}
+    .featured-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:28px}
+    .card{
+      display:flex; flex-direction:column; gap:18px; background:transparent; border:none; padding:0; color:inherit; text-align:left; cursor:pointer;
+    }
+    .card-shell{
+      border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.015), rgba(255,255,255,.005));
+      border-radius:var(--radius); overflow:hidden; transition:border-color .2s ease, transform .2s ease;
+    }
+    .card:hover .card-shell{border-color:rgba(255,255,255,.14); transform:translateY(-2px)}
+    .media{aspect-ratio:16/10; border-bottom:1px solid var(--line); position:relative; overflow:hidden; background:linear-gradient(135deg, #191816 0%, #0f0f0d 100%)}
+    .media img{width:100%; height:100%; object-fit:cover; filter:grayscale(18%) brightness(.92)}
+    .card:hover .media img{filter:grayscale(0) brightness(1)}
+    .placeholder{
+      position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding:24px; color:var(--faint);
+      background:linear-gradient(180deg, rgba(183,155,106,.08), rgba(255,255,255,0) 45%), linear-gradient(135deg, #191816 0%, #0f0f0d 100%);
+    }
+    .placeholder svg{width:52px; height:52px; margin-bottom:16px; stroke-width:1; opacity:.85}
+    .placeholder span{font-size:11px; letter-spacing:.18em; text-transform:uppercase}
+    .card-body{padding:22px 22px 24px}
+    .project-category{display:block; margin-bottom:10px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent)}
+    .project-title{margin:0 0 12px; font-size:1.9rem; line-height:1.06; letter-spacing:-.03em; display:flex; justify-content:space-between; gap:16px; align-items:flex-start}
+    .cta{flex:0 0 auto; font-family:Inter,sans-serif; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+    .project-desc{margin:0 0 16px; color:var(--muted); font-size:1rem; line-height:1.72}
+    .tags{display:flex; flex-wrap:wrap; gap:10px 14px; padding-top:14px; border-top:1px solid var(--line)}
+    .tag{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)}
+    .support-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px 26px}
+    .support-item{padding:18px 0; border-top:1px solid var(--line)}
+    .support-item h3{margin:0 0 8px; font-size:1.1rem; font-family:Inter,sans-serif; font-weight:500}
+    .support-item p{margin:0; color:var(--muted); line-height:1.66; font-size:.97rem}
+    .archive-grid{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:26px 28px}
+    .archive-card{padding-top:18px; border-top:1px solid var(--line)}
+    .archive-card h3{margin:0 0 8px; font-size:1.4rem; line-height:1.06}
+    .archive-card p{margin:0 0 12px; color:var(--muted); line-height:1.66; font-size:.98rem}
+    .archive-link{display:inline-block; font-size:11px; letter-spacing:.16em; text-transform:uppercase; border-bottom:1px solid var(--accent); padding-bottom:2px}
+    .about-copy{max-width:760px}
+    .about-copy p{margin:0 0 16px; color:var(--muted); line-height:1.72; font-size:1rem}
+    .contact-row{margin-top:28px; padding-top:18px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:14px 22px}
+    .contact-row a,.contact-row span{font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:var(--faint)}
+    .contact-row a:hover{color:var(--text)}
+    .footer{padding:18px 0 34px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+    .footer span{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint)}
+
+    .modal-overlay{
+      position:fixed; inset:0; background:rgba(0,0,0,.86); backdrop-filter:blur(10px); z-index:1000;
+      display:flex; align-items:center; justify-content:center; padding:18px; opacity:0; visibility:hidden; transition:all .28s ease;
+    }
+    .modal-overlay.active{opacity:1; visibility:visible}
+    .modal-panel{
+      width:min(1220px, 96vw); height:min(92vh, 960px); background:var(--surface); border:1px solid var(--line);
+      border-radius:18px; overflow:hidden; display:flex; flex-direction:column; transform:translateY(12px) scale(.985); transition:all .28s ease;
+    }
+    .modal-overlay.active .modal-panel{transform:translateY(0) scale(1)}
+    .modal-header{
+      padding:22px 28px; border-bottom:1px solid var(--line); background:var(--surface-2); display:flex; justify-content:space-between; align-items:flex-start; gap:16px;
+    }
+    .modal-kicker{margin:0 0 8px; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent)}
+    .modal-title{margin:0; font-size:2rem; line-height:1.04}
+    .modal-close{
+      background:none; border:none; color:var(--muted); font-size:34px; line-height:1; cursor:pointer; padding:0 4px;
+    }
+    .modal-close:hover{color:var(--text)}
+    .modal-body{flex:1; overflow:auto; background:#0e0e0c}
+    .modal-doc{max-width:980px; margin:0 auto; padding:34px 28px 40px}
+    .modal-doc h3{margin:0 0 16px; font-size:1.6rem}
+    .modal-doc h4{margin:28px 0 10px; font-size:1.05rem; font-family:Inter,sans-serif; font-weight:600; letter-spacing:.01em}
+    .modal-doc p{margin:0 0 14px; color:var(--muted); line-height:1.72}
+    .modal-doc .lead{font-size:1.02rem; color:#d7d2c8}
+    .doc-card{background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:14px; padding:18px 18px 20px; margin:18px 0}
+    .doc-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+    .bullet-list{margin:0; padding-left:18px; color:var(--muted)}
+    .bullet-list li{margin:8px 0; line-height:1.66}
+    .metric{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-bottom:8px}
+    .quote{padding:16px 18px; border-left:2px solid var(--accent); background:var(--accent-soft); color:#e5e0d7; margin:18px 0; line-height:1.65}
+    .flow{background:#16181d; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px 18px; color:#d9dde5; line-height:1.72; font-size:.96rem; margin:18px 0}
+    .flow strong{color:#fff}
+    .iframe-shell{width:100%; height:100%; border:0; background:#fff}
+    .inline-code{background:#16181d; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:18px; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; color:#d8dde6; line-height:1.72; white-space:pre-wrap}
+
+    @media (max-width: 980px){
+      .featured-grid,.support-grid,.archive-grid,.doc-grid{grid-template-columns:1fr}
+    }
+    @media (max-width: 760px){
+      .page{width:min(var(--max), calc(100% - 24px))}
+      .topbar{flex-direction:column; align-items:flex-start}
+      .nav{gap:14px}
+      .hero{padding:62px 0 66px}
+      section{padding:64px 0}
+      .project-title{font-size:1.55rem; flex-direction:column; gap:6px}
+      .modal-header{padding:18px 20px}
+      .modal-title{font-size:1.55rem}
+      .modal-doc{padding:24px 18px 28px}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <div>
+          <div class="brand-name">[Sovantha Bun]</div>
+          <div class="brand-sub">Member Experience / Hospitality Operations</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Primary">
+        <a href="#profile">Profile</a>
+        <a href="#featured">Work</a>
+        <a href="#archive">Archive</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="eyebrow">Selected Work</p>
+        <h1>Member experience, service systems, and club operations.</h1>
+        <div class="hero-copy">
+          <p>I build high-touch member experiences across hospitality, club environments, and internal operations. My work includes onboarding flows, membership SOPs, lifecycle systems, staff training frameworks, and member-facing communications designed to make service feel personal, organized, and consistent.</p>
+          <p>My background includes helping open The Bank at Amador, shaping service structure across club and office operations, and building the tools and processes behind a polished member experience.</p>
+        </div>
+        <div class="hero-meta">
+          <span>Member Experience</span>
+          <span>Onboarding & Retention</span>
+          <span>Training Systems</span>
+          <span>Club Operations</span>
+          <span>Event Support</span>
+        </div>
+      </section>
+
+      <section id="profile">
+        <div class="section-head">
+          <p class="section-label">Profile</p>
+          <h2 class="section-title">A visual companion to the résumé — focused on proof.</h2>
+        </div>
+        <div class="profile-copy">
+          I work at the intersection of hospitality, operations, and member-facing systems. I’m strongest in environments where service has to feel effortless on the front end, but depends on clear communication, thoughtful workflows, and strong internal coordination behind the scenes.
+        </div>
+      </section>
+
+      <section id="featured">
+        <div class="section-head">
+          <p class="section-label">Featured Evidence</p>
+          <h2 class="section-title">Selected projects supporting member service and operational consistency.</h2>
+          <p class="section-intro">These projects are presented as evidence, not as a gallery. Each one is tied to onboarding, service delivery, staff readiness, or member-facing execution.</p>
+        </div>
+
+        <div class="featured-grid">
+          <button class="card" onclick="openModal('opening')">
+            <div class="card-shell">
+              <div class="media">
+                <div class="placeholder">
+                  <div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+                    <span>Launch & Operations</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <span class="project-category">Hospitality Operations</span>
+                <h3 class="project-title">Opening The Bank at Amador <span class="cta">View</span></h3>
+                <p class="project-desc">Supported the opening of The Bank through operational setup, member readiness, service execution, and the practical realities of launch. This work included helping shape how the space functioned for members and staff day to day, not just how it was presented.</p>
+                <div class="tags"><span class="tag">Launch Readiness</span><span class="tag">Service Execution</span><span class="tag">Club Operations</span></div>
+              </div>
+            </div>
+          </button>
+
+          <button class="card" onclick="openModal('sops')">
+            <div class="card-shell">
+              <div class="media">
+                <div class="placeholder">
+                  <div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    <span>Training Systems</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <span class="project-category">Training & Service Standards</span>
+                <h3 class="project-title">Training Architecture &amp; Service Standards <span class="cta">View</span></h3>
+                <p class="project-desc">Built role-based training structure, service procedures, and operational checklists to support more consistent onboarding, member handling, and day-to-day execution across club environments.</p>
+                <div class="tags"><span class="tag">Training Systems</span><span class="tag">SOPs</span><span class="tag">Role-Based Operations</span></div>
+              </div>
+            </div>
+          </button>
+
+          <button class="card" onclick="openModal('automation')">
+            <div class="card-shell">
+              <div class="media">
+                <div class="placeholder">
+                  <div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                    <span>Lifecycle System</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <span class="project-category">Onboarding & Retention</span>
+                <h3 class="project-title">Member Onboarding &amp; Trial Lifecycle <span class="cta">View</span></h3>
+                <p class="project-desc">Designed a structured onboarding and lifecycle system to support follow-up, milestone communication, endorsement tracking, and retention across the trial membership experience. Built to reduce missed touchpoints and improve operational visibility.</p>
+                <div class="tags"><span class="tag">Onboarding</span><span class="tag">Retention</span><span class="tag">CRM Logic</span></div>
+              </div>
+            </div>
+          </button>
+
+          <button class="card" onclick="openModal('onboarding')">
+            <div class="card-shell">
+              <div class="media">
+                <div class="placeholder">
+                  <div>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z"/><path d="M4 8h16"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
+                    <span>Member Packet</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <span class="project-category">Member Communications</span>
+                <h3 class="project-title">Member Onboarding Packet <span class="cta">View</span></h3>
+                <p class="project-desc">Built a structured welcome packet designed to orient new members quickly through membership details, operating hours, event access, cultural expectations, next steps, and practical daily-use information.</p>
+                <div class="tags"><span class="tag">Email Dev</span><span class="tag">Onboarding</span><span class="tag">Member Experience</span></div>
+              </div>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <p class="section-label">Supporting Systems</p>
+          <h2 class="section-title">Additional systems and operational projects.</h2>
+        </div>
+        <div class="support-grid">
+          <div class="support-item">
+            <h3>Internal Staff Portal</h3>
+            <p>Built a secure internal resource hub featuring cleaner operational routing, role-specific information access, and more consistent handoff across membership, events, and general club operations.</p>
+          </div>
+          <div class="support-item">
+            <h3>Global Reciprocal Network</h3>
+            <p>Member-facing portal designed to present reciprocal club access with clearer partner visibility, eligibility guidance, booking instructions, and travel-oriented member education.</p>
+          </div>
+          <div class="support-item">
+            <h3>Locker Management Suite</h3>
+            <p>Operational tooling supporting locker inventory visibility, request validation, and a smoother service experience around premium member assets.</p>
+          </div>
+          <div class="support-item">
+            <h3>Club Events & Member Communications</h3>
+            <p>Produced member-facing event communications supporting access, arrival, timing, reservations, and atmosphere across club programming.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="archive">
+        <div class="section-head">
+          <p class="section-label">Selected Event Archive</p>
+          <h2 class="section-title">A small archive of event work and documentation.</h2>
+          <p class="section-intro">Keep this section selective. Use it to validate continuity and live-event experience, not to create a media wall.</p>
+        </div>
+        <div class="archive-grid">
+          <div class="archive-card">
+            <h3>Kentucky Derby Social</h3>
+            <p>Member communications, event framing, and guest-facing support across a themed club event.</p>
+            <a class="archive-link" href="https://www.youtube.com/watch?v=-_ksKSl11zA" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+          </div>
+          <div class="archive-card">
+            <h3>6th Annual Bond Party</h3>
+            <p>Themed gala coverage highlighting event atmosphere, programming, and guest experience.</p>
+            <a class="archive-link" href="https://www.youtube.com/watch?v=-ZaAxcEUCCY" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+          </div>
+          <div class="archive-card">
+            <h3>Community Dinner: Spain</h3>
+            <p>Culinary event coverage centered on programming, ambiance, and member participation.</p>
+            <a class="archive-link" href="https://www.youtube.com/watch?v=haaeTKi-wh0" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+          </div>
+          <div class="archive-card">
+            <h3>Burns Day with Glen Grant</h3>
+            <p>Traditional event coverage capturing hospitality detail, whisky programming, and club atmosphere.</p>
+            <a class="archive-link" href="https://www.youtube.com/watch?v=fVfLOnBYGEI" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="section-head">
+          <p class="section-label">About</p>
+          <h2 class="section-title">Built to support the documents, not repeat them.</h2>
+        </div>
+        <div class="about-copy">
+          <p>My background combines hospitality instincts with operational structure. I’ve worked on onboarding, club operations, internal tools, communications, and service frameworks in environments where polish matters, but practicality matters just as much.</p>
+          <p>Available for member experience, hospitality operations, and service-focused roles in Los Angeles.</p>
+        </div>
+        <div class="contact-row">
+          <a href="mailto:[sbvantha415@gmail.com]">[sbvantha415@gmail.com]</a>
+          <a href="[www.linkedin.com/in/sovantha-bun]" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <span>San Francisco, CA</span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>[Sovantha Bun]</span>
+      <span>Member Experience / Hospitality Operations</span>
+    </footer>
+  </div>
+
+  <div id="project-modal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-panel" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <p class="modal-kicker" id="modal-category">Category</p>
+          <h2 class="modal-title" id="modal-title">Project</h2>
+        </div>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close modal">×</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <template id="tpl-opening">
+    <div class="modal-doc">
+      <h3>Opening The Bank at Amador</h3>
+      <p class="lead">This work centered on launch readiness: helping translate a new club concept into an operating environment that staff could execute and members could understand from day one.</p>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="metric">Operational Focus</div>
+          <p>Opening procedures, service alignment, onboarding materials, cultural expectations, and a clearer day-to-day rhythm for the team.</p>
+        </div>
+        <div class="doc-card">
+          <div class="metric">Why It Mattered</div>
+          <p>New hospitality environments do not fail because of branding. They fail when service logic, standards, and handoff are unclear. This work helped reduce that risk.</p>
+        </div>
+      </div>
+      <div class="quote">Supported the opening of The Bank through operational setup, member readiness, service execution, and the practical realities of launch.</div>
+      <h4>What this included</h4>
+      <ul class="bullet-list">
+        <li>Helping shape how the member-facing experience would actually function in practice.</li>
+        <li>Supporting service standards across club and office-adjacent operations.</li>
+        <li>Building and organizing materials staff could use in real time instead of relying on memory or informal training.</li>
+        <li>Reducing ambiguity around policy, membership flow, and guest-facing expectations.</li>
+      </ul>
+    </div>
+  </template>
+
+  <template id="tpl-sops">
+    <div class="modal-doc">
+      <h3>Training Architecture &amp; Service Standards</h3>
+      <p class="lead">Built role-based training structure, service procedures, and operational checklists to support more consistent onboarding, member handling, and day-to-day execution across club environments.</p>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="metric">Framework</div>
+          <p>Module categories included new hire essentials, front desk operations, membership operations, event management, systems and data management, advanced operations, and leadership.</p>
+        </div>
+        <div class="doc-card">
+          <div class="metric">Practical Coverage</div>
+          <p>Role checklists covered CRM usage, greeting protocols, guest handling, service personalization, AV readiness, logging, and escalation awareness.</p>
+        </div>
+      </div>
+      <h4>Training design principles</h4>
+      <ul class="bullet-list">
+        <li>Turn tribal knowledge into repeatable training structure.</li>
+        <li>Break role expectations into usable modules, not dense policy dumps.</li>
+        <li>Connect service standards to real operational behaviors.</li>
+        <li>Make onboarding measurable and easier to track.</li>
+      </ul>
+      <div class="quote">The goal was not just to document policy, but to help staff deliver a more consistent, informed, and member-aware experience across daily operations.</div>
+    </div>
+  </template>
+
+  <template id="tpl-automation">
+    <div class="modal-doc">
+      <h3>Member Onboarding &amp; Trial Lifecycle</h3>
+      <p class="lead">A structured onboarding and lifecycle system built to support follow-up, milestone communication, endorsement tracking, and retention across the trial membership experience.</p>
+      <div class="flow"><strong>Lifecycle shape:</strong> application intake → structured record creation → milestone communication → endorsement tracking → staff review triggers → approval, expiration, or conversion handling</div>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="metric">Intake</div>
+          <p>Monitors incoming application activity, extracts relevant member and endorser information, and creates cleaner operational records.</p>
+        </div>
+        <div class="doc-card">
+          <div class="metric">Lifecycle Messaging</div>
+          <p>Sends milestone communications across a multi-month sequence, including welcome, check-ins, endorsement reminders, and expiration handling.</p>
+        </div>
+        <div class="doc-card">
+          <div class="metric">Status Logic</div>
+          <p>Tracks cancellations, approvals, payment failures, endorsement completion, and review triggers in one system.</p>
+        </div>
+        <div class="doc-card">
+          <div class="metric">Operational Benefit</div>
+          <p>Reduces missed touchpoints, improves consistency, and gives staff clearer visibility into member status and next steps.</p>
+        </div>
+      </div>
+      <div class="quote">Built to reduce manual chasing and preserve a more consistent member experience across the full trial lifecycle.</div>
+    </div>
+  </template>
+
+  <template id="tpl-onboarding">
+    <iframe class="iframe-shell" srcdoc='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:40px 0;background:#1a1a1a;font-family:Inter,Arial,sans-serif} .wrap{max-width:640px;margin:0 auto;background:#fff;box-shadow:0 20px 40px rgba(0,0,0,.35)} .head{padding:56px 28px 34px;text-align:center}.k{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#406c7d;font-weight:600}.title{font-family:Georgia,serif;font-size:30px;color:#1a1a1a;margin:18px 0 10px}.lead{font-size:15px;line-height:1.8;color:#666;max-width:470px;margin:0 auto}.box{margin:0 42px 34px;background:#fcfaf8;border:1px solid #e4d8c5;padding:24px}.box h3{margin:0 0 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#406c7d}.tbl{width:100%;border-collapse:collapse;font-size:12px}.tbl td{padding:7px 0}.tbl td:first-child{color:#999;width:120px}.tbl td:last-child{color:#1a1a1a;font-weight:600}.content{padding:0 42px 42px}.content h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#406c7d;margin:0 0 14px}.content p{font-size:13px;line-height:1.7;color:#555;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}.card{background:#f9f7f3;border:1px solid #e4d8c5;padding:16px}.card strong{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#1a1a1a;margin-bottom:8px}.card span{font-size:12px;line-height:1.55;color:#555}.cta{display:inline-block;margin-top:10px;padding:12px 18px;background:#1a1a1a;color:#fff;text-decoration:none;font-size:10px;letter-spacing:2px;text-transform:uppercase}</style></head><body><div class="wrap"><div class="head"><div class="k">Transactional Email — Member Onboarding</div><div class="title">Member Onboarding Packet</div><p class="lead">A structured welcome packet designed to orient new members through practical use, cultural expectations, event access, and next steps from the start.</p></div><div class="box"><h3>Included Information</h3><table class="tbl"><tr><td>Membership</td><td>type, status, start date, dues</td></tr><tr><td>Operations</td><td>hours, contact routes, daily-use basics</td></tr><tr><td>Events</td><td>calendar access, RSVP path, featured programming</td></tr><tr><td>Policies</td><td>guest rules, dress code, conduct expectations</td></tr></table></div><div class="content"><h4>Why it mattered</h4><p>New members needed something more useful than a welcome note. The packet was built as a structured orientation tool: practical, member-facing, and easy to act on.</p><div class="grid"><div class="card"><strong>Clarity</strong><span>Consolidates key membership details in one readable place.</span></div><div class="card"><strong>Activation</strong><span>Helps new members understand what to do next instead of waiting for staff follow-up.</span></div><div class="card"><strong>Experience</strong><span>Sets tone while still delivering operationally useful information.</span></div><div class="card"><strong>Consistency</strong><span>Reduces variation in how onboarding information is delivered.</span></div></div><a class="cta" href="#">Sample onboarding structure</a></div></div></body></html>'></iframe>
+  </template>
+
+  <template id="tpl-staffhub">
+    <iframe class="iframe-shell" srcdoc='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:Inter,Arial,sans-serif;background:#1a1a1a;color:#f0ece6;margin:0;padding:40px} .header{border-bottom:1px solid #333;padding-bottom:20px;margin-bottom:34px} .header h1{color:#E4D8C5;font-size:24px;font-weight:500;margin:0} .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px} .card{background:#242424;border:1px solid #333;border-radius:10px;padding:22px} .card h3{color:#406C7D;margin:0 0 10px;font-size:16px} .card p{color:#a8a4a0;font-size:13px;line-height:1.6;margin:0} .route{color:#c7a86d;font-weight:500;font-size:12px;margin-top:12px;display:block;letter-spacing:1px;text-transform:uppercase}</style></head><body><div class="header"><h1>Internal Staff Portal</h1></div><div class="grid"><div class="card"><h3>Private Events</h3><p>Routes large-party and buyout inquiries into a more consistent intake path.</p><span class="route">Operational routing</span></div><div class="card"><h3>Membership Questions</h3><p>Organizes benefit, policy, and tier questions so staff do not improvise answers across departments.</p><span class="route">Membership clarity</span></div><div class="card"><h3>Dues & Billing</h3><p>Separates payment handling from general inbox traffic and reduces messy email-based resolution.</p><span class="route">Process control</span></div><div class="card"><h3>General Operations</h3><p>Creates a clearer path for reservations, complaints, and daily service issues.</p><span class="route">Daily operations</span></div></div></body></html>'></iframe>
+  </template>
+
+  <template id="tpl-reciprocal">
+    <iframe class="iframe-shell" srcdoc='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:40px 20px;background:#f5f3ef;color:#414042;font-family:Inter,Arial,sans-serif} .wrap{max-width:920px;margin:0 auto;background:#fff;padding:48px;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.08)} .k{font-size:11px;letter-spacing:3px;color:#406C7D;text-transform:uppercase;text-align:center;font-weight:600}.title{font-family:Georgia,serif;font-size:40px;font-weight:500;text-align:center;margin:16px 0 10px;color:#2a2a2a}.lead{text-align:center;color:#406C7D;margin:0 auto 30px;max-width:680px;font-size:17px;line-height:1.7}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:30px 0 24px}.box{padding:18px;border:1px solid #e7e2d9;border-radius:12px;background:#faf8f4}.box .h{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#406C7D;font-weight:600;margin-bottom:8px}.box p{font-size:15px;line-height:1.6;color:#555;margin:0}.end{max-width:720px;margin:0 auto;font-size:16px;line-height:1.75;text-align:center;color:#4f4f4f}</style></head><body><div class="wrap"><div class="k">Member Infrastructure</div><div class="title">Reciprocal Access Demo</div><p class="lead">A concept for organizing reciprocal club access into one cleaner member-facing system with standardized instructions, clearer eligibility rules, and less staff guesswork.</p><div class="grid"><div class="box"><div class="h">Search</div><p>Browse partner clubs by city, region, network, or use case.</p></div><div class="box"><div class="h">Eligibility</div><p>Clarify which tiers qualify and what steps members need before booking.</p></div><div class="box"><div class="h">Booking Path</div><p>Show the exact route for each network instead of relying on tribal knowledge.</p></div></div><p class="end">The operational goal is simple: reduce confusion for members, standardize staff responses, and turn a scattered reciprocal benefit into a usable service asset.</p></div></body></html>'></iframe>
+  </template>
+
+  <template id="tpl-locker">
+    <div class="modal-doc">
+      <h3>Locker Management Suite</h3>
+      <p class="lead">Operational tooling supporting locker inventory visibility, request validation, and a smoother service experience around premium member assets.</p>
+      <div class="doc-grid">
+        <div class="doc-card"><div class="metric">Verification</div><p>Confirms membership status, locker terms, and billing alignment before any request moves forward.</p></div>
+        <div class="doc-card"><div class="metric">Execution</div><p>Routes approved tasks to the sommelier and floor operations team with a clearer audit trail and service context.</p></div>
+      </div>
+      <div class="quote">This piece is useful because it shows process thinking in a member amenity context: request intake, operational validation, and fulfillment visibility.</div>
+    </div>
+  </template>
+
+  <template id="tpl-events">
+    <iframe class="iframe-shell" srcdoc='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:40px 20px;background:#111;color:#f4f1ea;font-family:Inter,Arial,sans-serif} .wrap{max-width:940px;margin:0 auto;background:#171717;padding:44px;border-radius:14px;border:1px solid rgba(255,255,255,.08)} .k{font-size:11px;letter-spacing:3px;color:#c7a86d;text-transform:uppercase;text-align:center;font-weight:600}.title{font-family:Georgia,serif;font-size:38px;text-align:center;margin:16px 0 12px}.lead{max-width:720px;margin:0 auto 30px;text-align:center;color:#c8c1b7;font-size:17px;line-height:1.75}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card{background:#1d1d1d;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px}.card .h{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#c7a86d;font-weight:600;margin-bottom:8px}.card p{font-size:15px;line-height:1.65;color:#cfc9c0;margin:0}</style></head><body><div class="wrap"><div class="k">Events & Member Communications</div><div class="title">Club Events & Member Communications</div><p class="lead">Member-facing communications built to support access, arrival, reservations, timing, atmosphere, and a more consistent event experience before guests even walk through the door.</p><div class="grid"><div class="card"><div class="h">Arrival Detail</div><p>Clear instructions help members understand when to arrive, how to access the event, and what to expect on site.</p></div><div class="card"><div class="h">Event Positioning</div><p>Campaign language reinforces tone and exclusivity while still staying operationally useful.</p></div><div class="card"><div class="h">Reservation Path</div><p>Communications reduce friction by directing members toward cleaner RSVP and booking flows.</p></div><div class="card"><div class="h">Consistency</div><p>Design and messaging were aligned to the service experience rather than treated as separate marketing output.</p></div></div></div></body></html>'></iframe>
+  </template>
+
+  <template id="tpl-obscura">
+    <iframe class="iframe-shell" srcdoc='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:40px 20px;background:#000;color:#fff;font-family:Inter,Arial,sans-serif}.wrap{max-width:760px;margin:0 auto;border:1px solid #161616;background:#050505;padding:54px 32px;text-align:center}.k{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#c7a86d}.title{font-family:Georgia,serif;font-size:44px;letter-spacing:4px;margin:16px 0 8px}.sub{font-family:Georgia,serif;font-size:22px;font-style:italic;color:#fff;margin:0 0 24px}.lead{max-width:560px;margin:0 auto 26px;color:#cfcfcf;line-height:1.8}.band{border-top:1px solid #202020;border-bottom:1px solid #202020;padding:22px 0;margin:30px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.band div{font-size:12px;color:#a5a5a5;letter-spacing:1px}.quote{max-width:520px;margin:0 auto;padding:18px;border-left:2px solid #c7a86d;background:rgba(199,168,109,.08);text-align:left;line-height:1.7;color:#e4e4e4}</style></head><body><div class="wrap"><div class="k">Signature Campaign</div><div class="title">Amador Obscura</div><div class="sub">An immersive theatrical experience</div><p class="lead">A flagship HTML email campaign built to balance exclusivity, event detail, and premium presentation across a high-concept members-only experience.</p><div class="band"><div>Time<br><strong style="color:#fff">5:00 PM – 9:30 PM</strong></div><div>Date<br><strong style="color:#fff">Sat, May 30</strong></div><div>Location<br><strong style="color:#fff">The Bank + Amador</strong></div></div><div class="quote">Useful as a portfolio example because it shows more than aesthetics: tone setting, access detail, ticket framing, dress guidance, and high-concept event positioning all working inside one member-facing communication.</div></div></body></html>'></iframe>
+  </template>
+
+  <script>
+    const projectData = {
+      opening:{category:'Hospitality Operations', title:'Opening The Bank at Amador', type:'template', templateId:'tpl-opening'},
+      sops:{category:'Training & Service Standards', title:'Training Architecture & Service Standards', type:'template', templateId:'tpl-sops'},
+      automation:{category:'Onboarding & Retention', title:'Member Onboarding & Trial Lifecycle', type:'template', templateId:'tpl-automation'},
+      onboarding:{category:'Member Communications', title:'Member Onboarding Packet', type:'template', templateId:'tpl-onboarding'},
+      staffhub:{category:'Internal Systems', title:'Internal Staff Portal', type:'template', templateId:'tpl-staffhub'},
+      reciprocal:{category:'Member Access & Partnerships', title:'Global Reciprocal Network', type:'template', templateId:'tpl-reciprocal'},
+      locker:{category:'Operations Systems', title:'Locker Management Suite', type:'template', templateId:'tpl-locker'},
+      events:{category:'Events & Member Communications', title:'Club Events & Member Communications', type:'template', templateId:'tpl-events'},
+      obscura:{category:'Signature Campaign', title:'Amador Obscura Campaign', type:'template', templateId:'tpl-obscura'}
+    };
+
+    const modal = document.getElementById('project-modal');
+    const modalCategory = document.getElementById('modal-category');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+
+    function openModal(projectId){
+      const data = projectData[projectId];
+      if(!data) return;
+      modalCategory.textContent = data.category;
+      modalTitle.textContent = data.title;
+      modalBody.innerHTML = '';
+      if(data.type === 'template'){
+        const tpl = document.getElementById(data.templateId);
+        if(tpl) modalBody.appendChild(tpl.content.cloneNode(true));
+      }
+      modal.classList.add('active');
+      document.body.style.overflow='hidden';
+    }
+
+    function closeModal(event){
+      if(event && event.target !== modal && !event.target.classList.contains('modal-close')) return;
+      modal.classList.remove('active');
+      document.body.style.overflow='';
+      setTimeout(()=>{ modalBody.innerHTML=''; }, 220);
+    }
+
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+    });
+  </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
+</body>
+</html>

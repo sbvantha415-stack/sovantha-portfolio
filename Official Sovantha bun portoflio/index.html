@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sovantha Bun — Workplace Operations, Systems & Member Experience</title>
+  <meta
+    name="description"
+    content="Portfolio supporting 10 years of experience in operations, workflow automation (Google Apps Script), member onboarding, and club systems."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #0b0b0a;
+      --surface: #12110f;
+      --surface-2: #161511;
+      --text: #f1eee7;
+      --muted: #a8a298;
+      --faint: #7d786f;
+      --line: rgba(255, 255, 255, 0.09);
+      --line-strong: rgba(255, 255, 255, 0.15);
+      --accent: #b79b6a;
+      --accent-soft: rgba(183, 155, 106, 0.09);
+      --max: 1080px;
+      --measure: 720px;
+      --radius: 18px;
+      --shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    .page { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; padding: 22px 0; border-bottom: 1px solid var(--line);
+    }
+    .brand { min-width: 0; display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 30px; height: 30px; border: 1px solid var(--line-strong);
+      border-radius: 50%; display: grid; place-items: center;
+      color: var(--accent); font-size: 12px; letter-spacing: 0.08em; flex: 0 0 auto;
+    }
+    .brand-name { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text); }
+    .brand-sub { margin-top: 2px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+
+    .nav { display: flex; flex-wrap: wrap; gap: 18px; }
+    .nav a {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--muted); border-bottom: 1px solid transparent; padding-bottom: 2px; transition: color 0.2s;
+    }
+    .nav a:hover { color: var(--text); border-bottom-color: var(--accent); }
+    .nav a.highlight { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+    .hero { padding: 86px 0 92px; border-bottom: 1px solid var(--line); }
+    .eyebrow { margin: 0 0 18px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+    .hero h1 {
+      margin: 0 0 18px; max-width: 20ch; font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(2.3rem, 4.5vw, 3.5rem); font-weight: 400; line-height: 1.06; letter-spacing: -0.01em;
+    }
+    .hero-copy { max-width: var(--measure); }
+    .hero-copy p { margin: 0 0 16px; color: var(--muted); font-size: 1.07rem; line-height: 1.74; }
+    .hero-meta {
+      margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--line);
+      display: flex; flex-wrap: wrap; gap: 16px 24px;
+    }
+    .hero-meta span { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+
+    section { padding: 88px 0; border-bottom: 1px solid var(--line); }
+    .section-head { margin-bottom: 26px; }
+    .section-label { margin: 0 0 10px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint); }
+    .section-title { margin: 0; font-family: "Instrument Serif", Georgia, serif; font-size: clamp(1.7rem, 3vw, 2.2rem); font-weight: 400; line-height: 1.1; letter-spacing: -0.01em; }
+    .section-intro { max-width: var(--measure); margin: 14px 0 0; color: var(--muted); font-size: 1rem; line-height: 1.72; }
+
+    .profile-copy { max-width: var(--measure); color: var(--muted); line-height: 1.74; font-size: 1.03rem; }
+
+    .featured-list { display: grid; gap: 52px; }
+    .project {
+      display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+      gap: 34px; align-items: start; padding-bottom: 42px; border-bottom: 1px solid var(--line);
+    }
+    .project:last-child { padding-bottom: 0; border-bottom: none; }
+    .project-category { display: block; margin-bottom: 10px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+    .project-title { margin: 0 0 14px; font-family: "Instrument Serif", Georgia, serif; font-size: clamp(1.45rem, 2.5vw, 1.9rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.01em; }
+    .project-summary, .project-detail { margin: 0 0 14px; color: var(--muted); font-size: 1rem; line-height: 1.72; max-width: 66ch; }
+    .project-meta { display: flex; flex-wrap: wrap; gap: 12px 16px; margin-top: 18px; }
+    .project-meta span { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+
+    .artifact { background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .artifact-media { aspect-ratio: 16 / 10; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, #1a1916 0%, #0f0f0d 100%); overflow: hidden; }
+    .artifact-media img { width: 100%; height: 100%; object-fit: cover; }
+    .artifact-media.placeholder {
+      display: grid; place-items: center; text-align: center; padding: 20px; color: var(--faint); font-size: 0.88rem; line-height: 1.6;
+      background: linear-gradient(180deg, rgba(183, 155, 106, 0.08), rgba(255, 255, 255, 0) 42%), linear-gradient(135deg, #191816 0%, #10100e 100%);
+    }
+    .artifact-body { padding: 18px 18px 20px; }
+    .artifact-kicker { margin: 0 0 8px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+    .artifact-title { margin: 0 0 10px; font-size: 1rem; font-weight: 500; line-height: 1.45; color: var(--text); }
+    .artifact-caption { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+    .quote-block { margin-top: 16px; padding: 15px 16px; border-left: 2px solid var(--accent); background: var(--accent-soft); color: var(--text); font-size: 0.95rem; line-height: 1.64; }
+    .press-links { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 14px; }
+    .press-links a { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid rgba(183,155,106,0.4); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+    .press-links a:hover { color: var(--text); border-bottom-color: var(--text); }
+
+    /* Project 4: embedded interactive demo */
+    .demo-project { display: block; padding-bottom: 0; border-bottom: none; }
+    .demo-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+    .demo-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(183,155,106,0.4); border-radius: 999px; padding: 4px 10px; }
+    .demo-disclaimer { margin: 6px 0 18px; padding: 12px 14px; border-left: 2px solid var(--accent); background: var(--accent-soft); color: var(--muted); font-size: 0.92rem; line-height: 1.6; max-width: 72ch; }
+    .demo-disclaimer strong { color: var(--text); font-weight: 500; }
+    .demo-frame-wrap { position: relative; border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); background: #0f0f0d; }
+    .demo-frame-wrap iframe { display: block; width: 100%; height: 680px; border: 0; background: #fff; }
+    .demo-actions { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; }
+    .demo-actions a { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid rgba(183,155,106,0.4); padding-bottom: 2px; }
+    .demo-actions a:hover { color: var(--text); border-bottom-color: var(--text); }
+    @media (max-width: 720px) { .demo-frame-wrap iframe { height: 520px; } }
+
+    /* Reciprocal partner grid */
+    .partner-stat { margin: 2px 0 14px; }
+    .partner-stat .num { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 2.5rem; line-height: 1; color: var(--accent); }
+    .partner-stat .lbl { display: block; margin-top: 6px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+    .partner-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    .partner-grid span { background: var(--surface); padding: 14px 12px; font-size: 0.9rem; color: var(--text); text-align: center; letter-spacing: 0.01em; }
+    @media (max-width: 560px) { .partner-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+
+    /* Platforms / tools pill grid */
+    .tools-wrap { display: flex; flex-wrap: wrap; gap: 10px; }
+    .tool-pill { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--text); font-size: 0.92rem; letter-spacing: 0.01em; transition: border-color 0.2s, background 0.2s; }
+    .tool-pill:hover { border-color: var(--accent); background: var(--surface-2); }
+    .tool-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; opacity: 0.8; }
+    .tools-note { margin: 18px 0 0; font-size: 0.9rem; color: var(--faint); }
+
+    /* Featured interactive experience banner */
+    .xp-banner { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 24px; align-items: center; padding: 26px 28px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: linear-gradient(135deg, rgba(183,155,106,0.10), rgba(255,255,255,0.01)); box-shadow: var(--shadow); }
+    .xp-banner .xp-kicker { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+    .xp-banner h3 { margin: 0 0 10px; font-family: "Instrument Serif", Georgia, serif; font-size: clamp(1.4rem, 2.6vw, 1.8rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.01em; }
+    .xp-banner p { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.7; max-width: 62ch; }
+    .xp-cta { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; padding: 13px 20px; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; transition: background 0.2s, color 0.2s; }
+    .xp-cta:hover { background: var(--accent); color: #12110f; }
+    @media (max-width: 720px) { .xp-banner { grid-template-columns: 1fr; } }
+
+    .support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 26px; }
+    .support-item { padding: 20px 0 18px; border-top: 1px solid var(--line); }
+    .support-item h3 { margin: 0 0 8px; font-size: 1.08rem; font-weight: 500; letter-spacing: -0.01em; }
+    .support-item p { margin: 0; color: var(--muted); font-size: 0.97rem; line-height: 1.68; }
+
+    .archive-list { display: grid; gap: 22px; }
+    .archive-item { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 22px; padding: 0 0 22px; border-bottom: 1px solid var(--line); }
+    .archive-item:last-child { padding-bottom: 0; border-bottom: none; }
+    .archive-thumb { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: linear-gradient(135deg, #171714 0%, #11110f 100%); }
+    .archive-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .archive-thumb.placeholder { display: grid; place-items: center; text-align: center; color: var(--faint); padding: 18px; font-size: 0.85rem; line-height: 1.55; }
+    .archive-date { display: block; margin-bottom: 8px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+    .archive-item h3 { margin: 0 0 8px; font-family: "Instrument Serif", Georgia, serif; font-size: 1.4rem; font-weight: 400; line-height: 1.12; letter-spacing: -0.01em; }
+    .archive-item p { margin: 0 0 12px; color: var(--muted); font-size: 0.98rem; line-height: 1.66; max-width: 58ch; }
+    .archive-link { display: inline-block; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; border-bottom: 1px solid var(--accent); padding-bottom: 2px; color: var(--text); }
+    .archive-link:hover { color: var(--accent); }
+
+    .closing { padding-bottom: 110px; }
+    .closing p { max-width: var(--measure); margin: 0 0 16px; color: var(--muted); font-size: 1rem; line-height: 1.72; }
+
+    .stack-list { margin-top: 24px; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 8px; font-size: 0.95rem; color: var(--muted); max-width: var(--measure); }
+    .stack-list strong { color: var(--text); font-weight: 500; }
+
+    .contact-row { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 14px 20px; }
+    .contact-row a, .contact-row span { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--faint); transition: color 0.2s;}
+    .contact-row a:hover { color: var(--text); }
+
+    .footer { padding: 18px 0 34px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer span { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+    @media (max-width: 920px) {
+      .project, .support-grid, .archive-item { grid-template-columns: 1fr; }
+      .archive-thumb { max-width: 280px; }
+    }
+    @media (max-width: 720px) {
+      .page { width: min(var(--max), calc(100% - 28px)); }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .hero { padding: 62px 0 68px; }
+      section { padding: 64px 0; }
+      .nav { gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="sr-only" href="#main">Skip to content</a>
+
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">S</div>
+        <div>
+          <div class="brand-name">Sovantha Bun</div>
+          <div class="brand-sub">Workplace Ops / Member Experience</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Primary">
+        <a href="#profile">Profile</a>
+        <a href="#featured">Work</a>
+        <a href="#tools">Tools</a>
+        <a href="experience/reciprocal.html" target="_blank" rel="noopener">Experience &#8599;</a>
+        <a href="#contact">Contact</a>
+        <a href="Sovantha_Bun_Resume_OfficeManager.pdf" target="_blank" class="highlight">Download Resume &#8599;</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <p class="eyebrow">Selected Work</p>
+        <h1 id="hero-title">Operations, workflow automation, and club systems.</h1>
+
+        <div class="hero-copy">
+          <p>
+            I spent ten years running operations at a private club in San Francisco. I handle the
+            unglamorous parts that keep a place running &mdash; onboarding, vendors, staff training,
+            and the systems behind all of it.
+          </p>
+          <p>
+            I was there through the whole Wingtip-to-Amador rebrand. I wrote the SOPs, ran the member
+            onboarding, and taught myself Google Apps Script so I could stop doing the same things by
+            hand every week.
+          </p>
+        </div>
+
+        <div class="hero-meta">
+          <span>Operations Management</span>
+          <span>Google Apps Script</span>
+          <span>CRM Administration</span>
+          <span>Cross-Functional Leadership</span>
+          <span>Vendor Coordination</span>
+        </div>
+      </section>
+
+      <section id="profile" aria-labelledby="profile-title">
+        <div class="section-head">
+          <p class="section-label">Profile</p>
+          <h2 class="section-title" id="profile-title">What I actually do</h2>
+        </div>
+
+        <div class="profile-copy">
+          <p>I like work where the front of house feels easy for the member and the back of house is organized enough to make that true. Most of what I am good at is spotting the thing that keeps breaking, fixing it, and writing it down so it does not break again. I do my best work in small teams where I get to own the whole problem.</p>
+        </div>
+
+        <div class="xp-banner" style="margin-top:34px;">
+          <div>
+            <p class="xp-kicker">Featured &middot; Interactive Experience</p>
+            <h3>The Reciprocal Passport</h3>
+            <p>Something I built for the club&rsquo;s reciprocal program: a map of partner clubs, a plain-English walkthrough of how access works, the Bank of Italy building history, and a form members use to request a Letter of Introduction. Open it full screen and click around.</p>
+          </div>
+          <a class="xp-cta" href="experience/reciprocal.html" target="_blank" rel="noopener">Open the experience &#8599;</a>
+        </div>
+      </section>
+
+      <section id="featured" aria-labelledby="featured-title">
+        <div class="section-head">
+          <p class="section-label">Systems and workflows in practice</p>
+          <h2 class="section-title" id="featured-title">A few things I built</h2>
+          <p class="section-intro">
+            Real work from my time at the club &mdash; the systems, the rebrand, the training, and the partner program. Where something was a prototype and not a shipped system, I say so.
+          </p>
+        </div>
+
+        <div class="featured-list">
+
+          <!-- PROJECT 1: AUTOMATION -->
+          <article class="project">
+            <div>
+              <span class="project-category">Systems &amp; Workflow Automation</span>
+              <h3 class="project-title">Onboarding Pipeline Automation</h3>
+              <p class="project-summary">
+                Designed and built a working Google Apps Script pipeline to tackle a manual, error-prone
+                onboarding checklist for new joiners and members at Amador Club.
+              </p>
+              <p class="project-detail">
+                The script reads new rows from a single intake sheet, sends personalized welcome emails via
+                Gmail, provisions a dedicated member folder in Google Drive from a template, and logs errors
+                to a tracking tab. It uses guard clauses for missing data, installable triggers, and a custom
+                &ldquo;Amador Onboarding&rdquo; menu so non-technical staff could run it.
+              </p>
+              <div class="project-meta">
+                <span>Google Apps Script</span>
+                <span>Installable Triggers</span>
+                <span>Process Improvement</span>
+              </div>
+            </div>
+
+            <aside class="artifact">
+              <div class="artifact-media">
+                <img src="artifact_automation.png" alt="Membership automation architecture: webhooks from PeopleVine feeding Applications, Trial Members, and Sponsor tables, with interfaces and scheduled follow-up jobs." loading="lazy" />
+              </div>
+              <div class="artifact-body">
+                <p class="artifact-kicker">Sample Artifact</p>
+                <h4 class="artifact-title">Membership automation architecture</h4>
+                <p class="artifact-caption">
+                  Webhooks from PeopleVine feed Applications, Trial Members, and Sponsor tables; interfaces surface pending approvals; scheduled jobs send day 3 / 7 / 14 / 21 follow-ups. Built with guard clauses so non-technical staff can run it.
+                </p>
+                <div class="quote-block">
+                  A working solution built to prove the approach: turn a manual, error-prone checklist into a
+                  repeatable pipeline with personalized welcomes, templated folders, and no dropped touchpoints.
+                </div>
+              </div>
+            </aside>
+          </article>
+
+          <!-- PROJECT 2: REBRAND OPERATIONS -->
+          <article class="project">
+            <div>
+              <span class="project-category">Cross-Functional Leadership</span>
+              <h3 class="project-title">Wingtip &rarr; Amador Rebrand Operations</h3>
+              <p class="project-summary">
+                Owned the operations workstream for the transition of Wingtip into Amador. Served as the
+                communications hub coordinating leadership, vendors, designers, and the front-of-house team.
+              </p>
+              <p class="project-detail">
+                Audited and rewrote every member-facing communication&mdash;system emails, newsletters, signage
+                copy, and CRM templates&mdash;so the new brand voice stayed consistent without disrupting active
+                operations.
+              </p>
+              <div class="project-meta">
+                <span>Change Management</span>
+                <span>Vendor Coordination</span>
+                <span>Internal Communications</span>
+              </div>
+            </div>
+
+            <aside class="artifact">
+              <div class="artifact-media">
+                <img src="artifact_brandguide.png" alt="Amador brand guide showing the new logo suite, color palette (#E4D8C5, #414042, #406C7D), and Baskerville / Cormorant Garamond typography that the rebrand rolled out across member touchpoints." loading="lazy" />
+              </div>
+              <div class="artifact-body">
+                <p class="artifact-kicker">In the press</p>
+                <h4 class="artifact-title">A real, public rebrand &mdash; covered by SF media</h4>
+                <p class="artifact-caption">
+                  The Wingtip&rarr;Amador rebrand and The Bank at Amador launch were covered widely. The Bank opened with roughly 500 club members and 600 founding members.
+                </p>
+                <div class="press-links">
+                  <a href="https://sfstandard.com/2025/09/09/first-look-bank-amador-new-fidi-club-doubling-old-school-opulence/" target="_blank" rel="noopener">The SF Standard &#8599;</a>
+                  <a href="https://www.sfgate.com/food/article/amador-club-exclusive-bar-downtown-sf-19373517.php" target="_blank" rel="noopener">SFGATE &#8599;</a>
+                  <a href="https://galeriemagazine.com/bank-amador-social-club-san-francisco/" target="_blank" rel="noopener">Galerie Magazine &#8599;</a>
+                  <a href="https://www.7x7.com/the-bank-at-amador-2667791384.html" target="_blank" rel="noopener">7x7 &#8599;</a>
+                </div>
+              </div>
+            </aside>
+          </article>
+
+          <!-- PROJECT 3: SOPs & TRAINING -->
+          <article class="project">
+            <div>
+              <span class="project-category">Training / Service Standards</span>
+              <h3 class="project-title">Internal SOPs &amp; Staff Enablement</h3>
+              <p class="project-summary">
+                Wrote and maintained internal standard operating procedures and training guides so non-technical staff could operate workflows independently, reducing 'shoulder-tap' interruptions.
+              </p>
+              <p class="project-detail">
+                The framework organized onboarding into clear modules: CRM utilization, greeting protocols, guest handling, vendor relations, and shift-level operational accountability.
+              </p>
+              <div class="project-meta">
+                <span>Technical Writing</span>
+                <span>SOP Design</span>
+                <span>Role-Based Operations</span>
+              </div>
+            </div>
+
+            <aside class="artifact">
+              <div class="artifact-media">
+                <img src="sop_howitworks.png" alt="Page from the Bank at Amador CRM Staff Operations Guide showing the member lifecycle from application to renewal, and a table of what staff do versus what the system automates." loading="lazy" />
+              </div>
+              <div class="artifact-body">
+                <p class="artifact-kicker">Sample Artifact</p>
+                <h4 class="artifact-title">Bank at Amador &mdash; CRM Staff Operations Guide (24 pages)</h4>
+                <p class="artifact-caption">
+                  Processes were documented so the next person inheriting the job had a head start, not a mystery.
+                </p>
+                <div class="quote-block">
+                  If I see something broken or missing, I fix it, automate what can be automated, and document what&rsquo;s left.
+                </div>
+              </div>
+            </aside>
+          </article>
+
+          <!-- PROJECT 4: RECIPROCAL CLUB PARTNERSHIPS -->
+          <article class="project">
+            <div>
+              <span class="project-category">Partnerships &amp; Program Ops</span>
+              <h3 class="project-title">Reciprocal Club Partnership Program</h3>
+              <p class="project-summary">
+                Built and managed the club&rsquo;s reciprocal partnership program from launch through ongoing
+                operations &mdash; partner outreach, agreement coordination, member-facing guidance, and the
+                supporting automation behind Letters of Introduction and follow-up.
+              </p>
+              <p class="project-detail">
+                Created a searchable partner-club portal and workflows so members could request access to
+                partner clubs worldwide, and staff could issue Letters of Introduction and track responses
+                without manual guesswork.
+              </p>
+              <div class="project-meta">
+                <span>Partner Outreach</span>
+                <span>Program Operations</span>
+                <span>Workflow Automation</span>
+              </div>
+            </div>
+
+            <aside class="artifact">
+              <div class="artifact-body">
+                <p class="artifact-kicker">Program Scale</p>
+                <div class="partner-stat"><span class="num">200+</span><span class="lbl">Partner clubs &amp; networks</span></div>
+                <h4 class="artifact-title">Select partner clubs &amp; networks</h4>
+                <div class="partner-grid">
+                  <span>1880 &middot; Hong Kong</span>
+                  <span>Griffin Club</span>
+                  <span>SMWS</span>
+                  <span>Sonato</span>
+                  <span>The Players Club</span>
+                  <span>The Penn Club</span>
+                  <span>Magic Castle</span>
+                  <span>Skyline Club</span>
+                  <span>IAC Worldwide</span>
+                </div>
+                <p class="artifact-caption" style="margin-top:12px;">A sample of the 200+ partner clubs and networks in the program.</p>
+              </div>
+            </aside>
+          </article>
+
+          <!-- PROJECT 5: INTERACTIVE DEMO -->
+          <article class="project demo-project">
+            <div class="demo-head">
+              <span class="project-category" style="margin-bottom:0;">Product / Systems Design</span>
+              <span class="demo-badge">&#9679; Interactive demo &middot; not a live system</span>
+            </div>
+            <h3 class="project-title">Locker &amp; Cellar Management &mdash; Interactive Prototype</h3>
+            <p class="project-summary">
+              A working interactive prototype I designed to show how a private club could manage member wine
+              lockers and cellar suites &mdash; inventory, assignments, member lookup, engraving requests, and
+              at-a-glance metrics &mdash; in a single view.
+            </p>
+            <p class="demo-disclaimer">
+              <strong>Please note:</strong> this is a self-contained interactive demo / concept prototype, not a
+              live production system. Sample data is illustrative and no real member information is shown. It runs
+              entirely in your browser to demonstrate the interface and workflow.
+            </p>
+            <div class="demo-frame-wrap">
+              <iframe src="locker-demo.html" title="Interactive locker and cellar management prototype" loading="lazy"></iframe>
+            </div>
+            <div class="demo-actions">
+              <a href="locker-demo.html" target="_blank" rel="noopener">Open demo full screen &#8599;</a>
+              <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);">Interface &amp; Workflow Design &middot; Inventory Logic &middot; Member Lookup</span>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <section id="tools" aria-labelledby="tools-title">
+        <div class="section-head">
+          <p class="section-label">Tools &amp; Platforms</p>
+          <h2 class="section-title" id="tools-title">Platforms I work with</h2>
+          <p class="section-intro">The systems I&rsquo;ve actually run day to day &mdash; membership, CRM, reservations, POS, payroll, email, and the automation that ties them together.</p>
+        </div>
+
+        <div class="tools-wrap">
+          <span class="tool-pill"><span class="dot"></span>PeopleVine CRM</span>
+          <span class="tool-pill"><span class="dot"></span>SevenRooms</span>
+          <span class="tool-pill"><span class="dot"></span>Tripleseat</span>
+          <span class="tool-pill"><span class="dot"></span>Perfect Venue</span>
+          <span class="tool-pill"><span class="dot"></span>Toast POS</span>
+          <span class="tool-pill"><span class="dot"></span>Square</span>
+          <span class="tool-pill"><span class="dot"></span>OpenTable</span>
+          <span class="tool-pill"><span class="dot"></span>Flodesk</span>
+          <span class="tool-pill"><span class="dot"></span>Mailchimp</span>
+          <span class="tool-pill"><span class="dot"></span>Google Workspace</span>
+          <span class="tool-pill"><span class="dot"></span>Google Apps Script</span>
+          <span class="tool-pill"><span class="dot"></span>Microsoft 365</span>
+          <span class="tool-pill"><span class="dot"></span>Zapier</span>
+          <span class="tool-pill"><span class="dot"></span>Gusto</span>
+          <span class="tool-pill"><span class="dot"></span>Slack</span>
+          <span class="tool-pill"><span class="dot"></span>Notion</span>
+          <span class="tool-pill"><span class="dot"></span>Canva</span>
+          <span class="tool-pill"><span class="dot"></span>GitHub</span>
+          <span class="tool-pill"><span class="dot"></span>Cloudflare</span>
+        </div>
+        <p class="tools-note">Plus HTML email, basic SQL, and data exports.</p>
+      </section>
+
+      <section class="closing" id="contact" aria-labelledby="contact-title">
+        <div class="section-head">
+          <p class="section-label">About &amp; Contact</p>
+          <h2 class="section-title" id="contact-title">Let&rsquo;s talk</h2>
+        </div>
+
+        <p>
+          If you need someone who can run the day-to-day and also build the systems behind it, I&rsquo;d like to hear
+          about the role. I&rsquo;m based in San Francisco and open to operations, workplace, and member-experience work.
+          The fastest way to reach me is email or a call.
+        </p>
+
+        <div class="stack-list">
+          <strong>Tools I actually use:</strong> Google Workspace (Gmail, Drive, Sheets, Docs), Google Apps Script, PeopleVine CRM, Microsoft 365, basic SQL and data exports, HTML and inline CSS.
+        </div>
+
+        <div class="contact-row">
+          <a href="mailto:sbvantha415@gmail.com">sbvantha415@gmail.com</a>
+          <a href="tel:+14156230864">(415) 623-0864</a>
+          <a href="Sovantha_Bun_Resume_OfficeManager.pdf" target="_blank" style="color: var(--accent); font-weight: 500;">Download Resume (PDF)</a>
+          <span>San Francisco, CA</span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Sovantha Bun</span>
+      <span>Workplace Operations / Member Experience</span>
+    </footer>
+  </div>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>

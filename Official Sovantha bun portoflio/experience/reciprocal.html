@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reciprocal Passport — Sovantha Bun</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<style>
+        /* ========================================================= */
+        /* 🎨 PORTFOLIO WRAPPER STYLES                               */
+        /* ========================================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { display: flex; height: 100vh; background-color: #121212; color: #ffffff; overflow: hidden; }
+        
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 320px;
+            background-color: #1e1e1e;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 24px;
+            z-index: 10;
+        }
+        .profile-pic {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c7a86d 0%, #406C7D 100%);
+            margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; font-weight: bold; color: white;
+        }
+        .name { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+        .title { font-size: 14px; color: #a0a0a0; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .nav-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; font-weight: 600; }
+        .project-list { list-style: none; flex-grow: 1; display: flex; flex-direction: column; gap: 8px; }
+        .project-item {
+            padding: 12px 16px;
+            background-color: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            font-size: 14px; font-weight: 500;
+            display: flex; align-items: center; gap: 10px;
+            transition: all 0.2s ease;
+            color: #a0a0a0;
+        }
+        .project-item:hover { background-color: #2a2a2a; color: #fff; }
+        .project-item.active {
+            background-color: #2a2a2a;
+            border-left: 4px solid #c7a86d;
+            color: #ffffff;
+        }
+        .project-item.active i { color: #c7a86d; }
+
+        .social-links { display: flex; gap: 15px; margin-top: auto; }
+        .social-links a { color: #a0a0a0; font-size: 20px; text-decoration: none; transition: color 0.2s; }
+        .social-links a:hover { color: #fff; }
+
+        /* ── Main Content ── */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #000;
+        }
+        .top-bar {
+            height: 60px;
+            background-color: #1e1e1e;
+            border-bottom: 1px solid #333;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px;
+        }
+        .top-bar-title { font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+        .status-dot { width: 8px; height: 8px; background-color: #2ecc71; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #2ecc71; }
+        
+        .device-toggle { display: flex; gap: 10px; }
+        .device-btn { background: none; border: none; color: #a0a0a0; font-size: 16px; cursor: pointer; padding: 5px; transition: color 0.2s; }
+        .device-btn:hover, .device-btn.active { color: #fff; }
+
+        /* ── Iframe Container ── */
+        .iframe-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #121212;
+            transition: all 0.3s ease;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+        
+        /* Mobile Preview Mode */
+        iframe.mobile-view { width: 375px; height: 812px; border-radius: 30px; border: 12px solid #222; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; padding: 20px; height: auto; border-right: none; border-bottom: 1px solid #333; flex-direction: row; align-items: center; justify-content: space-between;}
+            .profile-pic { width: 40px; height: 40px; font-size: 16px; margin-bottom: 0; }
+            .title { margin-bottom: 0; }
+            .nav-label, .social-links, .top-bar { display: none; }
+            .project-list { flex-direction: row; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+            .project-item { padding: 8px 12px; border-left: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+            .project-item.active { border-left: none; border-bottom: 2px solid #c7a86d; }
+        }
+    
+/* === STANDALONE PAGE OVERRIDE (fix inherited flex/overflow from parent app shell) === */
+html, body { display:block !important; height:auto !important; min-height:100% !important; overflow:visible !important; overflow-x:hidden !important; background:#121212; color:#fff; }
+body > .sidebar, body > .top-bar, body > .iframe-container, body > .main-content > .top-bar { display:none !important; }
+.main-content { display:block !important; max-width:1200px !important; margin:0 auto !important; padding:0 24px 80px !important; height:auto !important; overflow:visible !important; width:auto !important; }
+.hero, .main-infographic, section, .benefits-section, .story-section, .visitmap-teaser, .vtour-section, .faq-section, .practices-section, .submit-section { width:auto !important; max-width:100% !important; }
+</style>
+</head>
+<body>
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="robots" content="noindex, nofollow">
+            <title>Your Passport Around the World — Amador Club Demo</title>
+            <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                :root {
+                    --cream: #E4D8C5;
+                    --charcoal: #414042;
+                    --teal: #406C7D;
+                    --teal-dark: #2f5561;
+                    /* Network brand colors */
+                    --sonato-bg:   #B59A6A;
+                    --sonato-dark: #96784a;
+                    --iac-bg:      #1a2044;
+                    --iac-dark:    #0f1530;
+                    --invited-bg:  #2356a8;
+                    --invited-dark:#1a4080;
+                    --direct-bg:   #414042;
+                    --direct-dark: #2a2a2b;
+                }
+                body { font-family: 'Cormorant Garamond', serif; color: var(--charcoal); line-height: 1.6; background: linear-gradient(180deg, #fbfaf8 0%, #f5f3ef 100%); }
+                h1,h2,h3,h4,h5,h6 { font-family: 'Libre Baskerville', serif; }
+
+                /* ── Disclaimer Banner ── */
+                .demo-disclaimer {
+                    background: #c0392b; color: #ffffff; text-align: center; padding: 10px 20px;
+                    font-family: 'Libre Baskerville', serif; font-size: 11px; letter-spacing: 1.5px;
+                    text-transform: uppercase; position: relative; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                }
+
+                /* ── Header ── */
+                .header { background: #3A3A3C; color: var(--cream); padding: 24px 0 22px; text-align: center; box-shadow: 0 18px 40px rgba(0,0,0,0.16); }
+                .header-logo { height: 76px; width: auto; margin: 0 auto 8px; display: block; mix-blend-mode: screen; opacity: 0.9;}
+                .header .tagline { font-size: 14px; letter-spacing: 1.4px; opacity: 0.92; font-weight: bold; text-transform: uppercase; }
+
+                /* ── Hero ── */
+                .hero { background: linear-gradient(180deg, var(--cream) 0%, #ffffff 100%); padding: 60px 20px; text-align: center; }
+                .hero h2 { font-size: 48px; color: var(--charcoal); margin-bottom: 10px; }
+                .hero .subheading { font-size: 18px; color: var(--teal); margin-bottom: 30px; }
+
+                /* ── Quick Nav ── */
+                .quick-nav { background: #3A3A3C; padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+                .quick-nav-inner { max-width: 860px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+                .quick-nav-btn {
+                    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+                    height: 36px; padding: 0 16px; font-family: 'Libre Baskerville', serif; font-size: 9.5px;
+                    font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.75); text-decoration: none;
+                    border-radius: 999px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06);
+                    transition: all 0.2s ease; cursor: pointer; white-space: nowrap;
+                }
+                .quick-nav-btn img { opacity: 0.85; background: white;}
+                .quick-nav-btn:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.32); color: #fff; transform: translateY(-1px); }
+                .qn-sonato { border-color: rgba(181,154,106,0.45); color: #d4b07a; }
+                .qn-iac { border-color: rgba(74,111,165,0.45); color: #8fa8d4; }
+                .qn-invited { border-color: rgba(35,86,168,0.45); color: #7aa3d8; }
+                .qn-suggest { border-color: rgba(64,108,125,0.5); color: #7fb5c8; }
+
+                /* ── Main Infographic ── */
+                .main-infographic { background: linear-gradient(135deg, #f5f0e8 0%, #eae4d8 100%); padding: 40px 24px; border-top: 3px solid #B59A6A; border-bottom: 3px solid #B59A6A; }
+                .main-infographic-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: flex-start; justify-content: center; gap: 0; flex-wrap: wrap;}
+                .mi-step { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; position: relative; min-width: 120px; padding: 10px;}
+                .mi-icon { width: 58px; height: 58px; border-radius: 50%; background: #406C7D; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px; box-shadow: 0 6px 18px rgba(64,108,125,0.35); position: relative; z-index: 2; }
+                .mi-connector { position: absolute; top: 39px; left: calc(50% + 30px); width: calc(100% - 30px); height: 2px; background: linear-gradient(90deg, #406C7D, #406C7D33); z-index: 1; }
+                .mi-last .mi-connector { display: none; }
+                .mi-label { font-family: 'Libre Baskerville', serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #3A3A3C; margin-bottom: 5px; }
+                .mi-sub { font-size: 11.5px; color: #406C7D; padding: 0 6px; }
+
+                /* ── Filter Bar & Search ── */
+                .filter-bar { background: white; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 30px; }
+                .filter-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }
+                .search-input-wrap { flex: 1; min-width: 250px; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 16px; border-radius: 6px; background: #fff; border: 1px solid var(--cream); transition: border 0.3s; }
+                .search-input-wrap:focus-within { border-color: var(--teal); }
+                .search-input-wrap i { color: var(--teal); font-size: 16px; }
+                .search-input { flex: 1; height: 100%; border: none; background: transparent; outline: none; font-size: 16px; font-family: 'Cormorant Garamond', serif; color: var(--charcoal); }
+                .filter-group { display: flex; flex-direction: column; gap: 5px; width: 100%; max-width: 200px; flex: 1;}
+                .filter-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); font-weight: 600; font-family: 'Libre Baskerville', serif; }
+                .filter-group select { padding: 0 15px; height: 46px; border: 1px solid var(--cream); border-radius: 6px; font-family: 'Cormorant Garamond', serif; font-size: 15px; background: white; cursor: pointer; outline: none; transition: border 0.3s; width: 100%; }
+                .clear-filters { color: var(--teal); cursor: pointer; text-decoration: underline; font-size: 14px; margin-left: auto; margin-bottom: 12px; font-weight: 600; }
+
+                /* ── Main Content & Grid ── */
+                .main-content { max-width: 1200px; margin: 0 auto; padding: 10px 20px 60px; }
+                .club-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+                .club-card {
+                    background: linear-gradient(180deg, #ffffff 0%, #fcfaf7 100%);
+                    border: 1px solid rgba(228,216,197,0.95); border-radius: 18px;
+                    overflow: hidden; transition: all 0.3s ease; cursor: pointer; position: relative;
+                    display: flex; flex-direction: column; box-shadow: 0 12px 30px rgba(34,34,34,0.07);
+                }
+                .club-card::before {
+                    content: ''; position: absolute; inset: 0 0 auto 0; height: 5px;
+                    background: linear-gradient(90deg, rgba(64,108,125,0.95) 0%, rgba(228,216,197,0.9) 100%);
+                }
+                .club-card:hover { box-shadow: 0 20px 42px rgba(0,0,0,0.14); border-color: rgba(64,108,125,0.38); transform: translateY(-4px); }
+                .club-card-thumb { position: absolute; top: 20px; left: 20px; width: 52px; height: 52px; border-radius: 14px; object-fit: contain; background: white; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 8px 18px rgba(0,0,0,0.14); padding: 4px;}
+                .club-card-body { padding: 30px 28px 28px; padding-top: 20px; flex: 1; display: flex; flex-direction: column; }
+                
+                .network-badge { position: absolute; top: 22px; right: 20px; padding: 7px 11px; border-radius: 999px; font-family: 'Libre Baskerville', serif; font-size: 9px; text-transform: uppercase; letter-spacing: 1.2px; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.12); }
+                .badge-sonato  { background: var(--sonato-bg); }
+                .badge-iac     { background: var(--iac-bg); }
+                .badge-invited { background: var(--invited-bg); }
+                .badge-direct  { background: var(--direct-bg); }
+
+                .club-card h3 { font-size: 21px; color: var(--charcoal); margin-bottom: 10px; padding-top: 56px; line-height: 1.3; }
+                .club-location { font-size: 16px; color: var(--teal); margin-bottom: 15px; display: flex; align-items: center; gap: 6px; }
+                .club-description { font-size: 15px; color: var(--charcoal); margin-bottom: 20px; flex-grow: 1; }
+                
+                .view-details-btn {
+                    border: none; background: #3A3A3C; color: #fff; width: 100%; height: 46px;
+                    font-family: 'Libre Baskerville', serif; font-size: 10px; letter-spacing: 1.8px;
+                    text-transform: uppercase; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;
+                    display: inline-flex; align-items: center; justify-content: center; gap: 10px; margin-top: auto;
+                }
+                .view-details-btn:hover { background: #406C7D; transform: translateY(-2px); }
+
+                /* ── Tag Chips ── */
+                .tag-chip { display: inline-block; border-radius: 20px; font-family: 'Libre Baskerville', serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; padding: 3px 9px; margin: 2px 3px 2px 0; }
+                .tag-chip i { margin-right: 4px; font-size: 9px; opacity: 0.75; }
+                .tag-amenity { background: #edf4f7; color: var(--teal-dark); border: 1px solid #c2dae3; }
+                .tag-rule { background: #fff8ed; color: #7a4f00; border: 1px solid #f0d080; }
+                .card-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 8px; margin-bottom: 16px; }
+
+                /* ── Benefits Section ── */
+                .benefits-section { background: var(--cream); padding: 60px 20px; margin-top: 60px; }
+                .benefits-container { max-width: 1200px; margin: 0 auto; text-align: center; }
+                .benefits-container h2 { font-size: 32px; color: var(--charcoal); margin-bottom: 40px; }
+                .benefits-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; margin-bottom: 30px; align-items: start; }
+                .benefit-item { text-align: center; }
+                .benefit-icon img { height: 64px; width: 64px; border-radius: 14px; object-fit: contain; background: white; box-shadow: 0 4px 14px rgba(0,0,0,0.2); display: block; margin: 0 auto 14px; padding: 4px; }
+                .benefit-item h4 { font-size: 18px; margin-bottom: 10px; }
+                .benefit-item p { font-size: 14px; line-height: 1.5; }
+
+                /* ── 550 Montgomery Story Section ── */
+                .story-section { background: linear-gradient(170deg,#f4efe6 0%,#ede6d8 100%); padding: 80px 20px 72px; overflow: hidden; }
+                .story-container { max-width: 1120px; margin: 0 auto; }
+                .story-kicker { display: block; text-align: center; margin-bottom: 10px; font-family: 'Libre Baskerville', serif; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: var(--teal); }
+                .story-container > h2 { font-size: 36px; color: var(--charcoal); margin-bottom: 12px; text-align: center; line-height: 1.25; }
+                .story-subtitle { max-width: 660px; margin: 0 auto 56px; text-align: center; font-size: 17px; color: #5c6b70; line-height: 1.65; }
+                
+                .story-photos { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 52px; }
+                .story-photo-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.09); transition: transform 0.2s; }
+                .story-photo-card:hover { transform: translateY(-4px); }
+                .story-photo-card img { width: 100%; height: 160px; object-fit: cover; display: block; }
+                .story-photo-card figcaption { padding: 9px 12px 11px; font-size: 11px; line-height: 1.5; color: #999; }
+                
+                .story-flip-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 52px; }
+                .flip-card { height: 200px; perspective: 1000px; cursor: pointer; }
+                .flip-card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.55s; }
+                .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+                .flip-card-front, .flip-card-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 22px 18px; text-align: center; }
+                .flip-card-front { background: var(--charcoal); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+                .flip-card-front .fc-icon { font-size: 28px; margin-bottom: 12px; }
+                .flip-card-front h4 { font-size: 15px; color: var(--cream); line-height: 1.3; margin: 0; }
+                .flip-card-front .fc-tap { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(228,216,197,0.45); margin-top: 10px; }
+                .flip-card-back { background: var(--teal); transform: rotateY(180deg); box-shadow: 0 6px 20px rgba(64,108,125,0.35); }
+                .flip-card-back p { font-size: 14px; color: white; line-height: 1.6; margin: 0; }
+                
+                .story-quiz { background: white; border-radius: 16px; padding: 36px 40px; box-shadow: 0 8px 28px rgba(0,0,0,0.08); margin-bottom: 52px; text-align: center; }
+                .quiz-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--teal); font-family: 'Libre Baskerville',serif; margin-bottom: 10px; }
+                .quiz-question { font-size: 20px; color: var(--charcoal); margin-bottom: 24px; line-height: 1.4; }
+                .quiz-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+                .quiz-opt { padding: 11px 26px; border: 2px solid rgba(64,108,125,0.3); border-radius: 40px; background: transparent; font-family: 'Libre Baskerville',serif; font-size: 16px; color: var(--charcoal); cursor: pointer; transition: all 0.18s; }
+                .quiz-opt:hover { border-color: var(--teal); background: rgba(64,108,125,0.07); }
+                .quiz-opt.correct { background: #1e7e5a; border-color: #1e7e5a; color: white; }
+                .quiz-opt.wrong { background: #c0392b; border-color: #c0392b; color: white; }
+                .quiz-result { min-height: 48px; font-size: 15px; color: var(--charcoal); }
+                .quiz-next { margin-top: 18px; padding: 9px 28px; background: var(--teal); color: white; border: none; border-radius: 30px; font-family: 'Libre Baskerville',serif; cursor: pointer; display: none; }
+                
+                .story-quotes { background: var(--charcoal); border-radius: 16px; padding: 44px 48px; position: relative; margin-bottom: 52px; }
+                .quote-slide { display: none; }
+                .quote-slide.active { display: block; animation: fadeSlide 0.4s ease; }
+                @keyframes fadeSlide { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+                .quote-text { font-size: 20px; color: var(--cream); font-style: italic; margin-bottom: 16px; }
+                .quote-attribution { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: rgba(228,216,197,0.5); }
+                .quote-nav { display: flex; align-items: center; gap: 16px; margin-top: 28px; }
+                .quote-btn { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid rgba(228,216,197,0.3); background: transparent; color: var(--cream); cursor: pointer; }
+                .quote-dots { display: flex; gap: 7px; }
+                .quote-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(228,216,197,0.25); cursor: pointer; }
+                .quote-dot.active { background: var(--cream); }
+
+                .story-ticker { background: var(--teal); border-radius: 12px; padding: 20px 30px; display: flex; align-items: center; gap: 18px; overflow: hidden; }
+                .ticker-label { font-family: 'Libre Baskerville',serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.6); flex-shrink: 0; }
+                .ticker-track { flex: 1; position: relative; height: 24px; }
+                .ticker-item { position: absolute; top: 0; left: 0; width: 100%; font-size: 15px; color: white; opacity: 0; transition: 0.5s; transform: translateY(12px); }
+                .ticker-item.active { opacity: 1; transform: translateY(0); }
+
+                /* ── Visit Map Teaser & Virtual Tour ── */
+                .visitmap-teaser { background: #0d0d10; padding: 80px 20px; text-align: center; }
+                .visitmap-heading { font-family: 'Libre Baskerville', serif; font-size: 40px; color: #f0e8d8; margin-bottom: 18px; }
+                .visitmap-sub { font-size: 17px; color: rgba(228,216,197,0.65); max-width: 580px; margin: 0 auto 38px; }
+                .visitmap-cta { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #4a6fa5 0%, #3a5a8a 100%); color: #fff; padding: 15px 36px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+
+                .vtour-section { background: #1a1a1c; padding: 72px 20px; text-align: center;}
+                .vtour-heading { font-size: 34px; color: var(--cream); font-family: 'Libre Baskerville', serif; margin-bottom: 12px; }
+                .vtour-blocked { background: #222; border-radius: 14px; padding: 52px 24px; max-width: 800px; margin: 0 auto; color: var(--cream); }
+                .vtour-open-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; background: var(--teal); color: white; border-radius: 30px; text-decoration: none; margin-top: 15px; }
+
+                /* ── FAQ & Best Practices ── */
+                .faq-section { background: white; padding: 70px 20px; }
+                .faq-container { max-width: 860px; margin: 0 auto; }
+                .faq-question { width: 100%; text-align: left; background: none; border: none; padding: 20px 0; font-family: 'Libre Baskerville', serif; font-size: 16px; color: var(--charcoal); cursor: pointer; display: flex; justify-content: space-between; border-bottom: 1px solid var(--cream); }
+                .faq-answer { display: none; padding: 20px 0; font-size: 15px; color: #555; }
+                .faq-answer.open { display: block; border-bottom: 1px solid var(--cream); }
+
+                .practices-section { background: #f7f4ef; padding: 70px 20px; }
+                .practices-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 30px; max-width: 1100px; margin: 40px auto 0; }
+                .practice-card { background: white; border-radius: 6px; padding: 28px 24px; border-top: 3px solid var(--teal); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+                .practice-card i { font-size: 30px; color: var(--teal); margin-bottom: 14px; }
+
+                /* ── Submit Partnership Section ── */
+                .submit-section { background: var(--charcoal); padding: 70px 20px; }
+                .submit-container { max-width: 700px; margin: 0 auto; }
+                .submit-container h2 { font-size: 32px; color: var(--cream); margin-bottom: 10px; text-align: center; }
+                .submit-subtitle { text-align: center; font-size: 16px; color: rgba(228,216,197,0.75); margin-bottom: 40px; }
+                .submit-form { background: white; border-radius: 6px; padding: 36px 40px; }
+                .submit-field { margin-bottom: 18px; }
+                .submit-field label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); margin-bottom: 7px; font-family: 'Libre Baskerville', serif; }
+                .submit-field input, .submit-field textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--cream); border-radius: 3px; font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--charcoal); outline: none; }
+                .submit-field textarea { min-height: 100px; resize: vertical; }
+                .submit-btn { width: 100%; padding: 15px; background: var(--teal); color: white; border: none; border-radius: 4px; font-family: 'Libre Baskerville', serif; cursor: pointer; }
+
+                /* ── Modals (Club Details, LOI, Bank Confirm) ── */
+                .modal, .loi-modal, .bank-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(65,64,66,0.85); animation: fadeIn 0.3s; }
+                .bank-modal { z-index: 9999; align-items: center; justify-content: center; }
+                .modal-content, .loi-modal-content { background: white; margin: 5% auto; padding: 50px; border-radius: 8px; max-width: 800px; position: relative; }
+                .close { position: absolute; right: 30px; top: 30px; font-size: 32px; font-weight: bold; color: var(--charcoal); cursor: pointer; }
+                .modal-header h2 { font-size: 36px; color: var(--charcoal); margin-bottom: 10px; }
+                .modal-badges { display: flex; gap: 10px; margin-bottom: 20px; }
+                .modal-divider { height: 1px; background: var(--cream); margin: 20px 0; }
+                .access-button { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 48px; font-family: 'Libre Baskerville', serif; font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase; color: white; border-radius: 6px; border: none; cursor: pointer; margin-bottom: 10px; }
+                .access-sonato  { background: var(--sonato-bg); }
+                .access-iac     { background: var(--iac-bg); }
+                .access-invited { background: var(--invited-bg); }
+                .access-direct  { background: var(--direct-bg); }
+                .btn-loi { background: #c0392b; margin-top: 10px; }
+                .booking-instructions { background: #f7f4ef; border-left: 4px solid var(--teal); padding: 20px 24px; margin-top: 18px; }
+                .booking-instructions h5 { font-family: 'Libre Baskerville', serif; font-size: 13px; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; }
+                .booking-step { display: flex; gap: 12px; margin-bottom: 12px; }
+                .step-num { background: var(--teal); color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+
+                .loi-preview { background: #f7f4ef; border: 1px solid var(--cream); border-radius: 4px; padding: 20px; margin: 20px 0; white-space: pre-wrap; font-family: 'Cormorant Garamond', serif; }
+                .loi-actions { display: flex; gap: 12px; }
+                .loi-send-btn { padding: 14px 28px; background: var(--teal); color: white; border: none; border-radius: 4px; font-family: 'Libre Baskerville', serif; cursor: pointer; }
+
+                .bank-modal-content { background: #fff; max-width: 550px; width: 90%; border-radius: 6px; overflow: hidden; text-align: center; font-family: 'Cormorant Garamond', serif;}
+                .bank-header { background: #1a1a1c; color: #fff; padding: 35px 20px; border-bottom: 4px solid #B59A6A; }
+                .bank-header h2 { font-family: 'Libre Baskerville', serif; font-size: 26px; margin: 0; }
+                .bank-body { padding: 40px 35px; color: #414042; font-size: 17px; }
+                .bank-body .action-tag { display: inline-block; background: #f5f3ef; border: 1px solid #E4D8C5; padding: 6px 14px; font-family: 'Libre Baskerville', serif; font-size: 11px; text-transform: uppercase; color: #406C7D; margin-bottom: 20px; }
+                .bank-footer { background: #faf9f6; padding: 24px; border-top: 1px solid #E4D8C5; }
+                .bank-btn { background: #1a1a1c; color: #fff; border: 1px solid #B59A6A; padding: 14px 32px; font-family: 'Libre Baskerville', serif; text-transform: uppercase; cursor: pointer; }
+
+                @media (max-width: 1199px) { .club-grid { grid-template-columns: repeat(2,1fr); } }
+                @media (max-width: 768px) { 
+                    .club-grid, .benefits-grid, .story-photos, .story-flip-row, .practices-grid { grid-template-columns: 1fr; } 
+                    .search-input-wrap { width: 100%; min-width: 100%; }
+                    .filter-group { max-width: 100%; }
+                    .mi-connector { display: none; }
+                    .mi-step { flex: 1 1 50%; }
+                    .modal-content, .loi-modal-content { padding: 30px 20px; margin: 10% auto; width: 90%;}
+                }
+            </style>
+        </head>
+        <body>
+            <!-- Disclaimer Banner -->
+            <div class="demo-disclaimer">
+                <i class="fas fa-shield-alt" style="margin-right: 8px;"></i> 
+                Demo Environment — No private club information or live member data is stored or shared publicly.
+            </div>
+
+            <!-- Header -->
+            <header class="header">
+                <img src="https://logo.clearbit.com/amadorclub.com" alt="Amador Club" class="header-logo" style="height:50px; border-radius: 8px;" onerror="this.style.display='none'">
+                <div class="tagline">Amador Club &mdash; Global Reciprocal Network Demo</div>
+            </header>
+
+            <!-- Hero -->
+            <section class="hero">
+                <h2>Your Passport Around the World</h2>
+                <p class="subheading">Search the demo clubs or filter by network to view booking instructions and best practices.</p>
+            </section>
+
+            <!-- Quick Nav -->
+            <nav class="quick-nav">
+                <div class="quick-nav-inner">
+                    <a href="#clubdirectory" class="quick-nav-btn"><i class="fas fa-globe"></i> All Clubs</a>
+                    <a href="#clubdirectory" onclick="document.getElementById('networkFilter').value='SONATO';filterClubs();" class="quick-nav-btn qn-sonato"><img src="sonato.jpg" style="height:14px;width:14px;border-radius:2px;" onerror="this.src='https://logo.clearbit.com/sonato.com'"> Sonato</a>
+                    <a href="#clubdirectory" onclick="document.getElementById('networkFilter').value='IAC';filterClubs();" class="quick-nav-btn qn-iac"><img src="iac.jpg" style="height:14px;width:14px;border-radius:2px;" onerror="this.src='https://logo.clearbit.com/iacworldwide.com'"> IAC</a>
+                    <a href="#clubdirectory" onclick="document.getElementById('networkFilter').value='INVITED';filterClubs();" class="quick-nav-btn qn-invited"><img src="invited.jpg" style="height:14px;width:14px;border-radius:2px;" onerror="this.src='https://logo.clearbit.com/invitedclubs.com'"> Invited</a>
+                    <a href="#buildingstory" class="quick-nav-btn"><i class="fas fa-landmark"></i> 550 Montgomery</a>
+                    <a href="#faq" class="quick-nav-btn"><i class="fas fa-question-circle"></i> FAQ</a>
+                </div>
+            </nav>
+
+            <!-- Main Infographic -->
+            <section class="main-infographic">
+                <div class="main-infographic-inner">
+                    <div class="mi-step"><div class="mi-icon"><i class="fas fa-search"></i></div><div class="mi-connector"></div>
+                        <div class="mi-label">Find a Club</div><div class="mi-sub">Browse demo clubs worldwide</div></div>
+                    <div class="mi-step"><div class="mi-icon"><i class="fas fa-id-card"></i></div><div class="mi-connector"></div>
+                        <div class="mi-label">Check Eligibility</div><div class="mi-sub">Social membership required</div></div>
+                    <div class="mi-step"><div class="mi-icon"><i class="fas fa-calendar-check"></i></div><div class="mi-connector"></div>
+                        <div class="mi-label">Book 2 Weeks Out</div><div class="mi-sub">Use Sonato, IAC, or Concierge</div></div>
+                    <div class="mi-step mi-last"><div class="mi-icon"><i class="fas fa-door-open"></i></div>
+                        <div class="mi-label">Arrive & Enjoy</div><div class="mi-sub">Bring your Amador card & ID</div></div>
+                </div>
+            </section>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar" id="clubdirectory">
+                <div class="filter-container">
+                    <div class="search-input-wrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search clubs, cities, or amenities..." onkeyup="filterClubs()">
+                    </div>
+                    <div class="filter-group"><label>Network</label>
+                        <select id="networkFilter" onchange="filterClubs()">
+                            <option value="">All Networks</option>
+                            <option value="SONATO">SONATO</option>
+                            <option value="IAC">IAC</option>
+                            <option value="INVITED">INVITED</option>
+                            <option value="DIRECT">DIRECT</option>
+                        </select>
+                    </div>
+                    <div class="filter-group"><label>Category</label>
+                        <select id="categoryFilter" onchange="filterClubs()">
+                            <option value="">All</option>
+                            <option value="City Club">City Club</option>
+                            <option value="Business Club">Business Club</option>
+                        </select>
+                    </div>
+                    <div class="filter-group"><label>Country</label>
+                        <select id="countryFilter" onchange="filterClubs()">
+                            <option value="">All Countries</option>
+                            <option value="United States">United States</option>
+                            <option value="Nigeria">Nigeria</option>
+                        </select>
+                    </div>
+                    <div class="filter-group"><label>LOI Required</label>
+                        <select id="loiFilter" onchange="filterClubs()">
+                            <option value="">All</option>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <span class="clear-filters" onclick="clearFilters()">Clear All Filters</span>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <main class="main-content">
+                <div class="club-grid" id="clubGrid"></div>
+                <div id="noResults" style="display:none; text-align:center; padding: 40px; font-size: 18px; color: #888;">
+                    No demo clubs found matching your search criteria. Try clearing the filters.
+                </div>
+            </main>
+
+            <!-- Benefits Section -->
+            <section class="benefits-section">
+                <div class="benefits-container">
+                    <h2>How Reciprocal Access Works</h2>
+                    <div class="benefits-grid">
+                        <div class="benefit-item">
+                            <div class="benefit-icon"><img src="sonato.jpg" alt="SONATO" onerror="this.src='https://logo.clearbit.com/sonato.com'"></div>
+                            <h4 style="color:var(--sonato-bg);">SONATO Network</h4>
+                            <p>Book via <strong>sonato.com</strong> or the app. Tap the mock buttons on a Sonato club card to see the flow.</p>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon"><img src="iac.jpg" alt="IAC" onerror="this.src='https://logo.clearbit.com/iacworldwide.com'"></div>
+                            <h4 style="color:#4a6fa5;">IAC Worldwide</h4>
+                            <p>Use the IAC network to contact clubs directly. Membership verification required.</p>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon"><img src="invited.jpg" alt="Invited" onerror="this.src='https://logo.clearbit.com/invitedclubs.com'"></div>
+                            <h4 style="color:var(--invited-bg);">INVITED Clubs</h4>
+                            <p>Call ClubLine at 1-800-433-5079. Do not call the club directly for reciprocal requests.</p>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon"><img src="academy-club.jpg" alt="Direct" onerror="this.src='https://logo.clearbit.com/amadorclub.com'"></div>
+                            <h4 style="color:var(--charcoal);">Direct Partners</h4>
+                            <p>Route all bookings through the Amador concierge to handle introductions.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 550 Montgomery Story Section -->
+            <section class="story-section" id="buildingstory">
+                <div class="story-container">
+                    <span class="story-kicker">National Historic Landmark &nbsp;&bull;&nbsp; 550 Montgomery Street</span>
+                    <h2>This Building Ran on Bigger Bets</h2>
+                    <p class="story-subtitle">Clay-Montgomery Building. Bank of Italy Building. Birthplace of branch banking. The walls have been here since August 17, 1908.</p>
+
+                    <div class="story-photos">
+                        <figure class="story-photo-card"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Bank_of_Italy_Building_entrance%2C_552_Montgomery_St.%2C_SF.JPG" alt="Entrance"><figcaption>The entrance.</figcaption></figure>
+                        <figure class="story-photo-card"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Bank_of_Italy_Building_%28San_Francisco%29.jpg" alt="Exterior"><figcaption>Before club life moved in.</figcaption></figure>
+                        <figure class="story-photo-card"><img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Bank_of_Italy_Building_historical_marker%2C_552_Montgomery_St.%2C_SF.JPG" alt="Marker"><figcaption>Historical marker.</figcaption></figure>
+                        <figure class="story-photo-card"><img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Sfearthquake3b.jpg" alt="1906"><figcaption>1906 Aftermath.</figcaption></figure>
+                    </div>
+
+                    <div class="story-flip-row">
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><div class="fc-icon">&#x1F3DB;</div><h4>What’s in the basement?</h4><div class="fc-tap">Tap</div></div><div class="flip-card-back"><p>The original 1908 vault — 5,000 safe deposit boxes, still intact.</p></div></div></div>
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><div class="fc-icon">&#x1F4DC;</div><h4>What was decided here?</h4><div class="fc-tap">Tap</div></div><div class="flip-card-back"><p>Giannini launched the first statewide branch banking system in US history.</p></div></div></div>
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><div class="fc-icon">&#x1F4B0;</div><h4>How much gold moved in 1906?</h4><div class="fc-tap">Tap</div></div><div class="flip-card-back"><p>$2 million in gold, hidden under produce in a cart.</p></div></div></div>
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-card-inner"><div class="flip-card-front"><div class="fc-icon">&#x1F3C6;</div><h4>What award in 1978?</h4><div class="fc-tap">Tap</div></div><div class="flip-card-back"><p>National Historic Landmark — the birthplace of democratic banking.</p></div></div></div>
+                    </div>
+
+                    <!-- Quiz -->
+                    <div class="story-quiz" id="storyQuiz">
+                        <div class="quiz-label">Quick Quiz</div>
+                        <div class="quiz-question" id="quizQ">Loading quiz...</div>
+                        <div class="quiz-options" id="quizOpts"></div>
+                        <div class="quiz-result" id="quizResult"></div>
+                        <button class="quiz-next" id="quizNext" onclick="nextQuestion()">Next question &rarr;</button>
+                    </div>
+
+                    <!-- Carousel -->
+                    <div class="story-quotes">
+                        <div id="quoteTrack">
+                            <div class="quote-slide active"><div class="quote-text">"Amadeo Peter Giannini was the greatest innovator in modern banking."</div><div class="quote-attribution">— NRHP Nomination</div></div>
+                            <div class="quote-slide"><div class="quote-text">"I never wanted to be a banker. I became one because the other bankers were no damn good."</div><div class="quote-attribution">— A.P. Giannini</div></div>
+                            <div class="quote-slide"><div class="quote-text">"A bank is the place where they lend you an umbrella in fair weather and ask for it back when it begins to rain."</div><div class="quote-attribution">— Robert Frost</div></div>
+                        </div>
+                        <div class="quote-nav">
+                            <button class="quote-btn" onclick="moveQuote(-1)"><i class="fas fa-arrow-left"></i></button>
+                            <div class="quote-dots" id="quoteDots"></div>
+                            <button class="quote-btn" onclick="moveQuote(1)"><i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Ticker -->
+                    <div class="story-ticker">
+                        <span class="ticker-label">Facts</span>
+                        <div class="ticker-track" id="tickerTrack">
+                            <div class="ticker-item active">Opened August 17, 1908.</div>
+                            <div class="ticker-item">Giannini founded Bank of Italy in 1904.</div>
+                            <div class="ticker-item">The ground floor features Carrara marble.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Virtual Tour / Visit Map Teaser -->
+            <section class="visitmap-teaser">
+                <h2 class="visitmap-heading">Drop a Pin. Own the Map.</h2>
+                <p class="visitmap-sub">Every club you visit, pinned. (Map module disabled in demo).</p>
+                <a href="#" class="visitmap-cta" onclick="triggerMockEmail('Visit Map Navigation')"><i class="fas fa-map-marked-alt"></i> Try Demo Map</a>
+            </section>
+
+            <section class="vtour-section">
+                <h2 class="vtour-heading">Take the Virtual Tour</h2>
+                <div class="vtour-blocked">
+                    <i class="fas fa-vr-cardboard" style="font-size: 40px; color: var(--teal); margin-bottom: 15px;"></i>
+                    <h3>Virtual Tour Demo</h3>
+                    <p>In the live version, a full 3D interactive walk-through of the Amador Club is embedded here.</p>
+                    <a href="#" class="vtour-open-btn" onclick="triggerMockEmail('Virtual Tour Launch')">Launch Mock Tour</a>
+                </div>
+            </section>
+
+            <!-- FAQ & Best Practices -->
+            <section class="faq-section" id="faq">
+                <div class="faq-container">
+                    <h2 style="text-align: center; margin-bottom: 30px;">Frequently Asked Questions</h2>
+                    <button class="faq-question" onclick="toggleFAQ(this)">How far in advance do I need to book? <i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Most clubs ask for at least <strong>2 weeks' notice</strong>.</div>
+                    <button class="faq-question" onclick="toggleFAQ(this)">What is a Letter of Introduction (LOI)? <i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer">Some formal clubs require a letter generated by our concierge. You can request this directly from the club's info card.</div>
+                </div>
+            </section>
+
+            <section class="practices-section">
+                <h2 style="text-align: center;">Best Practices</h2>
+                <div class="practices-grid">
+                    <div class="practice-card"><i class="fas fa-id-card"></i><h4>Introduce Yourself</h4><p>Let the front desk know you're an Amador Club member.</p></div>
+                    <div class="practice-card"><i class="fas fa-tshirt"></i><h4>Dress the Part</h4><p>Respect specific club dress codes, like jacket requirements.</p></div>
+                    <div class="practice-card"><i class="fas fa-phone"></i><h4>Confirm Before You Go</h4><p>Call the day before to verify hours and availability.</p></div>
+                </div>
+            </section>
+
+            <!-- Submit Partnership -->
+            <section class="submit-section" id="suggest">
+                <div class="submit-container">
+                    <h2>Suggest a Partnership</h2>
+                    <p class="submit-subtitle">Know a club or hotel that would be a great fit? Tell us about it.</p>
+                    <div class="submit-form">
+                        <div class="submit-field"><label>Club Name</label><input type="text" id="sg_name"></div>
+                        <div class="submit-field"><label>City</label><input type="text" id="sg_city"></div>
+                        <div class="submit-field"><label>Why a good fit?</label><textarea id="sg_why"></textarea></div>
+                        <button class="submit-btn" onclick="submitSuggestion()">Submit Suggestion</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Modals (Club Details, LOI, Mock Email Confirmation) -->
+            <div id="clubModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('clubModal')">&times;</span>
+                    <div class="modal-header"><h2 id="modalClubName"></h2><div class="modal-location" id="modalLocation"></div><div class="modal-badges" id="modalBadges"></div></div>
+                    <div class="modal-divider"></div>
+                    <div class="modal-description" id="modalDescription"></div>
+                    <div class="access-section" id="accessSection"></div>
+                </div>
+            </div>
+
+            <div id="loiModal" class="loi-modal">
+                <div class="loi-modal-content">
+                    <span class="close" onclick="closeModal('loiModal')">&times;</span>
+                    <h3>Request a Letter of Introduction</h3>
+                    <p class="loi-subtitle">Fill in your details below.</p>
+                    <div class="submit-field"><label>Club You Wish to Visit</label><input type="text" id="loiClubName" readonly style="background: #eee;"></div>
+                    <div class="submit-field"><label>Your Name</label><input type="text" id="loiMemberName" oninput="updateLOIPreview()"></div>
+                    <div class="submit-field"><label>Visit Dates</label><input type="text" id="loiDates" oninput="updateLOIPreview()"></div>
+                    <div class="loi-preview" id="loiPreview"></div>
+                    <div class="loi-actions">
+                        <button class="loi-send-btn" onclick="sendLOIEmail()">Submit Request</button>
+                        <button class="loi-cancel-btn" style="padding: 14px 28px; background: #eee; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;" onclick="closeModal('loiModal')">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="bankModal" class="bank-modal">
+                <div class="bank-modal-content">
+                    <div class="bank-header">
+                        <h2>The Bank at Amador</h2>
+                        <div class="subtitle">Secure Notification Portal</div>
+                    </div>
+                    <div class="bank-body">
+                        <div class="action-tag" id="bankActionTag">Action</div>
+                        <p><strong>Request Acknowledged.</strong></p>
+                        <p>You are viewing a secure demonstration. In production, this triggers an automated email outlining next steps.</p>
+                        <p style="font-size: 14px; color: #888; font-style: italic;">No actual emails have been sent.</p>
+                    </div>
+                    <div class="bank-footer"><button class="bank-btn" onclick="closeModal('bankModal')">Acknowledge</button></div>
+                </div>
+            </div>
+
+            <!-- JAVASCRIPT LOGIC -->
+            <script>
+                // ── 1. Demo Data & Grid ──
+                const demoClubs = [
+                    { id: "c1", name: "The Academy", network: "DIRECT", category: "City Club", city: "San Francisco", state: "CA", country: "United States", description: "Route all bookings through the Amador concierge. You must email hello@example.com or call (415) 956-0506.", tags: ["Jacket Required"], loi: true, photo: "academy-club.jpg" },
+                    { id: "c2", name: "Capital Club Lagos", network: "IAC", category: "Business Club", city: "Lagos", state: "", country: "Nigeria", description: "Members need to download the IAC Worldwide app and contact the club directly, mentioning their Amador Club membership.", tags: ["Restaurant", "Reservation Required"], loi: false, photo: "iac.jpg" },
+                    { id: "c3", name: "The Alexandria at San Carlos", network: "INVITED", category: "City Club", city: "San Carlos", state: "CA", country: "United States", description: "Members must call the Invited ClubLine at 1-800-433-5079. They should not call the club directly, as all bookings must go through ClubLine.", tags: ["Bar", "Fitness"], loi: false, photo: "invited.jpg" },
+                    { id: "c4", name: "Legacy Club", network: "SONATO", category: "City Club", city: "Plano", state: "TX", country: "United States", description: "Members should book directly via sonato.com or the Sonato app. (If credentials are required, email hello@example.com).", tags: ["Rooftop"], loi: false, photo: "sonato.jpg" }
+                ];
+
+                const AMENITY_TAGS = { 'Hotel':'fas fa-hotel', 'Restaurant':'fas fa-utensils', 'Bar':'fas fa-cocktail', 'Rooftop':'fas fa-city', 'Fitness':'fas fa-dumbbell' };
+                const RULE_TAGS = { 'Jacket Required':'fas fa-tshirt', 'Reservation Required':'fas fa-calendar-check' };
+
+                function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+                function renderTagChips(tags) {
+                    return tags.map(tag => {
+                        const isRule = !!RULE_TAGS[tag];
+                        const cls = isRule ? 'tag-chip tag-rule' : 'tag-chip tag-amenity';
+                        const icon = isRule ? RULE_TAGS[tag] : AMENITY_TAGS[tag];
+                        return `<span class="${cls}"><i class="${icon}"></i>${esc(tag)}</span>`;
+                    }).join('');
+                }
+
+                function renderGrid(clubs) {
+                    const grid = document.getElementById('clubGrid');
+                    const noResults = document.getElementById('noResults');
+                    if(clubs.length === 0) { grid.innerHTML = ''; noResults.style.display = 'block'; return; }
+                    noResults.style.display = 'none';
+                    grid.innerHTML = clubs.map(c => `
+                        <div class="club-card" onclick="openModal('${c.id}')">
+                            <img src="${c.photo}" class="club-card-thumb" onerror="this.src='https://logo.clearbit.com/${c.network.toLowerCase()}.com'">
+                            <div class="network-badge badge-${(c.network||'').toLowerCase()}">${esc(c.network)}</div>
+                            <div class="club-card-body">
+                                <h3>${esc(c.name)}</h3>
+                                <div class="club-location"><i class="fas fa-map-marker-alt"></i> ${esc(c.city)}, ${esc(c.country)}</div>
+                                <div class="club-description">${esc(c.description)}</div>
+                                <div class="card-tags">${renderTagChips(c.tags)}</div>
+                                <button class="view-details-btn"><span>View Booking Rules</span><i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>`).join('');
+                }
+
+                function filterClubs() {
+                    const s = document.getElementById('searchInput').value.toLowerCase();
+                    const n = document.getElementById('networkFilter').value;
+                    const c = document.getElementById('categoryFilter').value;
+                    const o = document.getElementById('countryFilter').value;
+                    const l = document.getElementById('loiFilter').value;
+                    
+                    const filtered = demoClubs.filter(club => {
+                        const matchS = !s || club.name.toLowerCase().includes(s) || club.city.toLowerCase().includes(s);
+                        const matchN = !n || club.network === n;
+                        const matchC = !c || club.category === c;
+                        const matchO = !o || club.country === o;
+                        const matchL = !l || club.loi.toString() === l;
+                        return matchS && matchN && matchC && matchO && matchL;
+                    });
+                    renderGrid(filtered);
+                }
+
+                function clearFilters() {
+                    document.querySelectorAll('.filter-bar input, .filter-bar select').forEach(el => el.value = '');
+                    filterClubs();
+                }
+
+                // ── 2. Modals & Intercepts ──
+                function triggerMockEmail(actionType) {
+                    document.getElementById('bankActionTag').textContent = actionType;
+                    document.getElementById('bankModal').style.display = 'flex';
+                }
+
+                function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+                function openModal(id) {
+                    const club = demoClubs.find(c => c.id === id);
+                    document.getElementById('modalClubName').textContent = club.name;
+                    document.getElementById('modalLocation').textContent = `${club.city}, ${club.country}`;
+                    document.getElementById('modalBadges').innerHTML = `<div class="network-badge badge-${club.network.toLowerCase()}" style="position:static;">${club.network}</div>${club.loi ? '<div class="network-badge" style="position:static;background:#c0392b;">LOI Required</div>' : ''}`;
+                    document.getElementById('modalDescription').textContent = club.description;
+
+                    let html = `<h4 style="font-size:16px;margin-bottom:16px;text-transform:uppercase;opacity:0.6;">Booking Instructions</h4>`;
+                    if (club.network === 'SONATO') {
+                        html += `<button class="access-button access-sonato" onclick="triggerMockEmail('Sonato App Deep-link')">Open on Sonato</button>`;
+                    } else if (club.network === 'IAC') {
+                        html += `<button class="access-button access-iac" onclick="triggerMockEmail('IAC Network Portal')">Connect via IAC</button>`;
+                    } else if (club.network === 'INVITED') {
+                        html += `<button class="access-button access-invited" onclick="triggerMockEmail('ClubLine Call Routing')">Contact ClubLine</button>`;
+                    } else {
+                        html += `<button class="access-button access-direct" onclick="triggerMockEmail('Concierge Intro Request')">Email Amador Front Desk</button>`;
+                    }
+                    if (club.loi) {
+                        html += `<button class="access-button btn-loi" onclick="openLOIModal('${esc(club.name)}')">Request Letter of Introduction</button>`;
+                    }
+
+                    document.getElementById('accessSection').innerHTML = html;
+                    document.getElementById('clubModal').style.display = 'block';
+                }
+
+                // LOI
+                function openLOIModal(name) {
+                    document.getElementById('loiClubName').value = name;
+                    updateLOIPreview();
+                    closeModal('clubModal');
+                    document.getElementById('loiModal').style.display = 'block';
+                }
+                function updateLOIPreview() {
+                    document.getElementById('loiPreview').textContent = `Dear Amador Team,\nPlease generate an LOI for my visit to ${document.getElementById('loiClubName').value}.\nName: ${document.getElementById('loiMemberName').value || '[Name]'}\nDates: ${document.getElementById('loiDates').value || '[Dates]'}`;
+                }
+                function sendLOIEmail() {
+                    closeModal('loiModal');
+                    triggerMockEmail('LOI Request Generated');
+                }
+
+                // Suggestions
+                function submitSuggestion() {
+                    if(!document.getElementById('sg_name').value) { alert("Please provide a name."); return; }
+                    triggerMockEmail('Partnership Suggestion Logged');
+                }
+
+                // FAQ
+                function toggleFAQ(btn) {
+                    const ans = btn.nextElementSibling;
+                    ans.classList.toggle('open');
+                    btn.querySelector('i').style.transform = ans.classList.contains('open') ? 'rotate(180deg)' : 'none';
+                }
+
+                // Quiz Logic
+                const QUESTIONS = [
+                    { q: 'When did 550 Montgomery Street open?', opts: ['1906','1908','1909'], answer: '1908' },
+                    { q: 'What is preserved in the basement?', opts: ['Gold','Safe deposit boxes','A time capsule'], answer: 'Safe deposit boxes' }
+                ];
+                let qi = 0;
+                function loadQuestion() {
+                    if(qi >= QUESTIONS.length) { document.getElementById('quizQ').textContent = 'Quiz complete.'; document.getElementById('quizOpts').innerHTML=''; return; }
+                    document.getElementById('quizQ').textContent = QUESTIONS[qi].q;
+                    document.getElementById('quizOpts').innerHTML = QUESTIONS[qi].opts.map(o => `<button class="quiz-opt" onclick="answerQ(this,'${o}')">${o}</button>`).join('');
+                    document.getElementById('quizResult').textContent = '';
+                    document.getElementById('quizNext').style.display = 'none';
+                }
+                function answerQ(btn, chosen) {
+                    if(chosen === QUESTIONS[qi].answer) { btn.classList.add('correct'); document.getElementById('quizResult').textContent = 'Correct!'; } 
+                    else { btn.classList.add('wrong'); document.getElementById('quizResult').textContent = 'Incorrect.'; }
+                    document.getElementById('quizNext').style.display = 'inline-block';
+                }
+                function nextQuestion() { qi++; loadQuestion(); }
+
+                // Carousel Logic
+                let qIdx = 0;
+                function moveQuote(dir) {
+                    const slides = document.querySelectorAll('.quote-slide');
+                    slides[qIdx].classList.remove('active');
+                    qIdx = (qIdx + dir + slides.length) % slides.length;
+                    slides[qIdx].classList.add('active');
+                }
+                setInterval(() => moveQuote(1), 5000);
+
+                // Ticker Logic
+                let tIdx = 0;
+                setInterval(() => {
+                    const items = document.querySelectorAll('.ticker-item');
+                    items[tIdx].classList.remove('active');
+                    tIdx = (tIdx + 1) % items.length;
+                    items[tIdx].classList.add('active');
+                }, 4000);
+
+                // Init
+                window.addEventListener('click', e => {
+                    if (e.target.classList.contains('modal')) closeModal(e.target.id);
+                    if (e.target.classList.contains('loi-modal')) closeModal('loiModal');
+                    if (e.target.classList.contains('bank-modal')) closeModal('bankModal');
+                });
+                renderGrid(demoClubs);
+                loadQuestion();
+            </script>
+
+            <footer class="demo-footer">
+              <div class="demo-footer-inner">
+                <div class="footer-intro">
+                  <p class="footer-kicker">Network</p>
+                  <h2 class="footer-title">Reciprocal Network Partners</h2>
+                  <p class="footer-text">
+                    A curated overview of select reciprocal relationships and hospitality networks referenced across the broader ecosystem.
+                  </p>
+                </div>
+
+                <div class="footer-section">
+                  <h3 class="footer-group-title">Reciprocal Network Partners</h3>
+                  <p class="footer-subnote">
+                    This is a small selection of our many reciprocal club partners around the world.
+                  </p>
+
+                  <div class="logo-grid">
+                    <a class="logo-card" href="https://www.omnihotels.com/" target="_blank" rel="noopener noreferrer" aria-label="Omni Hotels & Resorts">
+                      <img src="omni-hotel.jpg" alt="Omni Hotels & Resorts logo" onerror="this.src='https://logo.clearbit.com/omnihotels.com'">
+                    </a>
+                    <a class="logo-card" href="https://www.magiccastle.com/" target="_blank" rel="noopener noreferrer" aria-label="Magic Castle">
+                      <img src="magic-castle.jpg" alt="Magic Castle logo" onerror="this.src='https://logo.clearbit.com/magiccastle.com'">
+                    </a>
+                    <a class="logo-card" href="https://smws.com/" target="_blank" rel="noopener noreferrer" aria-label="The Scotch Malt Whisky Society">
+                      <img src="SMWS.jpg" alt="The Scotch Malt Whisky Society logo" onerror="this.src='https://logo.clearbit.com/smws.com'">
+                    </a>
+                    <a class="logo-card" href="https://www.pennclub.com/" target="_blank" rel="noopener noreferrer" aria-label="The Penn Club">
+                      <img src="thepennclub.jpg" alt="The Penn Club logo" onerror="this.src='https://logo.clearbit.com/pennclub.com'">
+                    </a>
+                    <a class="logo-card" href="https://www.skylineclub.com/" target="_blank" rel="noopener noreferrer" aria-label="Skyline Club">
+                      <img src="sky-lineclub.jpg" alt="Skyline Club logo" onerror="this.src='https://logo.clearbit.com/skylineclub.com'">
+                    </a>
+                    <a class="logo-card" href="https://www.rainierclub.org/" target="_blank" rel="noopener noreferrer" aria-label="The Rainier Club">
+                      <img src="rainier.jpg" alt="The Rainier Club logo" onerror="this.src='https://logo.clearbit.com/rainierclub.org'">
+                    </a>
+                    <a class="logo-card" href="https://www.academyclub.com/" target="_blank" rel="noopener noreferrer" aria-label="The Academy Club">
+                      <img src="academy-club.jpg" alt="The Academy Club logo" onerror="this.src='https://logo.clearbit.com/academyclub.com'">
+                    </a>
+                    <a class="logo-card" href="https://theplayersnyc.org/" target="_blank" rel="noopener noreferrer" aria-label="The Players Club">
+                      <img src="the-playerws-club.jpg" alt="The Players Club logo" onerror="this.src='https://logo.clearbit.com/theplayersnyc.org'">
+                    </a>
+                    <a class="logo-card" href="https://www.stjameshotelandclub.com/" target="_blank" rel="noopener noreferrer" aria-label="St. James's Hotel & Club">
+                      <img src="saint-james.jpg" alt="St. James's Hotel & Club logo" onerror="this.src='https://logo.clearbit.com/stjameshotelandclub.com'">
+                    </a>
+                    <a class="logo-card" href="https://lonewolfcigars.com/" target="_blank" rel="noopener noreferrer" aria-label="Lone Wolf Cigar Company">
+                      <img src="Lone-Wolf.jpg" alt="Lone Wolf Cigar Company logo" onerror="this.src='https://logo.clearbit.com/lonewolfcigars.com'">
+                    </a>
+                    <a class="logo-card" href="https://griffinclubla.com/" target="_blank" rel="noopener noreferrer" aria-label="Griffin Club Los Angeles">
+                      <img src="griffin-club.jpg" alt="Griffin Club Los Angeles logo" onerror="this.src='https://logo.clearbit.com/griffinclubla.com'">
+                    </a>
+                    <a class="logo-card" href="https://www.sonato.com/" target="_blank" rel="noopener noreferrer" aria-label="Sonato">
+                      <img src="sonato.jpg" alt="Sonato logo" onerror="this.src='https://logo.clearbit.com/sonato.com'">
+                    </a>
+                    <a class="logo-card" href="https://www.invitedclubs.com/" target="_blank" rel="noopener noreferrer" aria-label="Invited">
+                      <img src="invited.jpg" alt="Invited logo" onerror="this.src='https://logo.clearbit.com/invitedclubs.com'">
+                    </a>
+                    <a class="logo-card" href="#" aria-label="IAC">
+                      <img src="iac.jpg" alt="IAC logo" onerror="this.src='https://logo.clearbit.com/iacworldwide.com'">
+                    </a>
+                  </div>
+                </div>
+
+                <div class="footer-note">
+                  <p>
+                    Disclaimer: Logos, trademarks, and brand names remain the property of their respective owners and are shown here for contextual demonstration purposes only.
+                  </p>
+                </div>
+              </div>
+            </footer>
+
+            <style>
+              .demo-footer {
+                margin-top: 96px;
+                padding: 72px 24px 28px;
+                background: linear-gradient(180deg, #faf7f8 0%, #f4edef 100%);
+                border-top: 1px solid rgba(120, 100, 110, 0.12);
+              }
+              .demo-footer-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+              }
+              .footer-intro {
+                max-width: 760px;
+                margin-bottom: 42px;
+              }
+              .footer-kicker {
+                margin: 0 0 10px;
+                font-size: 0.78rem;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                color: #b46886;
+                font-weight: 600;
+              }
+              .footer-title {
+                margin: 0 0 14px;
+                font-size: clamp(1.8rem, 3vw, 2.6rem);
+                line-height: 1.08;
+                letter-spacing: -0.03em;
+                color: #24191f;
+                font-weight: 600;
+              }
+              .footer-text {
+                margin: 0;
+                font-size: 1rem;
+                line-height: 1.7;
+                color: #6d5b63;
+                max-width: 62ch;
+              }
+              .footer-section + .footer-section {
+                margin-top: 34px;
+              }
+              .footer-group-title {
+                margin: 0 0 10px;
+                font-size: 1rem;
+                line-height: 1.2;
+                color: #c05d82;
+                font-weight: 600;
+                letter-spacing: 0.02em;
+              }
+              .footer-subnote {
+                margin: 0 0 18px;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                color: #7a6870;
+                max-width: 62ch;
+              }
+              .logo-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+                gap: 18px;
+              }
+              .logo-card {
+                min-height: 140px;
+                padding: 18px;
+                border-radius: 20px;
+                background: rgba(255, 255, 255, 0.78);
+                border: 1px solid rgba(112, 93, 103, 0.12);
+                box-shadow: 0 10px 30px rgba(44, 25, 34, 0.04);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                overflow: hidden;
+                backdrop-filter: blur(6px);
+                transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+              }
+              .logo-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 16px 36px rgba(44, 25, 34, 0.08);
+                border-color: rgba(192, 93, 130, 0.28);
+              }
+              .logo-card img {
+                width: 100%;
+                height: 90px;
+                object-fit: contain;
+                display: block;
+                filter: saturate(0.98) contrast(1.02);
+            }
+              .footer-note {
+                margin-top: 34px;
+                padding-top: 18px;
+                border-top: 1px solid rgba(120, 100, 110, 0.12);
+              }
+              .footer-note p {
+                margin: 0;
+                font-size: 0.88rem;
+                line-height: 1.6;
+                color: #7f6d74;
+              }
+              @media (max-width: 640px) {
+                .demo-footer {
+                  margin-top: 72px;
+                  padding: 56px 18px 24px;
+                }
+                .footer-intro {
+                  margin-bottom: 34px;
+                }
+                .footer-section + .footer-section {
+                  margin-top: 28px;
+                }
+                .logo-grid {
+                  grid-template-columns: repeat(2, minmax(0, 1fr));
+                  gap: 14px;
+                }
+                .logo-card {
+                  min-height: 124px;
+                  padding: 14px;
+                  border-radius: 18px;
+                }
+                .logo-card img {
+                  height: 76px;
+                }
+              }
+            </style>
+        <script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+        </html>
+    
+
+</body>
+</html>

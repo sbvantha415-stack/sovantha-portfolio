@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deutz &times; The Bank — AV Display</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    /* ══════════════════════════════════════════
+       RESET & BASE
+    ══════════════════════════════════════════ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #080808;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      cursor: none; /* Hide cursor during projection */
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ══════════════════════════════════════════
+       SLIDE SYSTEM
+       30s total cycle — each slide gets 10s
+       Fade: 1s in + 1s out = 8s fully visible
+    ══════════════════════════════════════════ */
+    .slide-stage {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      will-change: opacity;
+      animation: cycleSlide 30s infinite;
+    }
+
+    .slide:nth-child(1) { animation-delay:  0s; z-index: 3; }
+    .slide:nth-child(2) { animation-delay: 10s; z-index: 2; }
+    .slide:nth-child(3) { animation-delay: 20s; z-index: 1; }
+
+    /* Each slide: fade in → hold → fade out → wait */
+    @keyframes cycleSlide {
+      0%      { opacity: 0; }
+      4%      { opacity: 1; }   /* ~1.2s fade in  */
+      29%     { opacity: 1; }   /* hold visible   */
+      33%     { opacity: 0; }   /* ~1.2s fade out */
+      100%    { opacity: 0; }   /* invisible rest */
+    }
+
+    /* ──── Progress dots ─────────────────────── */
+    .progress-dots {
+      position: fixed;
+      bottom: 72px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 200;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.2);
+      animation: dotActive 30s infinite;
+    }
+
+    .dot:nth-child(1) { animation-delay:  0s; }
+    .dot:nth-child(2) { animation-delay: 10s; }
+    .dot:nth-child(3) { animation-delay: 20s; }
+
+    @keyframes dotActive {
+      0%    { background-color: #C8A97E; transform: scale(1.4); }
+      33%   { background-color: #C8A97E; transform: scale(1.4); }
+      34%   { background-color: rgba(255,255,255,0.2); transform: scale(1); }
+      100%  { background-color: rgba(255,255,255,0.2); transform: scale(1); }
+    }
+
+    /* ──── Persistent bottom bar ─────────────── */
+    .av-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background-color: rgba(8,8,8,0.96);
+      border-top: 1px solid rgba(200,169,126,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(24px, 4vw, 64px);
+      z-index: 100;
+    }
+
+    .av-bar-logo {
+      height: 22px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.55;
+    }
+
+    .av-bar-center {
+      font-size: clamp(9px, 1vw, 12px);
+      font-weight: 400;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      text-align: center;
+    }
+
+    .av-bar-right {
+      font-size: clamp(9px, 1vw, 12px);
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #C8A97E;
+      text-align: right;
+    }
+
+
+    /* ══════════════════════════════════════════
+       SLIDE 1 — WELCOME
+       Full-bleed background image, centered hero
+    ══════════════════════════════════════════ */
+    .slide-welcome {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .slide-welcome .bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0.22;
+      filter: grayscale(30%);
+    }
+
+    /* Vignette */
+    .slide-welcome::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse at center,
+        transparent 20%,
+        rgba(8,8,8,0.7) 100%
+      );
+      z-index: 1;
+    }
+
+    /* Top + bottom gold lines */
+    .slide-welcome::after {
+      content: '';
+      position: absolute;
+      top: clamp(28px, 4vh, 52px);
+      left: clamp(40px, 6vw, 96px);
+      right: clamp(40px, 6vw, 96px);
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(200,169,126,0.5), transparent);
+      z-index: 2;
+    }
+
+    .welcome-bottom-line {
+      position: absolute;
+      bottom: clamp(72px, 10vh, 96px);
+      left: clamp(40px, 6vw, 96px);
+      right: clamp(40px, 6vw, 96px);
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(200,169,126,0.5), transparent);
+      z-index: 2;
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 3;
+      padding: 0 clamp(24px, 6vw, 80px);
+    }
+
+    .welcome-eyebrow {
+      font-size: clamp(10px, 1.1vw, 14px);
+      font-weight: 700;
+      letter-spacing: clamp(4px, 0.6vw, 7px);
+      text-transform: uppercase;
+      color: #C8A97E;
+      margin-bottom: clamp(20px, 3vh, 36px);
+    }
+
+    .welcome-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(64px, 10vw, 148px);
+      font-weight: 400;
+      letter-spacing: clamp(8px, 1.2vw, 20px);
+      text-transform: uppercase;
+      color: #FFFFFF;
+      line-height: 0.9;
+      margin-bottom: clamp(18px, 2.5vh, 32px);
+    }
+
+    .welcome-rule {
+      width: clamp(48px, 6vw, 80px);
+      height: 1px;
+      background-color: #C8A97E;
+      margin: clamp(24px, 3.5vh, 40px) auto;
+    }
+
+    .welcome-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px, 2.4vw, 34px);
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: clamp(28px, 4vh, 52px);
+      letter-spacing: 1px;
+    }
+
+    .welcome-date-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: clamp(12px, 2vw, 28px);
+      border: 1px solid rgba(200,169,126,0.45);
+      padding: clamp(12px, 1.8vh, 20px) clamp(28px, 4vw, 56px);
+    }
+
+    .welcome-date-text {
+      font-size: clamp(12px, 1.4vw, 18px);
+      font-weight: 400;
+      letter-spacing: clamp(2px, 0.4vw, 5px);
+      text-transform: uppercase;
+      color: #FFFFFF;
+    }
+
+    .welcome-date-sep {
+      color: #C8A97E;
+      font-size: clamp(16px, 2vw, 24px);
+      line-height: 1;
+    }
+
+
+    /* ══════════════════════════════════════════
+       SLIDE 2 — TONIGHT
+       Left: Schedule | Right: Tasting flight
+    ══════════════════════════════════════════ */
+    .slide-tonight {
+      background-color: #0E0E0E;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* Shared column styles */
+    .tonight-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(48px, 7vw, 100px) clamp(40px, 6vw, 88px);
+    }
+
+    .tonight-col-left {
+      border-right: 1px solid rgba(200,169,126,0.15);
+      position: relative;
+    }
+
+    /* Subtle background texture on right col */
+    .tonight-col-right {
+      background-color: #131313;
+    }
+
+    .col-eyebrow {
+      font-size: clamp(9px, 0.9vw, 12px);
+      font-weight: 700;
+      letter-spacing: clamp(3px, 0.5vw, 5px);
+      text-transform: uppercase;
+      color: #C8A97E;
+      margin-bottom: clamp(12px, 1.8vh, 20px);
+    }
+
+    .col-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 3.8vw, 54px);
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 1.1;
+      margin-bottom: clamp(28px, 4vh, 52px);
+    }
+
+    /* Schedule rows */
+    .schedule-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(24px, 3.5vh, 44px);
+    }
+
+    .sched-item {
+      display: flex;
+      align-items: flex-start;
+      gap: clamp(16px, 2.5vw, 32px);
+    }
+
+    .sched-time-block {
+      flex-shrink: 0;
+      text-align: right;
+      min-width: clamp(64px, 7vw, 96px);
+    }
+
+    .sched-time {
+      font-size: clamp(16px, 2vw, 26px);
+      font-weight: 700;
+      color: #C8A97E;
+      letter-spacing: 2px;
+      line-height: 1.1;
+    }
+
+    .sched-ampm {
+      font-size: clamp(9px, 0.9vw, 12px);
+      font-weight: 400;
+      letter-spacing: 2px;
+      color: rgba(200,169,126,0.5);
+      text-transform: uppercase;
+    }
+
+    .sched-sep {
+      width: 1px;
+      background-color: rgba(200,169,126,0.25);
+      align-self: stretch;
+      flex-shrink: 0;
+    }
+
+    .sched-detail {}
+
+    .sched-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(18px, 2.2vw, 30px);
+      font-weight: 400;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .sched-note {
+      font-size: clamp(11px, 1.1vw, 15px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+    }
+
+    /* Tasting flight */
+    .flight-price-block {
+      margin-bottom: clamp(24px, 3.5vh, 44px);
+    }
+
+    .flight-price {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(52px, 7vw, 96px);
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 0.9;
+      letter-spacing: -1px;
+    }
+
+    .flight-price-label {
+      font-size: clamp(10px, 1vw, 14px);
+      font-weight: 600;
+      letter-spacing: clamp(3px, 0.5vw, 5px);
+      text-transform: uppercase;
+      color: #C8A97E;
+      margin-top: 10px;
+    }
+
+    .flight-rule {
+      width: clamp(36px, 4vw, 56px);
+      height: 1px;
+      background-color: rgba(200,169,126,0.4);
+      margin: clamp(20px, 3vh, 36px) 0;
+    }
+
+    .pours-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(14px, 2vh, 24px);
+      margin-bottom: clamp(20px, 3vh, 36px);
+    }
+
+    .pour-item {
+      display: flex;
+      align-items: center;
+      gap: clamp(10px, 1.5vw, 18px);
+    }
+
+    .pour-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: #C8A97E;
+      flex-shrink: 0;
+    }
+
+    .pour-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(16px, 2vw, 26px);
+      font-weight: 400;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .pour-sub {
+      font-size: clamp(10px, 1vw, 13px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 2px;
+      margin-left: clamp(12px, 1.5vw, 23px);
+      margin-top: 3px;
+    }
+
+    .poured-by {
+      font-size: clamp(11px, 1.1vw, 15px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 2px;
+      font-style: italic;
+    }
+
+    .poured-by strong {
+      color: rgba(200,169,126,0.7);
+      font-weight: 400;
+      font-style: normal;
+    }
+
+
+    /* ══════════════════════════════════════════
+       SLIDE 3 — CELLAR MASTER
+       Left: full-height photo | Right: bio
+    ══════════════════════════════════════════ */
+    .slide-master {
+      background-color: #0A0A0A;
+      display: grid;
+      grid-template-columns: 45% 55%;
+    }
+
+    .master-photo-col {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .master-photo-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    /* Photo fade to right */
+    .master-photo-col::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(10,10,10,0)   40%,
+        rgba(10,10,10,0.6) 70%,
+        rgba(10,10,10,1)  100%
+      );
+    }
+
+    /* Photo fade to bottom (for portrait crops) */
+    .master-photo-col::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        transparent 60%,
+        rgba(10,10,10,0.5) 100%
+      );
+      z-index: 1;
+    }
+
+    .master-text-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(48px, 6vw, 96px) clamp(40px, 5.5vw, 88px) clamp(48px, 6vw, 96px) clamp(28px, 3.5vw, 56px);
+    }
+
+    .master-eyebrow {
+      font-size: clamp(9px, 0.9vw, 12px);
+      font-weight: 700;
+      letter-spacing: clamp(3px, 0.5vw, 5px);
+      text-transform: uppercase;
+      color: #C8A97E;
+      margin-bottom: clamp(14px, 2vh, 22px);
+    }
+
+    .master-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 5vw, 72px);
+      font-weight: 400;
+      color: #FFFFFF;
+      line-height: 1.0;
+      margin-bottom: clamp(8px, 1.2vh, 14px);
+    }
+
+    .master-title {
+      font-size: clamp(11px, 1.1vw, 15px);
+      font-weight: 400;
+      letter-spacing: clamp(2px, 0.4vw, 4px);
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: clamp(24px, 3.5vh, 44px);
+    }
+
+    .master-rule {
+      width: clamp(36px, 4vw, 56px);
+      height: 1px;
+      background-color: #C8A97E;
+      margin-bottom: clamp(24px, 3.5vh, 44px);
+    }
+
+    .master-bio {
+      font-size: clamp(14px, 1.5vw, 20px);
+      font-weight: 300;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.55);
+      max-width: 480px;
+    }
+
+    .master-bio strong {
+      color: rgba(255,255,255,0.85);
+      font-weight: 400;
+    }
+
+    /* Key stats row */
+    .master-stats {
+      display: flex;
+      gap: clamp(24px, 3.5vw, 52px);
+      margin-top: clamp(28px, 4vh, 52px);
+      padding-top: clamp(20px, 3vh, 36px);
+      border-top: 1px solid rgba(200,169,126,0.15);
+    }
+
+    .stat-item {}
+
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 2.8vw, 40px);
+      font-weight: 400;
+      color: #C8A97E;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: clamp(9px, 0.9vw, 12px);
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       SLIDE STAGE
+  ══════════════════════════════════════════ -->
+  <div class="slide-stage">
+
+
+    <!-- ═══ SLIDE 1 — WELCOME ═════════════════ -->
+    <div class="slide slide-welcome">
+
+      <img
+        class="bg"
+        src="https://peoplevine.blob.core.windows.net/media/1048/f69d7064-910e-4bcc-813a-4aeaf6891abe/Deutz.png"
+        alt="">
+
+      <div class="welcome-bottom-line"></div>
+
+      <div class="welcome-content">
+        <p class="welcome-eyebrow">The Bank at Amador &nbsp;&middot;&nbsp; San Francisco</p>
+
+        <h1 class="welcome-title">Noble<br>Origins</h1>
+
+        <div class="welcome-rule"></div>
+
+        <p class="welcome-subtitle">Deutz &times; The Bank</p>
+
+        <div class="welcome-date-pill">
+          <span class="welcome-date-sep">&bull;</span>
+          <span class="welcome-date-text">Thursday, March 26th</span>
+          <span class="welcome-date-sep">&middot;</span>
+          <span class="welcome-date-text">6:00 PM &ndash; 8:00 PM</span>
+          <span class="welcome-date-sep">&bull;</span>
+        </div>
+      </div>
+
+    </div><!-- /slide-welcome -->
+
+
+    <!-- ═══ SLIDE 2 — TONIGHT ═════════════════ -->
+    <div class="slide slide-tonight">
+
+      <!-- Left: Schedule -->
+      <div class="tonight-col tonight-col-left">
+
+        <p class="col-eyebrow">Tonight&rsquo;s Schedule</p>
+        <h2 class="col-heading">Evening<br>Itinerary</h2>
+
+        <ul class="schedule-list">
+
+          <li class="sched-item">
+            <div class="sched-time-block">
+              <div class="sched-time">6:00</div>
+              <div class="sched-ampm">PM</div>
+            </div>
+            <div class="sched-sep"></div>
+            <div class="sched-detail">
+              <div class="sched-title">Champagne Deutz Tasting</div>
+              <div class="sched-note">Poured by Maxence Baudré &nbsp;&middot;&nbsp; The Vault</div>
+            </div>
+          </li>
+
+          <li class="sched-item">
+            <div class="sched-time-block">
+              <div class="sched-time">6:30</div>
+              <div class="sched-ampm">PM</div>
+            </div>
+            <div class="sched-sep"></div>
+            <div class="sched-detail">
+              <div class="sched-title">W(h)ine Club Gathering</div>
+              <div class="sched-note">Members only</div>
+            </div>
+          </li>
+
+        </ul>
+
+      </div>
+
+      <!-- Right: Tasting flight -->
+      <div class="tonight-col tonight-col-right">
+
+        <p class="col-eyebrow">The Tasting Flight</p>
+
+        <div class="flight-price-block">
+          <div class="flight-price">$30</div>
+          <div class="flight-price-label">Per Person</div>
+        </div>
+
+        <div class="flight-rule"></div>
+
+        <ul class="pours-list">
+          <li class="pour-item">
+            <div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span class="pour-dot"></span>
+                <span class="pour-name">NV Brut Classic</span>
+              </div>
+              <div class="pour-sub">Half-glass pour</div>
+            </div>
+          </li>
+          <li class="pour-item">
+            <div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span class="pour-dot"></span>
+                <span class="pour-name">NV Brut Ros&eacute;</span>
+              </div>
+              <div class="pour-sub">Half-glass pour</div>
+            </div>
+          </li>
+        </ul>
+
+        <p class="poured-by">
+          Poured by <strong>Maxence Baudré</strong> of the Maison
+        </p>
+
+      </div>
+
+    </div><!-- /slide-tonight -->
+
+
+    <!-- ═══ SLIDE 3 — CELLAR MASTER ══════════ -->
+    <div class="slide slide-master">
+
+      <!-- Photo -->
+      <div class="master-photo-col">
+        <img
+          src="https://peoplevine.blob.core.windows.net/media/1048/96c25945-2198-4b0c-b82f-7f9020bff67e/Caroline_Winemaker.png"
+          alt="Caroline Latrive — Chef de Cave, Maison Deutz">
+      </div>
+
+      <!-- Text -->
+      <div class="master-text-col">
+
+        <p class="master-eyebrow">Meet the Cellar Master</p>
+
+        <h2 class="master-name">Caroline<br>Latrive</h2>
+
+        <p class="master-title">
+          Chef de Cave &nbsp;&middot;&nbsp; Maison Deutz &nbsp;&middot;&nbsp; Since 2022
+        </p>
+
+        <div class="master-rule"></div>
+
+        <p class="master-bio">
+          Born in Reims and trained at <strong>Louis Roederer</strong> and
+          <strong>Bollinger</strong>, Caroline became one of the few women
+          to reach the elite level of Cellar Master in 2012. Appointed to
+          Maison Deutz in 2022, she champions <strong>purity, freshness,
+          and Chardonnay elegance</strong>.
+        </p>
+
+        <div class="master-stats">
+          <div class="stat-item">
+            <div class="stat-value">1838</div>
+            <div class="stat-label">Founded</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">A&yuml;</div>
+            <div class="stat-label">Champagne</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">2022</div>
+            <div class="stat-label">Appointed</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /slide-master -->
+
+
+  </div><!-- /slide-stage -->
+
+
+  <!-- ══════════════════════════════════════════
+       PROGRESS DOTS
+  ══════════════════════════════════════════ -->
+  <div class="progress-dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       PERSISTENT BOTTOM BAR
+  ══════════════════════════════════════════ -->
+  <div class="av-bar">
+    <img
+      class="av-bar-logo"
+      src="https://peoplevine.blob.core.windows.net/media/1048/54b03204-8aab-4f7a-a37d-055890945baf/duetz.png"
+      alt="Champagne Deutz">
+    <div class="av-bar-center">
+      The Bank at Amador &nbsp;&bull;&nbsp; San Francisco
+    </div>
+    <div class="av-bar-right">
+      March 26th &nbsp;&bull;&nbsp; 6:00 PM
+    </div>
+  </div>
+
+
+</body>
+</html>

@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOMA Interactive Locker Management Portfolio Demo</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --club-brass: #d4af37;
+      --club-brass-light: #f3e0b5;
+      --club-brass-dark: #8c6b08;
+      --club-text: #eae0d5;
+    }
+    
+    body {
+      background-color: #050505;
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    #lockerDemo {
+      max-width: 1400px;
+      margin: 40px auto;
+      padding: 24px;
+      color: var(--club-text);
+      background: #0f0c0a;
+      border-radius: 20px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      box-sizing: border-box;
+    }
+
+    #lockerDemo .ld-head-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      padding-bottom: 16px;
+    }
+
+    #lockerDemo .ld-head {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--club-brass);
+      margin: 0 0 6px;
+      font-weight: 600;
+    }
+
+    #lockerDemo h3 {
+      margin: 0;
+      font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+      font-size: 32px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    #lockerDemo .ld-view-tabs {
+      display: flex;
+      gap: 8px;
+      background: rgba(0,0,0,0.4);
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    #lockerDemo .ld-view-tab {
+      background: transparent;
+      border: none;
+      color: #a09080;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #lockerDemo .ld-view-tab.active {
+      background: linear-gradient(135deg, var(--club-brass-dark), #b8860b);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .ld-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .ld-metric-card {
+      background: linear-gradient(145deg, #1f1914, #120e0b);
+      border: 1px solid #3d3127;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .ld-metric-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9e8e7c;
+      margin-bottom: 6px;
+    }
+
+    .ld-metric-val {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--club-brass-light);
+    }
+
+    .ld-metric-sub {
+      font-size: 10px;
+      color: #6f5f52;
+      margin-top: 4px;
+    }
+
+    .ld-view-section { display: none; }
+    .ld-view-section.active { display: block; }
+
+    .ld-report-container {
+      background: #14100c;
+      border: 1px solid #3d3127;
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+
+    .ld-report-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .ld-report-table th {
+      background: #1f1914;
+      color: var(--club-brass-light);
+      padding: 12px 16px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 1px solid #3d3127;
+      white-space: nowrap;
+    }
+
+    .ld-report-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      color: #c5b8ab;
+      white-space: nowrap;
+    }
+
+    .ld-report-table tr:hover td {
+      background: rgba(212, 175, 55, 0.04);
+      color: #fff;
+    }
+
+    #lockerDemo .ld-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      background: linear-gradient(180deg, #261f1a, #191410);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 12px;
+    }
+
+    #lockerDemo .ld-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    #lockerDemo .ld-filter-btn {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #c5b8ab;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #lockerDemo .ld-filter-btn.active {
+      background: linear-gradient(135deg, var(--club-brass-dark), #b8860b);
+      border-color: var(--club-brass-light);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    #lockerDemo .ld-search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+      max-width: 280px;
+    }
+
+    #lockerDemo .ld-search-input {
+      width: 100%;
+      padding: 7px 12px 7px 32px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    #lockerDemo .ld-search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--club-brass);
+      font-size: 11px;
+    }
+
+    #lockerDemo .ld-wall {
+      position: relative;
+      padding: 24px;
+      border-radius: 16px;
+      background: #110905;
+      border: 2px solid #2e241c;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.9), 0 15px 35px rgba(0,0,0,0.5);
+      overflow-x: auto;
+    }
+
+    #lockerGrid {
+      display: grid;
+      /* Accurate proportions: Wide lockers (2.2) vs Narrow Middle Locker (1.2) */
+      grid-template-columns: 2.2fr 2.2fr 2.2fr 1.2fr 2.2fr 2.2fr 2.2fr;
+      grid-auto-rows: minmax(75px, 120px); 
+      gap: clamp(6px, 1vw, 12px);
+      min-width: 900px; /* Ensure it doesn't crush on mobile */
+    }
+
+    .ld-cell {
+      position: relative;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .locker-frame {
+      --frame-pad: clamp(18px, 2.2vw, 28px); /* Thicker border for buffer around plate */
+      position: relative;
+      width: 100%;
+      height: 100%;
+      /* Golden Honey Oak matched from WINE.jpg */
+      background-color: #b57b3f; 
+      background-image: 
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px), 
+        linear-gradient(160deg, #c78d4f 0%, #945f28 100%);
+      border: 1px solid #633a10;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--frame-pad); 
+      box-shadow: inset 0 0 6px rgba(100,50,0,0.5), 2px 2px 5px rgba(0,0,0,0.4);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .ld-cell:hover .locker-frame {
+      transform: scale(1.02);
+      z-index: 10;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.9);
+      border-color: #7a4613;
+    }
+
+    .window-pane {
+      width: 100%;
+      height: 100%;
+      background-color: #120a05;
+      /* 3-Post Rack setup for standard wide lockers */
+      background-image:
+          linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.06) 45%, transparent 50%),
+          linear-gradient(to right, transparent 22%, #3a2211 22%, #5c381d 24%, #3a2211 26%, transparent 26%, transparent 48%, #3a2211 48%, #5c381d 50%, #3a2211 52%, transparent 52%, transparent 74%, #3a2211 74%, #5c381d 76%, #3a2211 78%, transparent 78%),
+          linear-gradient(to bottom, transparent 35%, #0a0603 35%, #0a0603 40%, transparent 40%),
+          linear-gradient(to bottom, transparent 75%, #0a0603 75%, #0a0603 80%, transparent 80%);
+      border: 1px solid #080402;
+      box-shadow: inset 0 5px 15px rgba(0,0,0,1);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Target the 4th column specifically to only show 1 post for narrow lockers */
+    .ld-cell:nth-child(7n + 4) .window-pane {
+       background-image:
+          linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.06) 45%, transparent 50%),
+          linear-gradient(to right, transparent 46%, #3a2211 46%, #5c381d 50%, #3a2211 54%, transparent 54%),
+          linear-gradient(to bottom, transparent 35%, #0a0603 35%, #0a0603 40%, transparent 40%),
+          linear-gradient(to bottom, transparent 75%, #0a0603 75%, #0a0603 80%, transparent 80%);
+    }
+
+    /* Left-aligned keyhole hardware */
+    .lock-hardware {
+      position: absolute;
+      left: calc(var(--frame-pad) / 2);
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(10px, 1.2vw, 15px);
+      height: clamp(10px, 1.2vw, 15px);
+      background: linear-gradient(135deg, #e6ca98 0%, #c29d5b 45%, #8f6c2f 100%);
+      border-radius: 50%;
+      box-shadow: 1px 1px 2px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.5);
+      z-index: 2;
+    }
+
+    .lock-hardware::after {
+      content: '';
+      position: absolute;
+      width: 1.5px;
+      height: 45%;
+      background-color: #0f0a05; 
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 1px;
+    }
+
+    .label-plate {
+      position: absolute;
+      top: calc(var(--frame-pad) / 2);
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(38px, 45%, 65px); 
+      height: clamp(10px, 1.1vw, 14px);
+      background: linear-gradient(to bottom, #e6ca98, #9e7f45);
+      border-radius: 1px;
+      box-shadow: 1px 1px 2px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.2);
+      font-size: clamp(5.5px, 0.65vw, 8px);
+      color: #2b1f11;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      white-space: nowrap;
+      padding: 0 4px;
+      box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      z-index: 2;
+      transition: background 0.3s ease;
+    }
+
+    .ld-cell.occupied .locker-frame { border-color: #945f28; }
+    .ld-cell.occupied .label-plate { background: linear-gradient(to bottom, #ffe4b5, #c89e52); }
+    .ld-cell.occupied .window-pane {
+      box-shadow: inset 0 5px 15px rgba(0,0,0,1), inset 0 -20px 40px rgba(200, 162, 92, 0.12);
+    }
+
+    /* Administrative Alert States */
+    .ld-cell.payment-issue .locker-frame { border-color: #8b3a3a; }
+    .ld-cell.payment-issue .label-plate { background: linear-gradient(to bottom, #d66, #8b3a3a); color: #fff; }
+    .ld-cell.payment-issue .window-pane { box-shadow: inset 0 5px 15px rgba(0,0,0,1), inset 0 -20px 40px rgba(139, 58, 58, 0.25); }
+
+    .ld-cell.maintenance .locker-frame { border-color: #555; }
+    .ld-cell.maintenance .label-plate { background: linear-gradient(to bottom, #888, #444); color: #ccc; }
+
+    .ld-admin-btn {
+      background: rgba(255,255,255,0.05); border: 1px solid #5a4a3a; color: #c5b8ab;
+      padding: 6px 10px; font-size: 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s; flex: 1;
+    }
+    .ld-admin-btn:hover, .ld-admin-btn.active {
+      background: rgba(212, 175, 55, 0.15); color: #fff; border-color: var(--club-brass);
+    }
+
+    #ldModalBg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    #ldModalBg.open { display: flex; }
+
+    #ldModal {
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 26px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #241d18, #16120e);
+      border: 1px solid var(--club-brass);
+      color: var(--club-text);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+      box-sizing: border-box;
+    }
+
+    #ldModal h4 { margin: 0 0 4px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 28px; color: var(--club-brass-light); }
+    #ldModal .ld-meta { margin: 0 0 10px; font-size: 12px; color: #a89a8c; text-transform: uppercase; }
+
+    .ld-modal-tabs {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid #3d3127;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+    }
+    
+    .ld-mtab {
+      background: none;
+      border: none;
+      color: #8c7b6c;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+    
+    .ld-mtab.active {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--club-brass-light);
+    }
+    
+    .ld-mtab-pane { display: none; }
+    .ld-mtab-pane.active { display: block; }
+
+    #ldModal label {
+      display: block;
+      margin: 12px 0 5px;
+      font-size: 10px;
+      color: var(--club-brass-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    #ldModal input, #ldModal select, #ldModal textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #4a3c30;
+      background: #191410;
+      color: #fff;
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .ld-inventory-box {
+      background: #14100c;
+      border: 1px solid #3d3127;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .ld-btnrow { display: flex; gap: 10px; margin-top: 20px; }
+    .ld-save, .ld-cancel {
+      appearance: none; font-family: inherit; cursor: pointer; border-radius: 999px;
+      font-size: 12px; padding: 10px 18px; font-weight: 600; transition: all 0.2s;
+    }
+    .ld-save {
+      flex: 1; border: 1px solid var(--club-brass-light);
+      background: linear-gradient(135deg, #f3e0b5 0%, #d4af37 100%); color: #1a140a;
+    }
+    .ld-cancel { border: 1px solid #5a4a3a; background: transparent; color: #c5b8ab; }
+
+    #ldToast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #261f1a;
+      border: 1px solid var(--club-brass);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      z-index: 10000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      display: none;
+      animation: fadeInOut 3s ease forwards;
+    }
+    
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(10px); }
+      15% { opacity: 1; transform: translateY(0); }
+      85% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(10px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="lockerDemo">
+    <div class="ld-head-row">
+      <div>
+        <div class="ld-head">Exclusive Club · Wine Program Management</div>
+        <h3>Executive Locker & Cellar Suite</h3>
+      </div>
+      <div class="ld-view-tabs">
+        <button class="ld-view-tab active" onclick="switchView('wall', this)">Cellar Wall</button>
+        <button class="ld-view-tab" onclick="switchView('reports', this)">Reports & Revenue</button>
+      </div>
+    </div>
+
+    <div class="ld-metrics-grid">
+      <div class="ld-metric-card">
+        <div class="ld-metric-label">Total Lockers</div>
+        <div class="ld-metric-val" id="metTotal">56</div>
+        <div class="ld-metric-sub">Wall B (Cellar Bay 2)</div>
+      </div>
+      <div class="ld-metric-card">
+        <div class="ld-metric-label">Open / Available</div>
+        <div class="ld-metric-val" id="metOpen" style="color: #71896c;">--</div>
+        <div class="ld-metric-sub">Ready for assignment</div>
+      </div>
+      <div class="ld-metric-card">
+        <div class="ld-metric-label">Active / Occupied</div>
+        <div class="ld-metric-val" id="metOccupied" style="color: var(--club-brass-light);">--</div>
+        <div class="ld-metric-sub">Assigned members</div>
+      </div>
+      <div class="ld-metric-card">
+        <div class="ld-metric-label">Bottles Stored</div>
+        <div class="ld-metric-val" id="metBottles">--</div>
+        <div class="ld-metric-sub">Logged in inventory</div>
+      </div>
+      <div class="ld-metric-card">
+        <div class="ld-metric-label">Est. Monthly Rev.</div>
+        <div class="ld-metric-val" id="metRev">$--</div>
+        <div class="ld-metric-sub">Active recurring billing</div>
+      </div>
+    </div>
+
+    <!-- VIEW 1: CELLAR WALL & MAP -->
+    <div id="viewWall" class="ld-view-section active">
+      <div class="ld-toolbar">
+        <div class="ld-filters">
+          <button class="ld-filter-btn active" data-filter="all" onclick="ldFilter('all', this)">All Lockers</button>
+          <button class="ld-filter-btn" data-filter="avail" onclick="ldFilter('avail', this)">Available Only</button>
+          <button class="ld-filter-btn" data-filter="12" onclick="ldFilter('12', this)">12-Bottle</button>
+          <button class="ld-filter-btn" data-filter="6" onclick="ldFilter('6', this)">6-Bottle</button>
+        </div>
+        <div class="ld-search-wrap">
+          <span class="ld-search-icon">🔍</span>
+          <input type="text" class="ld-search-input" id="ldSearchInput" placeholder="Search locker or name..." oninput="ldSearch(this.value)">
+        </div>
+      </div>
+
+      <div class="ld-wall">
+        <div id="lockerGrid"></div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: REPORTS & ANALYTICS -->
+    <div id="viewReports" class="ld-view-section">
+      <div class="ld-report-container">
+        <table class="ld-report-table">
+          <thead>
+            <tr>
+              <th>Locker ID</th>
+              <th>Type</th>
+              <th>Member Status</th>
+              <th>Stored Bottles</th>
+              <th>Monthly Due</th>
+              <th>Billing Status</th>
+            </tr>
+          </thead>
+          <tbody id="ldReportTableBody">
+            <!-- Dynamically populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="ldModalBg" role="dialog" aria-modal="true">
+    <div id="ldModal">
+      <h4 id="ldTitle">Locker A1</h4>
+      <div class="ld-meta" id="ldMeta">Locker #101 · Key T303 · 12-bottle</div>
+
+      <div class="ld-modal-tabs">
+        <button class="ld-mtab active" onclick="switchModalTab('assign', this)">Reservation & Assignment</button>
+        <button class="ld-mtab" onclick="switchModalTab('inventory', this)">Inventory & Service</button>
+        <button class="ld-mtab" onclick="switchModalTab('sync', this)">System Integrations</button>
+        <button class="ld-mtab" onclick="switchModalTab('comms', this)">Comms & History</button>
+      </div>
+
+      <!-- TAB 1: ASSIGNMENT -->
+      <div id="mtabAssign" class="ld-mtab-pane active">
+        <label for="ldFirst">Member First Name</label>
+        <input id="ldFirst" type="text" placeholder="e.g. John">
+
+        <label for="ldLast">Member Last Name</label>
+        <input id="ldLast" type="text" placeholder="e.g. Doe">
+
+        <label for="ldSize">Program Plan & Rate (Wall B)</label>
+        <select id="ldSize">
+          <!-- Dynamically populated via JS based on locker size -->
+        </select>
+        <p style="font-size: 10px; color: #8c7b6c; margin: 4px 0 12px 0; line-height: 1.4; font-style: italic;">
+          * Note: Initial assignment charge is pro-rated. Billing renews automatically on the member's billing cycle or the first month of the new year.
+        </p>
+
+        <label for="ldPlate">Custom Engraved Nameplate Text</label>
+        <input id="ldPlate" type="text" placeholder="Leave blank to use Member Name">
+
+        <div class="ld-terms-box" style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid #3d3127; border-radius: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; margin: 0; cursor: pointer; text-transform: none; letter-spacing: normal;">
+            <input type="checkbox" id="ldTerms" checked style="width: 16px; height: 16px;">
+            <span style="font-size: 11px; color: #c5b8ab;">Member acknowledges and signs the Private Locker Terms & Conditions</span>
+          </label>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #3d3127; margin: 18px 0;">
+        <label>Administrative Actions & Locker Status</label>
+        <div style="display: flex; gap: 8px; margin-bottom: 4px;">
+           <button class="ld-admin-btn active" type="button" id="btnStatActive" onclick="setLockerStatus('active')">Active / Assigned</button>
+           <button class="ld-admin-btn" type="button" id="btnStatCancel" onclick="setLockerStatus('cancel')">Cancel & Vacate</button>
+           <button class="ld-admin-btn" type="button" id="btnStatPayment" onclick="setLockerStatus('payment')">Payment Issue</button>
+           <button class="ld-admin-btn" type="button" id="btnStatMaint" onclick="setLockerStatus('maintenance')">Maintenance</button>
+        </div>
+        <input type="hidden" id="ldHiddenStatus" value="active">
+      </div>
+
+      <!-- TAB 2: INVENTORY & CORKAGE -->
+      <div id="mtabInventory" class="ld-mtab-pane">
+        <div class="ld-inventory-box">
+          <label>Current Stored Bottles Count</label>
+          <div style="display:flex; gap:10px; align-items:center; margin-top:6px;">
+            <input id="ldBottleCount" type="number" min="0" max="12" value="0" style="width:100px;">
+            <span style="font-size:12px; color:#8c7b6c;" id="ldCapacityNote">Bottles in locker</span>
+          </div>
+        </div>
+
+        <div class="ld-inventory-box" style="background: rgba(212, 175, 55, 0.05); border-color: rgba(212, 175, 55, 0.2);">
+          <label style="color: var(--club-brass-light); margin-top: 0;">Club Service & Corkage</label>
+          <p style="font-size: 11px; color: #c5b8ab; margin: 4px 0 0 0; line-height: 1.4;">
+            A standard <strong>$10 per bottle corkage fee</strong> will be automatically applied to the member's folio for any locker inventory pulled for on-premise dining service.
+          </p>
+        </div>
+
+        <label for="ldWineNotes">Cellar Inventory Log (Producers / Vintages)</label>
+        <textarea id="ldWineNotes" rows="4" placeholder="e.g., 4x Producer A 2018, 2x Producer B Cabernet..."></textarea>
+      </div>
+
+      <!-- TAB 3: WORKFLOW INTEGRATIONS -->
+      <div id="mtabSync" class="ld-mtab-pane">
+        <label>Hardware & Fulfillment</label>
+        
+        <div class="ld-inventory-box" style="display: flex; gap: 14px; align-items: center; margin-bottom: 12px; border-color: rgba(212, 175, 55, 0.3); background: rgba(212, 175, 55, 0.03);">
+          <span aria-label="Locker key" title="Locker key" style="display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="4.5" stroke="currentColor" stroke-width="1.6"/><path d="M11.2 11.2 L20 20 M17 17 l2 -2 M14.5 14.5 l2 -2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <div style="flex: 1;">
+            <div style="font-size: 11px; color: var(--club-brass-light); font-weight: 600; margin-bottom: 2px;">Replacement Key Orders</div>
+            <div style="font-size: 10px; color: #c5b8ab; margin-bottom: 6px; line-height: 1.3;">Order Timberline CompX keys directly from EasyKeys via secure URL.</div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <a id="ldKeyOrderBtn" href="#" target="_blank" style="display: inline-block; font-size: 10px; padding: 5px 10px; background: rgba(212, 175, 55, 0.15); border: 1px solid var(--club-brass); border-radius: 4px; color: #fff; text-decoration: none; transition: all 0.2s;">Order Key <span id="ldKeyDisplay" style="font-weight:700;"></span> ↗</a>
+              <a href="https://easykeys.com/#:~:text=Live-,Support,-From%208%3A30" target="_blank" style="font-size: 9px; color: #a89a8c; text-decoration: none; border-bottom: 1px dashed #5a4a3a; transition: color 0.2s;" onmouseover="this.style.color='#f3e0b5'" onmouseout="this.style.color='#a89a8c'">💬 Use LiveChat & Email</a>
+            </div>
+            <div style="font-size: 9px; color: #6f5f52; margin-top: 6px; line-height: 1.3;">* From 8:30 AM - 5:00 PM ET M - F. For key copying questions or security concerns, consult the live agent.</div>
+          </div>
+        </div>
+
+        <div class="ld-inventory-box" style="margin-bottom: 20px;">
+          <div style="font-size: 11px; color: var(--club-brass-light); font-weight: 600; margin-bottom: 2px;">Nameplate Engraving Request</div>
+          <div style="font-size: 10px; color: #c5b8ab; margin-bottom: 8px; line-height: 1.3;">Send formatted engraving details to Dennis at Master Trophys (SF).</div>
+          <a id="ldEngraveBtn" href="#" style="display: inline-block; font-size: 10px; padding: 5px 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid #5a4a3a; border-radius: 4px; color: #fff; text-decoration: none; transition: all 0.2s;">Email Engraving Order ✉</a>
+        </div>
+
+        <label>Automated Workflow Integrations (Mock Demo)</label>
+        <p style="font-size: 11px; color: #8c7b6c; margin: 0 0 16px 0;">Upon saving, this profile will automatically provision across club systems.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 4px;">
+          <label style="display: flex; align-items: center; gap: 10px; margin: 0; text-transform: none; letter-spacing: normal;">
+            <input type="checkbox" checked style="width: 16px; height: 16px; accent-color: var(--club-brass);">
+            <span style="color: #c5b8ab; font-size: 12px;"><strong>Peoplevine:</strong> Create CRM profile & activate billing subscription</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; margin: 0; text-transform: none; letter-spacing: normal;">
+            <input type="checkbox" checked style="width: 16px; height: 16px; accent-color: var(--club-brass);">
+            <span style="color: #c5b8ab; font-size: 12px;"><strong>SevenRooms:</strong> Add "Locker Member" tag & VIP notes for host stand</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; margin: 0; text-transform: none; letter-spacing: normal;">
+            <input type="checkbox" checked style="width: 16px; height: 16px; accent-color: var(--club-brass);">
+            <span style="color: #c5b8ab; font-size: 12px;"><strong>Toast POS:</strong> Enable $10 corkage fee auto-routing on member checks</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; margin: 0; text-transform: none; letter-spacing: normal;">
+            <input type="checkbox" checked style="width: 16px; height: 16px; accent-color: var(--club-brass);">
+            <span style="color: #c5b8ab; font-size: 12px;"><strong>Slack:</strong> Ping <code>#somm-team</code> and <code>#concierge</code> with new assignment</span>
+          </label>
+        </div>
+        
+        <hr style="border: 0; border-top: 1px solid #3d3127; margin: 18px 0;">
+        
+        <button class="ld-save" type="button" style="width:100%; text-align: center; justify-content: center;" onclick="runSimulatedWorkflow()">Execute Provisioning Workflow</button>
+      </div>
+
+      <!-- TAB 4: COMMS & HISTORY -->
+      <div id="mtabComms" class="ld-mtab-pane">
+        
+        <div class="ld-inventory-box" style="background: rgba(255, 255, 255, 0.02); border-color: #3d3127; margin-bottom: 16px;">
+          <div style="font-size: 11px; color: var(--club-brass-light); font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.1em;">Standard Operating Procedures (SOP)</div>
+          <p style="font-size: 10px; color: #a89a8c; margin: 0; line-height: 1.4;">
+            <strong>Status Changes:</strong> Always update the administrative status <em>before</em> sending communications. <br>
+            <strong>Cancellations:</strong> Ensure the locker is physically emptied and the Timberline key is returned to the Concierge prior to executing a "Cancel & Vacate" command.<br>
+            <strong>Auditing:</strong> All actions are permanently logged to this locker's hardware ID. Do not use this panel for test entries on live member accounts.
+          </p>
+        </div>
+
+        <label for="ldEmailTemplate">Automated Member Communication</label>
+        <select id="ldEmailTemplate" onchange="updateEmailPreview()">
+          <option value="active">Welcome & Activation Notice</option>
+          <option value="payment">Payment Hold / Decline Notice</option>
+          <option value="maintenance">Facilities Maintenance Notice</option>
+          <option value="cancel">Cancellation & Vacate Confirmation</option>
+        </select>
+
+        <textarea id="ldEmailPreview" rows="5" style="margin-top: 8px; font-size: 11px; color: #c5b8ab; background: #0a0806; line-height: 1.4;" readonly></textarea>
+        
+        <button class="ld-save" type="button" style="width:100%; text-align: center; justify-content: center; margin-top: 8px; padding: 8px; font-size: 10px;" onclick="simulateEmailDispatch()">Send Simulated Communication</button>
+
+        <hr style="border: 0; border-top: 1px solid #3d3127; margin: 20px 0;">
+        
+        <label>Permanent Locker Audit Log</label>
+        <div id="ldAuditLog" style="background: #0a0806; border: 1px solid #2e241c; border-radius: 8px; height: 140px; overflow-y: auto; padding: 12px; font-family: monospace; font-size: 10px; color: #9e8e7c;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="ld-btnrow">
+        <button class="ld-save" type="button" onclick="ldSave()">Save Locker Record</button>
+        <button class="ld-cancel" type="button" onclick="ldClose()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="ldToast">Action completed successfully.</div>
+
+  <script>
+  (function(){
+    // EXACT DATABASE DUMP IMPORT - WALL B (49 Lockers: A1 to G7)
+    // Structure: [Loc, Num, Key, Size, DefaultAnnualPrice]
+    var lockers = [
+      ["A1", 57, "149T", 12, 900], ["B1", 58, "138T", 12, 900], ["C1", 59, "137T", 12, 900], ["D1", 60, "111T", 6, 900], ["E1", 61, "128T", 12, 900], ["F1", 62, "123T", 12, 900], ["G1", 63, "107T", 12, 900],
+      ["A2", 64, "177T", 12, 900], ["B2", 65, "127T", 12, 900], ["C2", 66, "116T", 12, 900], ["D2", 67, "248T", 6, 600], ["E2", 68, "168T", 12, 900], ["F2", 69, "144T", 12, 900], ["G2", 70, "178T", 12, 900],
+      ["A3", 71, "180T", 12, 900], ["B3", 72, "114T", 12, 900], ["C3", 73, "189T", 12, 900], ["D3", 74, "121T", 6, 600], ["E3", 75, "184T", 12, 900], ["F3", 76, "140T", 12, 900], ["G3", 77, "157T", 12, 900],
+      ["A4", 78, "132T", 12, 900], ["B4", 79, "131T", 12, 900], ["C4", 80, "112T", 12, 600], ["D4", 81, "214T", 6, 900], ["E4", 82, "197T", 12, 900], ["F4", 83, "171T", 12, 900], ["G4", 84, "108T", 12, 900],
+      ["A5", 85, "170T", 12, 900], ["B5", 86, "136T", 12, 900], ["C5", 87, "235T", 12, 900], ["D5", 88, "141T", 6, 600], ["E5", 89, "194T", 12, 600], ["F5", 90, "186T", 12, 900], ["G5", 91, "188T", 12, 900],
+      ["A6", 92, "229T", 12, 900], ["B6", 93, "117T", 12, 900], ["C6", 94, "173T", 12, 900], ["D6", 95, "210T", 6, 600], ["E6", 96, "153T", 12, 600], ["F6", 97, "103T", 12, 900], ["G6", 98, "198T", 12, 900],
+      ["A7", 99, "190T", 12, 900], ["B7", 100, "150T", 12, 900], ["C7", 101, "155T", 12, 600], ["D7", 102, "208T", 6, 600], ["E7", 103, "176T", 12, 900], ["F7", 104, "181T", 12, 900], ["G7", 105, "120T", 12, 900]
+    ];
+
+    // Database State seed for occupied lockers
+    var lockerData = {
+      "A1": { name: "A. SMITH", bottles: 10, notes: "6x Region A 2015, 4x Sparkling", rate: "$900/yr", price: 900, status: "active" },
+      "D2": { name: "B. JOHNSON", bottles: 5, notes: "Domestic reserves", rate: "$600/yr", price: 600, status: "active" },
+      "C3": { name: "C. WILLIAMS", bottles: 8, notes: "Imported selections", rate: "$900/yr", price: 900, status: "active" },
+      "F5": { name: "RESERVED", bottles: 0, notes: "Pending member drop-off", rate: "$90/mo", price: 90, status: "active" },
+      "B7": { name: "CLUB CELLARS", bottles: 12, notes: "House library reserve", rate: "$90/mo", price: 90, status: "active" }
+    };
+
+    // Permanent Audit Log State (Persists even if locker is vacated)
+    var lockerLogs = {
+      "A1": [{ date: new Date(Date.now() - 8640000000).toLocaleString(), action: "Assigned to A. SMITH", user: "Admin" }],
+      "D2": [{ date: new Date(Date.now() - 4320000000).toLocaleString(), action: "Assigned to B. JOHNSON", user: "System" }],
+      "F5": [{ date: new Date().toLocaleString(), action: "Reserved pending key pickup", user: "Concierge" }]
+    };
+
+    const emailTemplates = {
+      'active': "Dear [Member],\n\nWelcome to the Executive Cellar Suite. Your wine locker assignment has been successfully processed. Your secure key is ready for pickup at the cellar concierge desk. A standard $10 corkage fee applies to bottles pulled for on-premise dining.\n\nCheers,\nClub Management",
+      'payment': "Dear [Member],\n\nWe were unable to process the recent recurring charge for your Private Cellar subscription. Please update your payment method on file via the member portal to avoid a temporary hold on locker access and corkage privileges.\n\nThank you,\nClub Billing",
+      'maintenance': "Dear [Member],\n\nWe are conducting routine facilities maintenance in Cellar Bay 2. Your locker contents remain completely secure, but physical access may be temporarily restricted over the next 48 hours. We apologize for any inconvenience.\n\nRegards,\nFacilities Team",
+      'cancel': "Dear [Member],\n\nThis confirms that your Private Cellar locker has been officially vacated and your subscription canceled. We have received your returned key. We hope you enjoyed the program.\n\nBest,\nClub Management"
+    };
+
+    var currentFilter = 'all';
+    var currentSearch = '';
+    var grid = document.getElementById("lockerGrid");
+    if(!grid) return;
+
+    window.drawGrid = function(){
+      grid.innerHTML = "";
+      var totalCount = lockers.length;
+      var openCount = 0;
+      var occupiedCount = 0;
+      var totalBottles = 0;
+      var totalRevenue = 0;
+
+      lockers.forEach(function(l){
+        var loc = l[0], num = l[1], key = l[2], size = l[3], price = l[4];
+        var record = lockerData[loc];
+        var isAvail = !record;
+        
+        // Define label text: Show assigned name, otherwise show the structural locker number
+        var plateName = record ? record.name : num;
+        if(record && record.status === 'maintenance' && !record.name) plateName = "MAINT";
+
+        if(isAvail) {
+          openCount++;
+        } else {
+          if(record.status !== 'maintenance') occupiedCount++;
+          totalBottles += (record.bottles || 0);
+          if(record.status === 'active') totalRevenue += record.price || price; // Exclude suspended items from projected revenue
+        }
+
+        var statusClass = "";
+        if(!isAvail) {
+            if(record.status === 'payment') statusClass = " payment-issue";
+            else if(record.status === 'maintenance') statusClass = " maintenance";
+            else statusClass = " occupied";
+        }
+
+        var cell = document.createElement("div");
+        cell.className = "ld-cell" + statusClass;
+        cell.dataset.loc = loc;
+        cell.dataset.num = num;
+        cell.dataset.size = size;
+        cell.dataset.status = isAvail ? "avail" : "taken";
+        cell.dataset.name = record ? record.name.toLowerCase() : "";
+
+        // Construct realistic DOM mimicking the visual map setup
+        cell.innerHTML = 
+          '<div class="locker-frame">' +
+            '<div class="label-plate">' + plateName + '</div>' +
+            '<div class="lock-hardware"></div>' +
+            '<div class="window-pane"></div>' +
+          '</div>';
+
+        cell.addEventListener("click", function(){ ldOpen(loc, num, key, size, price); });
+        grid.appendChild(cell);
+      });
+
+      // Update real-time metrics on dashboard header
+      document.getElementById("metTotal").textContent = totalCount;
+      document.getElementById("metOpen").textContent = openCount;
+      document.getElementById("metOccupied").textContent = occupiedCount;
+      document.getElementById("metBottles").textContent = totalBottles;
+      document.getElementById("metRev").textContent = "$" + totalRevenue.toLocaleString();
+
+      buildReportTable();
+      applyFilters();
+    };
+
+    function buildReportTable(){
+      var tbody = document.getElementById("ldReportTableBody");
+      if(!tbody) return;
+      tbody.innerHTML = "";
+
+      lockers.forEach(function(l){
+        var loc = l[0], num = l[1], size = l[3];
+        var rec = lockerData[loc];
+        if(!rec) return; // Only list active accounts
+
+        var statusHtml = '<span style="color:#71896c">● Active Billing</span>';
+        if(rec.status === 'payment') statusHtml = '<span style="color:#cf6666">● Payment Hold</span>';
+        if(rec.status === 'maintenance') statusHtml = '<span style="color:#a89a8c">● Maintenance</span>';
+
+        var tr = document.createElement("tr");
+        tr.innerHTML =
+          '<td><strong>Locker ' + loc + '</strong> (#' + num + ')</td>' +
+          '<td>' + size + '-Bottle Reserve</td>' +
+          '<td><span style="color:var(--club-brass-light)">' + (rec.name || "N/A") + '</span></td>' +
+          '<td>' + rec.bottles + ' bottles stored</td>' +
+          '<td>' + rec.rate + '</td>' +
+          '<td>' + statusHtml + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.switchView = function(viewName, tabEl){
+      document.querySelectorAll(".ld-view-tab").forEach(function(t){ t.classList.remove("active"); });
+      if(tabEl) tabEl.classList.add("active");
+
+      document.getElementById("viewWall").classList.remove("active");
+      document.getElementById("viewReports").classList.remove("active");
+
+      if(viewName === 'wall') document.getElementById("viewWall").classList.add("active");
+      if(viewName === 'reports') document.getElementById("viewReports").classList.add("active");
+    };
+
+    window.switchModalTab = function(tabId, tabEl){
+      document.querySelectorAll(".ld-mtab").forEach(function(t){ t.classList.remove("active"); });
+      document.querySelectorAll(".ld-mtab-pane").forEach(function(p){ p.classList.remove("active"); });
+      if(tabEl) tabEl.classList.add("active");
+      document.getElementById("mtab" + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add("active");
+    };
+
+    window.setLockerStatus = function(status) {
+      document.getElementById("ldHiddenStatus").value = status;
+      document.querySelectorAll(".ld-admin-btn").forEach(function(b){ b.classList.remove("active"); });
+      
+      if(status === 'active') document.getElementById("btnStatActive").classList.add("active");
+      if(status === 'cancel') document.getElementById("btnStatCancel").classList.add("active");
+      if(status === 'payment') document.getElementById("btnStatPayment").classList.add("active");
+      if(status === 'maintenance') document.getElementById("btnStatMaint").classList.add("active");
+
+      // Auto-update the email template to match the selected status
+      var templateSelect = document.getElementById("ldEmailTemplate");
+      if(templateSelect.querySelector('option[value="'+status+'"]')) {
+        templateSelect.value = status;
+        updateEmailPreview();
+      }
+
+      // Auto-clear inputs if cancel is selected to quickly vacate the locker
+      if(status === 'cancel') {
+        document.getElementById("ldFirst").value = "";
+        document.getElementById("ldLast").value = "";
+        document.getElementById("ldPlate").value = "";
+        document.getElementById("ldBottleCount").value = 0;
+        document.getElementById("ldWineNotes").value = "";
+      }
+    };
+
+    window.ldOpen = function(loc, num, key, size, price){
+      var title = document.getElementById("ldTitle");
+      title.textContent = "Locker " + loc;
+      title.dataset.loc = loc;
+      title.dataset.size = size;
+      title.dataset.price = price;
+      title.dataset.num = num;
+
+      document.getElementById("ldMeta").textContent = "Locker #" + num + " · Key " + key + " · " + size + "-bottle capacity";
+
+      var defaultRateStr = size === 12 ? "$90/mo" : "$60/mo";
+      var rec = lockerData[loc] || { name: "", bottles: 0, notes: "", rate: defaultRateStr, price: price, status: "active" };
+      
+      document.getElementById("ldPlate").value = rec.name;
+      document.getElementById("ldBottleCount").value = rec.bottles;
+      document.getElementById("ldBottleCount").max = size;
+      document.getElementById("ldCapacityNote").textContent = "Max capacity: " + size + " bottles";
+      document.getElementById("ldWineNotes").value = rec.notes || "";
+      
+      // Setup dynamic EasyKeys URL based on Key Code
+      document.getElementById("ldKeyDisplay").textContent = key;
+      document.getElementById("ldKeyOrderBtn").href = "https://easykeys.com/Timberline-Lock-(CompX)_100T-999T_" + key + "_Key_Lock.aspx";
+
+      // Setup dynamic MailTo Link for Master Trophys
+      updateEngravingLink(num, rec.name);
+
+      // Auto-populate correct dropdown values based on physical locker size
+      var sel = document.getElementById("ldSize");
+      sel.innerHTML = ""; // Clear old options
+      if(size === 12) {
+        sel.options.add(new Option("12-bottle Private Collection — Monthly ($90/mo)", "monthly-12"));
+        sel.options.add(new Option("12-bottle Private Collection — Annual ($900/yr)", "annual-12"));
+      } else {
+        sel.options.add(new Option("6-bottle Private Collection — Monthly ($60/mo)", "monthly-6"));
+        sel.options.add(new Option("6-bottle Private Collection — Annual ($600/yr)", "annual-6"));
+      }
+
+      // Restore previous selection if it exists
+      if (rec.rate && rec.rate.includes("yr")) {
+          sel.value = size === 12 ? "annual-12" : "annual-6";
+      } else {
+          sel.value = size === 12 ? "monthly-12" : "monthly-6";
+      }
+
+      setLockerStatus(rec.status || 'active');
+      renderAuditLog(loc);
+
+      switchModalTab('assign', document.querySelector('.ld-mtab'));
+      document.getElementById("ldModalBg").classList.add("open");
+    };
+
+    window.updateEmailPreview = function() {
+      var templateType = document.getElementById("ldEmailTemplate").value;
+      var memberName = document.getElementById("ldFirst").value || document.getElementById("ldPlate").value || "Member";
+      
+      var body = emailTemplates[templateType] || "";
+      body = body.replace("[Member]", memberName);
+      
+      document.getElementById("ldEmailPreview").value = body;
+    };
+
+    window.simulateEmailDispatch = function() {
+      var loc = document.getElementById("ldTitle").dataset.loc;
+      var templateType = document.getElementById("ldEmailTemplate").value;
+      addAuditLog(loc, "Communication dispatched: " + templateType.toUpperCase() + " notice.");
+      showToast("Simulated notification dispatched to member.");
+    };
+
+    function addAuditLog(loc, action) {
+      if(!lockerLogs[loc]) lockerLogs[loc] = [];
+      var dateStr = new Date().toLocaleString('en-US', {month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'numeric'});
+      lockerLogs[loc].unshift({ date: dateStr, action: action, user: "Current User" });
+      renderAuditLog(loc);
+    }
+
+    function renderAuditLog(loc) {
+      var logContainer = document.getElementById("ldAuditLog");
+      var logs = lockerLogs[loc] || [];
+      
+      if(logs.length === 0) {
+        logContainer.innerHTML = '<div style="color:#5a4a3a; font-style:italic;">No historical records found for this unit.</div>';
+        return;
+      }
+
+      var html = "";
+      logs.forEach(function(entry) {
+        html += '<div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #2e241c;">';
+        html += '<span style="color:#6f5f52; margin-right: 6px;">[' + entry.date + ']</span>';
+        html += '<span style="color:#c5b8ab;">' + entry.action + '</span>';
+        html += '</div>';
+      });
+      logContainer.innerHTML = html;
+    }
+
+    window.ldClose = function(){
+      document.getElementById("ldModalBg").classList.remove("open");
+    };
+
+    window.ldSave = function(){
+      var loc = document.getElementById("ldTitle").dataset.loc;
+      var size = parseInt(document.getElementById("ldTitle").dataset.size);
+      var defaultPrice = parseInt(document.getElementById("ldTitle").dataset.price);
+      var num = document.getElementById("ldTitle").dataset.num;
+      if(!loc) return ldClose();
+
+      var plateText = document.getElementById("ldPlate").value.trim();
+      var bottles = parseInt(document.getElementById("ldBottleCount").value) || 0;
+      var notes = document.getElementById("ldWineNotes").value.trim();
+      var selVal = document.getElementById("ldSize").value;
+      var currentStatus = document.getElementById("ldHiddenStatus").value;
+      
+      // Format the display rate for the reports table based on selection
+      var displayRate = size === 12 ? "$90/mo" : "$60/mo";
+      if(selVal.includes("annual")) displayRate = size === 12 ? "$900/yr" : "$600/yr";
+
+      var previousStatus = lockerData[loc] ? lockerData[loc].status : 'avail';
+      var statusChanged = (previousStatus !== currentStatus);
+      var nameChanged = lockerData[loc] ? (lockerData[loc].name !== plateText.toUpperCase()) : !!plateText;
+
+      if(currentStatus === 'cancel' || (currentStatus === 'active' && !plateText)) {
+        if(lockerData[loc]) addAuditLog(loc, "Locker vacated and member records cleared.");
+        delete lockerData[loc]; // Reset to Available
+      } else {
+        if(!lockerData[loc] || nameChanged) addAuditLog(loc, "Assigned / Nameplate updated to: " + plateText.toUpperCase());
+        if(statusChanged) addAuditLog(loc, "Administrative status updated to: " + currentStatus.toUpperCase());
+
+        lockerData[loc] = {
+          name: plateText.toUpperCase(),
+          bottles: bottles,
+          notes: notes,
+          rate: displayRate,
+          price: defaultPrice,
+          status: currentStatus
+        };
+      }
+
+      updateEngravingLink(num, plateText);
+      drawGrid();
+      ldClose();
+      showToast("Locker record & inventory updated successfully.");
+    };
+
+    function updateEngravingLink(num, text) {
+      var displayName = text ? text : "[Member Name]";
+      var mailtoStr = "mailto:engraving@example.com?subject=New Locker Engraving - Locker " + num + "&body=Hi team,%0D%0A%0D%0APlease engrave a new nameplate for Locker " + num + ".%0D%0A%0D%0AText to engrave: " + encodeURIComponent(displayName) + "%0D%0A%0D%0AThanks!";
+      var btn = document.getElementById("ldEngraveBtn");
+      if(btn) btn.href = mailtoStr;
+    }
+
+    window.runSimulatedWorkflow = function(){
+      ldClose();
+      showToast("Provisioning... Syncing Peoplevine, SevenRooms, & Toast. Slack pings sent!");
+    };
+
+    function showToast(msg){
+      var t = document.getElementById("ldToast");
+      t.style.animation = 'none';
+      t.offsetHeight; 
+      t.style.animation = null;
+      t.textContent = msg;
+      t.style.display = "block";
+      setTimeout(function(){ t.style.display = "none"; }, 3000);
+    }
+
+    window.ldFilter = function(type, btnEl){
+      currentFilter = type;
+      document.querySelectorAll(".ld-filter-btn").forEach(function(b){ b.classList.remove("active"); });
+      if(btnEl) btnEl.classList.add("active");
+      applyFilters();
+    };
+
+    window.ldSearch = function(val){
+      currentSearch = val.trim();
+      applyFilters();
+    };
+
+    function applyFilters(){
+      var cells = grid.querySelectorAll(".ld-cell");
+      cells.forEach(function(cell){
+        var matchFilter = true;
+        if(currentFilter === 'avail' && cell.dataset.status !== 'avail') matchFilter = false;
+        if(currentFilter === '12' && cell.dataset.size !== '12') matchFilter = false;
+        if(currentFilter === '6' && cell.dataset.size !== '6') matchFilter = false;
+
+        var matchSearch = true;
+        if(currentSearch){
+          var q = currentSearch.toLowerCase();
+          var loc = cell.dataset.loc.toLowerCase();
+          var num = cell.dataset.num;
+          var name = cell.dataset.name;
+          if(!loc.includes(q) && !num.includes(q) && !name.includes(q)) matchSearch = false;
+        }
+        
+        // Use empty string to reset to CSS default, rather than block which breaks internal sizing
+        if(matchFilter && matchSearch) cell.style.display = '';
+        else cell.style.display = 'none';
+      });
+    }
+
+    document.getElementById("ldModalBg").addEventListener('click', function(e){
+        if(e.target === this) ldClose();
+    });
+
+    drawGrid();
+  })();
+  </script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
