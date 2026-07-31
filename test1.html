@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sovantha Bun — Workplace Operations / Member Experience</title>
+  <meta
+    name="description"
+    content="Sovantha Bun — workplace operations, workflow improvement, SOPs, and member systems."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #050505;
+      --surface: #111111;
+      --surface-2: #171717;
+      --border: rgba(255,255,255,0.09);
+      --text: #f3efe8;
+      --muted: #b7b0a5;
+      --soft: #898277;
+      --accent: #d8c19e;
+      --max-width: 1120px;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 18px 44px rgba(0,0,0,0.32);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: 0.2s ease;
+    }
+
+    a:hover {
+      color: var(--accent);
+    }
+
+    .site {
+      width: min(100% - 32px, var(--max-width));
+      margin: 0 auto;
+      padding: 48px 0 64px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 360px);
+      gap: 40px;
+      align-items: center;
+      padding: 24px 0 56px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--soft);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .role {
+      margin: 0 0 18px;
+      color: var(--soft);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      max-width: 62ch;
+    }
+
+    .lead {
+      color: var(--text);
+      font-size: 1.05rem;
+      max-width: 36ch;
+    }
+
+    .hero-photo {
+      justify-self: end;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .hero-photo img {
+      width: 100%;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .button:hover {
+      border-color: rgba(216,193,158,0.45);
+      background: rgba(255,255,255,0.06);
+      color: var(--accent);
+    }
+
+    .section {
+      padding: 40px 0 0;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 32px;
+      align-items: start;
+      margin-bottom: 22px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.018));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-type {
+      margin: 0 0 10px;
+      color: var(--soft);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .artifact {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: var(--soft);
+      font-size: 0.92rem;
+    }
+
+    .contact {
+      padding-top: 40px;
+      color: var(--soft);
+      font-size: 0.95rem;
+    }
+
+    .contact a {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .section-head,
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-photo {
+        justify-self: start;
+        max-width: 320px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .site {
+        width: min(100% - 20px, var(--max-width));
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .hero-photo {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="site">
+    <section class="hero" aria-labelledby="top">
+      <div>
+        <p class="eyebrow">Selected Work</p>
+        <h1 id="top">Sovantha Bun</h1>
+        <p class="role">Workplace Ops / Member Experience</p>
+        <p class="lead">
+          Operations, workflow improvement, and member-facing systems.
+        </p>
+        <p>
+          I spent ten years working in operations at a private club in San Francisco.
+          Most of my work was in onboarding, internal systems, staff workflows,
+          and the day-to-day pieces that keep things moving.
+        </p>
+        <p>
+          This page is a short preview. The live demo has more context.
+        </p>
+
+        <div class="actions">
+          <a class="button" href="https://sovantha-bun.netlify.app/" target="_blank" rel="noopener noreferrer">
+            Open live demo ↗
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-photo">
+        <img src="./images/sovantha-portrait.jpg" alt="Portrait of Sovantha Bun" />
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="projects-heading">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Selected Projects</p>
+          <h2 id="projects-heading">A few examples</h2>
+        </div>
+        <div>
+          <p>
+            A few projects that reflect the kind of work I’ve done most often:
+            workflow automation, rebrand support, documentation, and staff-facing systems.
+          </p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <p class="card-type">Workflow Automation</p>
+          <h3>Onboarding Pipeline Automation</h3>
+          <p>
+            A Google Apps Script workflow for onboarding tasks that were previously manual and repetitive.
+          </p>
+          <div class="artifact">
+            Intake sheet, welcome emails, folder creation, and issue logging.
+          </div>
+        </article>
+
+        <article class="card">
+          <p class="card-type">Rebrand Support</p>
+          <h3>Wingtip → Amador</h3>
+          <p>
+            Operations support during the rebrand, including member-facing communication and system updates.
+          </p>
+          <div class="artifact">
+            Emails, newsletters, signage copy, CRM templates, and rollout coordination.
+          </div>
+        </article>
+
+        <article class="card">
+          <p class="card-type">Training / SOPs</p>
+          <h3>Internal SOPs &amp; Staff Guides</h3>
+          <p>
+            Internal documentation to make workflows easier to hand off, follow, and maintain.
+          </p>
+          <div class="artifact">
+            CRM usage, guest handling, vendor processes, and role-based operations.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="contact">
+      <p>
+        Email:
+        <a href="mailto:sbvantha415@gmail.com">sbvantha415@gmail.com</a>
+      </p>
+    </div>
+  </main>
+</body>
+</html>

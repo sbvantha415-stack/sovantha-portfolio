@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Experience Portfolio</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#1a1d24; --line:#2a2f3a;
+    --text:#e7e9ee; --muted:#9aa3b2; --accent:#6ea8fe;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:48px 24px}
+  header h1{font-size:2rem; margin:0 0 8px}
+  nav{color:var(--muted); font-size:.9rem; margin-bottom:40px}
+  nav span{margin-right:16px}
+  .eyebrow{
+    display:inline-block; text-transform:uppercase; letter-spacing:.08em;
+    font-size:.72rem; color:var(--accent); font-weight:600; margin-bottom:8px;
+  }
+  h2{font-size:1.4rem; margin:48px 0 12px; border-bottom:1px solid var(--line); padding-bottom:8px}
+  h3,h4{margin:0 0 6px}
+  section{margin-bottom:32px}
+  .card{
+    background:var(--card); border:1px solid var(--line);
+    border-radius:12px; padding:20px 22px; margin:14px 0;
+  }
+  .grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .callout{background:var(--card); border-left:3px solid var(--accent); padding:14px 18px; border-radius:8px; margin:14px 0}
+  .link{color:var(--accent); text-decoration:none; font-weight:600}
+  .muted{color:var(--muted)}
+  ol.steps{list-style:none; counter-reset:s; padding:0}
+  ol.steps li{counter-increment:s; position:relative; padding:12px 0 12px 44px; border-bottom:1px solid var(--line)}
+  ol.steps li::before{
+    content:counter(s,decimal-leading-zero); position:absolute; left:0; top:12px;
+    color:var(--accent); font-weight:700;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Member Experience Portfolio</h1>
+    <nav>
+      <span>1. Attributes</span><span>2. Process</span>
+      <span>3. Intake</span><span>4. Follow-Through</span>
+    </nav>
+  </header>
+
+  <section>
+    <span class="eyebrow">Client Attributes</span>
+    <h2>Basic Use Cases for Collecting the Right Information</h2>
+    <p>The core job is to collect useful client attributes, store them where the
+      team can actually find them, and make them usable across service. SevenRooms
+      supports guest profiles with allergies, preferences, tags, and reservation
+      notes, while Toast stores guest contact information and order history and can
+      import guest tags and internal notes.</p>
+
+    <div class="grid">
+      <div class="card">
+        <span class="eyebrow">Use Case 01</span>
+        <h4>Collect preferences</h4>
+        <p class="muted">Keep basic details like seating preference, favorite table
+          area, allergies, birthday, or VIP status in one profile.</p>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Use Case 02</span>
+        <h4>Update notes after visits</h4>
+        <p class="muted">Add short notes after an interaction so the next person
+          understands the client without a full handoff conversation.</p>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Use Case 03</span>
+        <h4>Use data during service</h4>
+        <p class="muted">Make it visible when the team needs it — at the host stand,
+          on POS, or during follow-up.</p>
+      </div>
+    </div>
+
+    <div class="callout"><strong>What this solves:</strong> Less guesswork,
+      cleaner handoffs, better recognition, and fewer missed details when someone
+      new is helping the client.</div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Process View</span>
+    <h2>A Simple Attribute Collection Process</h2>
+    <p>Collect details, store them in the client record, make them visible during
+      service, and update them when needed.</p>
+    <ol class="steps">
+      ><strong>Collect</strong> — Ask for a few useful details and add them to the profile.</li>
+      ><strong>Store</strong> — Save them as notes, tags, profile fields, or order-linked history.</li>
+      ><strong>Reference</strong> — Make them visible during the next reservation, order, or interaction.</li>
+      ><strong>Refine</strong> — Update the record over time so the profile stays useful.</li>
+    </ol>
+  </section>
+
+  <section>
+    <span class="eyebrow">Basic Intake</span>
+    <h2>Simple Forms for Collecting Useful Attributes</h2>
+    <div class="grid">
+      <div class="card">
+        <span class="eyebrow">Profile Setup</span>
+        <h4>New Client Profile</h4>
+        <p class="muted">Basic contact details, a preferred name, and one or two useful tags.</p>
+        <a class="link" href="#">Open form →</a>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Profile Notes</span>
+        <h4>Preference Capture</h4>
+        <p class="muted">Seating preference, favorite order, dietary restriction, or birthday.</p>
+        <a class="link" href="#">Open form →</a>
+      </div>
+      <div class="card">
+        <span class="eyebrow">After Visit</span>
+        <h4>Visit Follow-Up Notes</h4>
+        <p class="muted">Short, useful notes so the next person can pick up where the last interaction left off.</p>
+        <a class="link" href="#">Open form →</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Follow-Through</span>
+    <h2>How Basic Data Becomes Operationally Useful</h2>
+    <p>Collecting information only helps if it is easy to find later. SevenRooms
+      emphasizes visibility at the host stand and during the next shift, and Toast
+      keeps a searchable guest database with guest information and order history.</p>
+  </section>
+
+</div>
+</body>
+</html>
