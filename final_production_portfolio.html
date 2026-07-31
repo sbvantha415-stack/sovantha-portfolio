@@ -76,9 +76,9 @@
       border-radius:var(--radius); overflow:hidden; transition:border-color .2s ease, transform .2s ease;
     }
     .card:hover .card-shell{border-color:rgba(255,255,255,.14); transform:translateY(-2px)}
-    .media{aspect-ratio:16/10; border-bottom:1px solid var(--line); position:relative; overflow:hidden; background:linear-gradient(135deg, #191816 0%, #0f0f0d 100%)}
-    .media img{width:100%; height:100%; object-fit:cover; filter:grayscale(18%) brightness(.92)}
-    .card:hover .media img{filter:grayscale(0) brightness(1)}
+    .media{aspect-ratio:16/9; border-bottom:1px solid var(--line); position:relative; overflow:hidden; background:#0d0c0b}
+    .media img{width:100%; height:100%; object-fit:cover; object-position:top center; transition:transform .3s ease}
+    .card:hover .media img{transform:scale(1.02)}
     .placeholder{
       position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding:24px; color:var(--faint);
       background:linear-gradient(180deg, rgba(183,155,106,.08), rgba(255,255,255,0) 45%), linear-gradient(135deg, #191816 0%, #0f0f0d 100%);
@@ -217,12 +217,7 @@
           <button class="card" onclick="openModal('opening')">
             <div class="card-shell">
               <div class="media">
-                <div class="placeholder">
-                  <div>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
-                    <span>Launch & Operations</span>
-                  </div>
-                </div>
+                <img src="preview-touchpoints.jpg" alt="Membership Touchpoints & Document Review">
               </div>
               <div class="card-body">
                 <span class="project-category">Hospitality Operations</span>
@@ -236,12 +231,7 @@
           <button class="card" onclick="openModal('sops')">
             <div class="card-shell">
               <div class="media">
-                <div class="placeholder">
-                  <div>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    <span>Training Systems</span>
-                  </div>
-                </div>
+                <img src="preview-crm.jpg" alt="Automated CRM Engine">
               </div>
               <div class="card-body">
                 <span class="project-category">Training & Service Standards</span>
@@ -255,12 +245,7 @@
           <button class="card" onclick="openModal('automation')">
             <div class="card-shell">
               <div class="media">
-                <div class="placeholder">
-                  <div>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                    <span>Lifecycle System</span>
-                  </div>
-                </div>
+                <img src="preview-locker.jpg" alt="Locker Management Suite">
               </div>
               <div class="card-body">
                 <span class="project-category">Onboarding & Retention</span>
@@ -274,12 +259,7 @@
           <button class="card" onclick="openModal('onboarding')">
             <div class="card-shell">
               <div class="media">
-                <div class="placeholder">
-                  <div>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z"/><path d="M4 8h16"/><path d="M8 12h8"/><path d="M8 16h5"/></svg>
-                    <span>Member Packet</span>
-                  </div>
-                </div>
+                <img src="preview-reciprocal.jpg" alt="Global Reciprocal Network">
               </div>
               <div class="card-body">
                 <span class="project-category">Member Communications</span>
@@ -321,7 +301,7 @@
         <div class="section-head">
           <p class="section-label">Selected Event Archive</p>
           <h2 class="section-title">A small archive of event work and documentation.</h2>
-          <p class="section-intro">Keep this section selective. Use it to validate continuity and live-event experience, not to create a media wall.</p>
+          <p class="section-intro">Recurring events across club programming — from themed member socials to signature cultural evenings.</p>
         </div>
         <div class="archive-grid">
           <div class="archive-card">
@@ -357,15 +337,15 @@
           <p>Available for member experience, hospitality operations, and service-focused roles in Los Angeles.</p>
         </div>
         <div class="contact-row">
-          <a href="mailto:[sbvantha415@gmail.com]">[sbvantha415@gmail.com]</a>
-          <a href="[www.linkedin.com/in/sovantha-bun]" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <span>San Francisco, CA</span>
+          <a href="mailto:sbvantha415@gmail.com">sbvantha415@gmail.com</a>
+          <a href="https://www.linkedin.com/in/sovantha-bun" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <span>Los Angeles, CA</span>
         </div>
       </section>
     </main>
 
     <footer class="footer">
-      <span>[Sovantha Bun]</span>
+      <span>Sovantha Bun</span>
       <span>Member Experience / Hospitality Operations</span>
     </footer>
   </div>

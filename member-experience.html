@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Experience Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fdfaf6;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #342821;
+  }
+
+  .portfolio-header {
+    background: #2c2018;
+    color: #eeddcc;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #a57a4b;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .portfolio-header h1 {
+    margin: 0;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 24px;
+    letter-spacing: 0.05em;
+  }
+
+  .portfolio-nav {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: #c4b1a0;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .nav-btn:hover,
+  .nav-btn.active {
+    color: #fff;
+    border-bottom-color: #a57a4b;
+  }
+
+  .slide-container {
+    display: none;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px 40px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .slide-container.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide-head {
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #9b7650;
+    margin: 0 0 6px;
+  }
+
+  .slide-title {
+    margin: 0 0 8px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 32px;
+    line-height: 1.1;
+    color: #2c2018;
+    font-weight: 600;
+  }
+
+  .slide-sub {
+    max-width: 780px;
+    margin: 0 0 30px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #6f5c4b;
+  }
+
+  .op-callout {
+    background: #f6ede3;
+    border: 1px solid rgba(165, 122, 75, 0.28);
+    padding: 16px 20px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #4a3424;
+  }
+
+  .op-callout strong {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9b7650;
+    margin-bottom: 4px;
+  }
+
+  .scenario-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .scenario-btn {
+    border: 1px solid rgba(165, 122, 75, 0.28);
+    background: #fbf7f2;
+    color: #6a5543;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .scenario-btn:hover,
+  .scenario-btn.active {
+    background: #2c2018;
+    color: #f4e6d8;
+    border-color: #2c2018;
+  }
+
+  .scenario-panel {
+    background: linear-gradient(180deg, #f8f2ea, #f3ebe0);
+    border: 1px solid rgba(165, 122, 75, 0.22);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.05);
+  }
+
+  .scenario-summary {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(165, 122, 75, 0.18);
+  }
+
+  .scenario-kicker {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #9b7650;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .scenario-summary h4 {
+    margin: 0 0 10px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 28px;
+    color: #2c2018;
+    font-weight: 600;
+  }
+
+  .scenario-summary p {
+    margin: 0;
+    max-width: 760px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #6f5c4b;
+  }
+
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .scenario-card {
+    background: #fff;
+    border: 1px solid rgba(165, 122, 75, 0.18);
+    border-radius: 12px;
+    padding: 18px;
+    min-height: 200px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  }
+
+  .scenario-step {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #9b7650;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .scenario-card h5 {
+    margin: 0 0 10px;
+    font-size: 17px;
+    color: #2c2018;
+    line-height: 1.25;
+  }
+
+  .scenario-card p {
+    margin: 0;
+    font-size: 13px;
+    color: #6f5c4b;
+    line-height: 1.6;
+  }
+
+  .ad-timeline {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 30px;
+    padding-top: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .ad-timeline::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    height: 2px;
+    background: rgba(185, 155, 122, .3);
+    z-index: 1;
+  }
+
+  .ad-node {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 22%;
+    min-width: 140px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .ad-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #f6ede3;
+    border: 2px solid #b3834b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+
+  .ad-node.active .ad-icon {
+    background: linear-gradient(180deg, #d0a66c, #ba8a52);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(208, 166, 108, 0.6);
+  }
+
+  .ad-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    color: #342821;
+  }
+
+  .split-stage {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .stage-front {
+    flex: 1;
+    min-width: 280px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #e8ddd0;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .stage-back {
+    flex: 1;
+    min-width: 280px;
+    background: #1a1410;
+    color: #d0c2b4;
+    padding: 24px;
+    border-radius: 12px;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    box-shadow: inset 0 4px 15px rgba(0,0,0,0.3);
+    border: 1px solid #3d3027;
+  }
+
+  .stage-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+  }
+
+  .stage-front .stage-label {
+    color: #a57a4b;
+    border-bottom: 1px solid #f0e6da;
+    padding-bottom: 10px;
+  }
+
+  .stage-back .stage-label {
+    color: #8cb885;
+    border-bottom: 1px solid #3d3027;
+    padding-bottom: 10px;
+  }
+
+  .sys-log {
+    color: #8cb885;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .sys-cmd {
+    color: #d0a66c;
+  }
+
+  .vip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .vip-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(167, 134, 96, .3);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+  }
+
+  .vip-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    border-color: #a57a4b;
+  }
+
+  .vip-img {
+    height: 160px;
+    background: #ddd;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .vip-content {
+    padding: 20px;
+  }
+
+  .vip-category {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #b3834b;
+    margin-bottom: 8px;
+  }
+
+  .vip-title {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: #2c2018;
+  }
+
+  .vip-desc {
+    font-size: 13px;
+    color: #6f5c4b;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .vip-action {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #a57a4b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .loop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .loop-card {
+    background: #fff;
+    border: 1px solid #e0cba4;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  }
+
+  .loop-card:hover,
+  .loop-card.active {
+    border-color: #a57a4b;
+    background: #fbf7f2;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(165,122,75,0.15);
+  }
+
+  .loop-step-num {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #9b7650;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .loop-card h4 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 20px;
+    margin: 0 0 8px;
+    color: #2c2018;
+  }
+
+  .loop-card p {
+    font-size: 12px;
+    color: #6f5c4b;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .loop-detail-box {
+    background: #2c2018;
+    color: #eeddcc;
+    padding: 25px;
+    border-radius: 12px;
+    border-top: 3px solid #a57a4b;
+  }
+
+  .loop-detail-box h4 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 22px;
+    margin: 0 0 10px;
+    color: #d0a66c;
+  }
+
+  .loop-detail-box p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #c4b1a0;
+    margin: 0;
+  }
+
+  #ldModalBg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(2px);
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+  }
+
+  #ldModalBg.open {
+    display: flex;
+  }
+
+  .modal-box {
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 22px;
+    border-radius: 18px;
+    border: 1px solid rgba(171, 132, 88, .4);
+    background: linear-gradient(180deg, #f3ebe0, #e8ddd0);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, .25);
+  }
+
+  .modal-box h4 {
+    margin: 0 0 4px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #2f2119;
+  }
+
+  .modal-box input,
+  .modal-box select,
+  .modal-box textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 9px;
+    border: 1px solid #c8b29b;
+    background: #f7f0e7;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+  }
+
+  .modal-box label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #7b5f4a;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .ld-btnrow {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .ld-save,
+  .ld-cancel {
+    flex: 1;
+    border-radius: 999px;
+    padding: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+
+  .ld-save {
+    background: linear-gradient(180deg, #d0a66c 0%, #ba8a52 100%);
+    color: #2c1f15;
+    border: 1px solid #a57a4b;
+  }
+
+  .ld-cancel {
+    background: #f8f2ea;
+    color: #6f5a49;
+    border: 1px solid #c4b1a0;
+  }
+
+  .liability-box {
+    background: #fff;
+    border: 1px solid #e0cba4;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .liability-box label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 11px;
+    text-transform: none;
+    font-weight: 400;
+    color: #5a4535;
+    cursor: pointer;
+  }
+
+  .liability-box input[type="checkbox"] {
+    width: auto;
+    margin: 2px 0 0 0;
+  }
+
+  @media (max-width: 980px) {
+    .scenario-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .portfolio-header {
+      padding: 18px 20px;
+    }
+
+    .slide-title {
+      font-size: 28px;
+    }
+
+    .ad-node {
+      width: calc(50% - 10px);
+    }
+
+    .ad-timeline::before {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .scenario-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .portfolio-nav {
+      gap: 8px;
+    }
+
+    .nav-btn {
+      font-size: 11px;
+      padding: 6px 8px;
+    }
+
+    .slide-container {
+      margin: 26px auto;
+    }
+
+    .slide-title {
+      font-size: 26px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="portfolio-header">
+  <h1>Member Experience Portfolio</h1>
+  <nav class="portfolio-nav">
+    <button class="nav-btn active" onclick="switchSlide('slide1', this)">1. Revenue Flow</button>
+    <button class="nav-btn" onclick="switchSlide('slide2', this)">2. Operational Handoff</button>
+    <button class="nav-btn" onclick="switchSlide('slide3', this)">3. VIP Compliance</button>
+    <button class="nav-btn" onclick="switchSlide('slide4', this)">4. Anticipatory Loop</button>
+  </nav>
+</header>
+
+<div id="slide1" class="slide-container active">
+  <div class="slide-head">Revenue Flow & Service Intelligence</div>
+  <h3 class="slide-title">How Member Attributes Are Captured Through Service</h3>
+  <p class="slide-sub">
+    Every touchpoint is a chance to learn something useful. Reservation details, check-in observations,
+    service notes, and follow-up actions create a shared profile that helps teams personalize service,
+    support operations, and unlock revenue opportunities over time.
+  </p>
+
+  <div class="op-callout">
+    <strong>Operational Focus</strong>
+    This system is designed around people-led data capture. Staff confirm details during natural service
+    moments, then route useful information into the right workflow so the next team member can act on it
+    without asking the member to repeat themselves.
+  </div>
+
+  <div class="scenario-tabs">
+    <button class="scenario-btn active" onclick="showScenario(1)" id="scenarioBtn1">1. Check-In</button>
+    <button class="scenario-btn" onclick="showScenario(2)" id="scenarioBtn2">2. Office Manager</button>
+    <button class="scenario-btn" onclick="showScenario(3)" id="scenarioBtn3">3. Private Events</button>
+  </div>
+
+  <div class="scenario-panel">
+    <div class="scenario-summary" id="scenarioSummary"></div>
+    <div class="scenario-grid" id="scenarioGrid"></div>
+  </div>
+</div>
+
+<div id="slide2" class="slide-container">
+  <div class="slide-head">Operational Handoff</div>
+  <h3 class="slide-title">What the Member Sees vs. What Staff Handles</h3>
+  <p class="slide-sub">
+    The member experiences one simple action. Behind the scenes, the system routes the request,
+    alerts the right team, and helps staff prepare the service smoothly.
+  </p>
+
+  <div class="ad-timeline">
+    <div class="ad-node active" onclick="showTouchpoint(1)" id="node1">
+      <div class="ad-icon">1</div>
+      <div class="ad-title">Member Request</div>
+    </div>
+    <div class="ad-node" onclick="showTouchpoint(2)" id="node2">
+      <div class="ad-icon">2</div>
+      <div class="ad-title">System Sends It</div>
+    </div>
+    <div class="ad-node" onclick="showTouchpoint(3)" id="node3">
+      <div class="ad-icon">3</div>
+      <div class="ad-title">Staff Prepares</div>
+    </div>
+    <div class="ad-node" onclick="showTouchpoint(4)" id="node4">
+      <div class="ad-icon">4</div>
+      <div class="ad-title">Service Delivered</div>
+    </div>
+  </div>
+
+  <div class="split-stage">
+    <div class="stage-front">
+      <div class="stage-label">Front Stage: The Member Experience</div>
+      <div id="frontStageDisplay"></div>
+    </div>
+
+    <div class="stage-back">
+      <div class="stage-label">Back Stage: Operational Execution</div>
+      <div id="backStageDisplay"></div>
+    </div>
+  </div>
+</div>
+
+<div id="slide3" class="slide-container">
+  <div class="slide-head">VIP Compliance</div>
+  <h3 class="slide-title">VIP Concierge & Partner Booking</h3>
+  <p class="slide-sub">
+    Members can start premium partner requests online. The system then helps staff handle verification,
+    approvals, and partner communication in a secure way.
+  </p>
+
+  <div class="vip-grid">
+    <div class="vip-card" onclick="openVipModal('The Carneros Spa Retreat', 'Wellness Partner', 'spa')">
+      <div class="vip-img" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=900&q=80');"></div>
+      <div class="vip-content">
+        <div class="vip-category">Wellness Partner</div>
+        <h4 class="vip-title">The Carneros Spa Retreat</h4>
+        <p class="vip-desc">Members can request premium treatment access while staff handles partner coordination and authorization.</p>
+        <div class="vip-action">Start request →</div>
+      </div>
+    </div>
+
+    <div class="vip-card" onclick="openVipModal('Aero Private Aviation', 'Travel Partner', 'aviation')">
+      <div class="vip-img" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&w=900&q=80');"></div>
+      <div class="vip-content">
+        <div class="vip-category">Travel Partner</div>
+        <h4 class="vip-title">Aero Private Aviation</h4>
+        <p class="vip-desc">Travel requests can begin digitally while staff manages identity verification and final logistics.</p>
+        <div class="vip-action">Start request →</div>
+      </div>
+    </div>
+
+    <div class="vip-card" onclick="openVipModal('Global Golf Access', 'Reciprocal Club', 'reciprocal')">
+      <div class="vip-img" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1587304791483-3b102ce20d91?auto=format&fit=crop&w=900&q=80');"></div>
+      <div class="vip-content">
+        <div class="vip-category">Reciprocal Club</div>
+        <h4 class="vip-title">Global Golf Access</h4>
+        <p class="vip-desc">Members request access digitally while the club handles introductions, approvals, and host-club protocols.</p>
+        <div class="vip-action">Request access →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="slide4" class="slide-container">
+  <div class="slide-head">Anticipatory Loop</div>
+  <h3 class="slide-title">How the Team Learns Member Preferences</h3>
+  <p class="slide-sub">
+    Staff notice small preferences, record them, and share them across teams.
+    Over time, this helps the club deliver more personal service without asking the same questions again.
+  </p>
+
+  <div class="loop-grid">
+    <div class="loop-card active" onclick="showLoopStep(1)" id="loopCard1">
+      <div class="loop-step-num">Step 01</div>
+      <h4>Notice</h4>
+      <p>Staff spots a habit, preference, or repeated pattern during service.</p>
+    </div>
+    <div class="loop-card" onclick="showLoopStep(2)" id="loopCard2">
+      <div class="loop-step-num">Step 02</div>
+      <h4>Record It</h4>
+      <p>The detail is logged so the information is shared across the team.</p>
+    </div>
+    <div class="loop-card" onclick="showLoopStep(3)" id="loopCard3">
+      <div class="loop-step-num">Step 03</div>
+      <h4>Use It</h4>
+      <p>On the next visit, staff applies the insight to make service smoother.</p>
+    </div>
+    <div class="loop-card" onclick="showLoopStep(4)" id="loopCard4">
+      <div class="loop-step-num">Step 04</div>
+      <h4>Anticipate</h4>
+      <p>Repeated observations help the team prepare for needs in advance.</p>
+    </div>
+  </div>
+
+  <div class="loop-detail-box" id="loopDetailContent"></div>
+</div>
+
+<div id="ldModalBg">
+  <div class="modal-box" id="vipFormContent" style="display:none;">
+    <div id="vipStep1">
+      <div style="font-size:10px; color:#b3834b; text-transform:uppercase;" id="vipCategoryMeta">Partner</div>
+      <h4 id="vipTitle">Partner Name</h4>
+      <p style="font-size:13px; color:#6f5b4a; margin-bottom:20px;">
+        Provide your initial details. Our concierge team will review the request and follow up with the next step.
+      </p>
+
+      <label>Preferred Dates</label>
+      <input type="text" placeholder="e.g., Oct 12–14">
+
+      <label>Details or Party Size</label>
+      <textarea rows="2" placeholder="e.g., party of 4, preferred arrival time, special requests"></textarea>
+
+      <div class="liability-box">
+        <label>
+          <input type="checkbox" id="vipLiabilityCheck">
+          <span id="vipLiabilityText">I authorize the club to share the information needed to start this request.</span>
+        </label>
+      </div>
+
+      <div class="ld-btnrow">
+        <button class="ld-save" onclick="processVipBooking()">Submit Request</button>
+        <button class="ld-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+
+    <div id="vipStep2" style="display:none; text-align:center; padding: 20px;">
+      <h4 style="color:#a57a4b; margin-bottom:10px;">Request Sent</h4>
+      <p style="font-size:13px; color:#6f5b4a; line-height: 1.6;">
+        Your request has been logged. A team member will review the profile, confirm the next steps, and follow up directly.
+      </p>
+      <button class="ld-save" onclick="closeModal()" style="margin-top:15px; width:100%;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchSlide(slideId, btnEl) {
+    document.querySelectorAll('.slide-container').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(slideId).classList.add('active');
+    if (btnEl) btnEl.classList.add('active');
+  }
+
+  const scenarioData = {
+    1: {
+      kicker: "Scenario 01",
+      title: "Member Check-In Intelligence",
+      intro: "At arrival, the host confirms identity, notes preferences, and adds useful observations that improve the next visit.",
+      steps: [
+        {
+          step: "Step 01",
+          title: "Member Arrives",
+          text: "The host greets the member, confirms their booking or account, and checks whether any notes already exist in the profile."
+        },
+        {
+          step: "Step 02",
+          title: "Staff Captures Live Details",
+          text: "During check-in, staff confirms useful attributes such as seating preference, arrival pattern, guest count, pace, or service sensitivities."
+        },
+        {
+          step: "Step 03",
+          title: "Notes Become Shared Context",
+          text: "The information is added to the guest profile so front desk, dining, and concierge teams can see the same service context."
+        },
+        {
+          step: "Step 04",
+          title: "Next Visit Improves",
+          text: "The next team member can act on those details quickly, creating a more personal experience without asking the same questions again."
+        }
+      ]
+    },
+    2: {
+      kicker: "Scenario 02",
+      title: "Office Manager Coordination Flow",
+      intro: "An office manager or administrative lead captures service and operational attributes that help coordinate follow-up across departments.",
+      steps: [
+        {
+          step: "Step 01",
+          title: "Request Comes In",
+          text: "A member emails or calls with a scheduling need, billing question, access issue, or special coordination request."
+        },
+        {
+          step: "Step 02",
+          title: "Admin Confirms Key Attributes",
+          text: "The office manager records the member’s intent, urgency, preferred channel, decision-maker, and any constraints tied to the request."
+        },
+        {
+          step: "Step 03",
+          title: "Work Is Routed Internally",
+          text: "The request is passed to the right team, such as accounting, membership, front desk, or leadership, with enough context to avoid duplicate outreach."
+        },
+        {
+          step: "Step 04",
+          title: "Service Becomes Organized",
+          text: "Because the context is captured clearly, follow-up is faster, handoffs are cleaner, and the member feels the club is coordinated behind the scenes."
+        }
+      ]
+    },
+    3: {
+      kicker: "Scenario 03",
+      title: "Private Events Qualification Flow",
+      intro: "Private event inquiries become more valuable when staff capture commercial intent, guest needs, and service expectations early.",
+      steps: [
+        {
+          step: "Step 01",
+          title: "Inquiry Is Received",
+          text: "A prospective or existing member asks about hosting a dinner, reception, meeting, or celebration."
+        },
+        {
+          step: "Step 02",
+          title: "Sales Qualifies the Opportunity",
+          text: "Staff captures headcount, event type, preferred dates, budget range, VIP attendees, food and beverage expectations, and decision timeline."
+        },
+        {
+          step: "Step 03",
+          title: "Operational Notes Are Attached",
+          text: "Important planning details such as room fit, AV needs, privacy concerns, billing structure, and hosting style are documented early."
+        },
+        {
+          step: "Step 04",
+          title: "Proposal Feels Personalized",
+          text: "The team can respond with a more tailored proposal, stronger follow-up, and a smoother transition from inquiry to booked event."
+        }
+      ]
+    }
+  };
+
+  function showScenario(id) {
+    document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('scenarioBtn' + id).classList.add('active');
+
+    const data = scenarioData[id];
+
+    document.getElementById('scenarioSummary').innerHTML = `
+      <div class="scenario-kicker">${data.kicker}</div>
+      <h4>${data.title}</h4>
+      <p>${data.intro}</p>
+    `;
+
+    document.getElementById('scenarioGrid').innerHTML = data.steps.map(item => `
+      <div class="scenario-card">
+        <div class="scenario-step">${item.step}</div>
+        <h5>${item.title}</h5>
+        <p>${item.text}</p>
+      </div>
+    `).join('');
+  }
+
+  const stageData = {
+    1: {
+      front: `<div style="text-align:center; padding: 20px 0;"><button style="padding: 14px 28px; background: #2c2018; color: #eeddcc; border:none; border-radius: 4px; font-family: 'Cormorant Garamond'; font-size: 18px; cursor: default;">Submit Request</button><p style="font-size: 13px; color: #6f5b4a; margin-top: 20px;">The member completes one clear action. From their point of view, the process feels quick and simple.</p></div>`,
+      back: `<span class="sys-log">[SYSTEM]</span><span class="sys-cmd">> Member request received</span><br><span class="sys-cmd">> Account status checked</span><br><span class="sys-cmd">> Request packaged for staff review</span><br><span class="sys-cmd">> Sent to the correct queue</span>`
+    },
+    2: {
+      front: `<div style="text-align:center; padding: 20px 0; opacity: 0.7;"><p style="font-size: 18px; font-family: 'Cormorant Garamond'; color: #2c2018; margin-bottom: 5px;">No extra effort from the member</p><p style="font-size: 13px; color: #6f5b4a; margin-top: 15px;">The member does not need to chase staff, repeat details, or fill out extra forms.</p></div>`,
+      back: `<span class="sys-log">[ROUTING]</span><span class="sys-cmd">> Request matched to service type</span><br><span class="sys-cmd">> Relevant notes pulled in</span><br><span class="sys-cmd">> Front desk notified</span><br><span class="sys-cmd">> Concierge or department alerted</span>`
+    },
+    3: {
+      front: `<div style="text-align:center; padding: 20px 0; opacity: 0.7;"><p style="font-size: 18px; font-family: 'Cormorant Garamond'; color: #2c2018; margin-bottom: 5px;">Preparation happens quietly</p><p style="font-size: 13px; color: #6f5b4a; margin-top: 15px;">While the member continues their day, staff gets everything ready behind the scenes.</p></div>`,
+      back: `<span class="sys-log">[STAFF PREP]</span><span class="sys-cmd">> Task assigned</span><br><span class="sys-cmd">> Member details reviewed</span><br><span class="sys-cmd">> Physical or service setup prepared</span><br><span class="sys-cmd">> Team confirms completion status</span>`
+    },
+    4: {
+      front: `<div style="text-align:center; padding: 20px 0;"><p style="font-size: 22px; font-family: 'Cormorant Garamond'; color: #2c2018; font-weight: 600; margin-bottom: 5px;">The service feels seamless</p><p style="font-size: 13px; color: #6f5b4a; margin-top: 15px;">The member receives a polished, human handoff instead of a complicated process.</p></div>`,
+      back: `<span class="sys-log">[COMPLETE]</span><span class="sys-cmd">> Request marked complete</span><br><span class="sys-cmd">> Billing updated if needed</span><br><span class="sys-cmd">> Member record updated</span><br><span class="sys-cmd">> Team closes the task</span>`
+    }
+  };
+
+  function showTouchpoint(id) {
+    document.querySelectorAll('.ad-node').forEach(n => n.classList.remove('active'));
+    document.getElementById('node' + id).classList.add('active');
+    document.getElementById('frontStageDisplay').innerHTML = stageData[id].front;
+    document.getElementById('backStageDisplay').innerHTML = stageData[id].back;
+  }
+
+  const loopData = {
+    1: {
+      title: "Step 1: Notice the Pattern",
+      text: "Great service starts with small observations. A staff member notices a recurring preference, habit, or timing pattern during a member visit."
+    },
+    2: {
+      title: "Step 2: Record and Share It",
+      text: "The observation is written down in the CRM or shift notes so the information is available to the full team, not just one person."
+    },
+    3: {
+      title: "Step 3: Use It on the Next Visit",
+      text: "On the member’s next visit, staff uses that information to make the experience smoother and more personal."
+    },
+    4: {
+      title: "Step 4: Build Predictable Service",
+      text: "As more observations are collected, the team can anticipate needs earlier and deliver more consistent service."
+    }
+  };
+
+  function showLoopStep(step) {
+    document.querySelectorAll('.loop-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('loopCard' + step).classList.add('active');
+    const data = loopData[step];
+    document.getElementById('loopDetailContent').innerHTML = `<h4>${data.title}</h4><p>${data.text}</p>`;
+  }
+
+  const modalBg = document.getElementById('ldModalBg');
+
+  function closeModal() {
+    modalBg.classList.remove('open');
+    document.getElementById('vipFormContent').style.display = 'none';
+  }
+
+  function openVipModal(title, category, type) {
+    document.getElementById('vipFormContent').style.display = 'block';
+    document.getElementById('vipStep1').style.display = 'block';
+    document.getElementById('vipStep2').style.display = 'none';
+
+    document.getElementById('vipTitle').textContent = title;
+    document.getElementById('vipCategoryMeta').textContent = category;
+
+    let liabilityText = "";
+    if (type === 'aviation') {
+      liabilityText = "I acknowledge that identity verification is required before itinerary confirmation.";
+    } else if (type === 'spa') {
+      liabilityText = "I authorize the concierge team to share my booking details with the wellness partner.";
+    } else if (type === 'reciprocal') {
+      liabilityText = "I authorize the club to issue a formal introduction and share the required booking information with the host property.";
+    }
+
+    document.getElementById('vipLiabilityText').textContent = liabilityText;
+    document.getElementById('vipLiabilityCheck').checked = false;
+
+    modalBg.classList.add('open');
+  }
+
+  function processVipBooking() {
+    if (!document.getElementById('vipLiabilityCheck').checked) {
+      alert("Please acknowledge the authorization terms before proceeding.");
+      return;
+    }
+
+    document.getElementById('vipStep1').style.display = 'none';
+    document.getElementById('vipStep2').style.display = 'block';
+  }
+
+  showScenario(1);
+  showTouchpoint(1);
+  showLoopStep(1);
+
+  window.addEventListener('click', function(e) {
+    if (e.target === modalBg) closeModal();
+  });
+</script>
+</body>
+</html>
