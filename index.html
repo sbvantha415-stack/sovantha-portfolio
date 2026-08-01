@@ -2103,38 +2103,149 @@ document.getElementById('presetSelect').addEventListener('change', (e) => {
 </template>
 
 <template id="tpl-video">
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-<style>
-  body { background:#0d1117; color:#c9d1d9; font-family:'Inter',sans-serif; margin:0; padding:40px; }
-  .c { max-width:1000px; margin:0 auto; animation: fadeIn .8s ease forwards; }
-  @keyframes fadeIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
-  .h { font-family:'Playfair Display',serif; font-size:36px; color:#f0e6d2; margin:0 0 8px; font-weight:600; }
-  .s { color:#8b949e; font-size:15px; margin:0 0 30px; line-height:1.6; }
-  .g { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
-  .v { background:#161b22; border:1px solid #30363d; border-radius:12px; padding:24px; display:flex; flex-direction:column; align-items:center; text-align:center; transition:transform .3s ease, border-color .3s ease; }
-  .v:hover { transform:translateY(-4px); border-color:#c7a86d; }
-  .v i { color:#c7a86d; font-size:36px; margin-bottom:14px; }
-  .v h4 { color:#f0e6d2; font-size:16px; margin:0 0 8px; font-family:'Playfair Display',serif; font-weight:600; }
-  .v p { color:#8b949e; font-size:13px; line-height:1.5; margin:0; }
-  .n { text-align:center; color:#6e7681; font-size:12px; margin-top:30px; font-style:italic; }
-</style></head><body>
-<div class="c">
-  <h1 class="h">Video &amp; photo recaps</h1>
-  <p class="s">A small sample of recaps I've cut for member communications, board updates, and event promotion. Each piece is shot and edited in-house and bundled with the matching photo set for the same event.</p>
-  <div class="g">
-    <div class="v"><i class="fas fa-film"></i><h4>14th Annual Derby Party</h4><p>Recap cut for the member newsletter and Instagram reel.</p></div>
-    <div class="v"><i class="fas fa-film"></i><h4>Fall Wine Dinner Series</h4><p>Three-part mini-series covering the chef's tasting menu.</p></div>
-    <div class="v"><i class="fas fa-film"></i><h4>Amador Obscura x Peaches Christ</h4><p>Theater crew doc cut for the post-event press packet.</p></div>
-    <div class="v"><i class="fas fa-film"></i><h4>Annual Board Recap</h4><p>Tight 90-second edit shown at the December board meeting.</p></div>
-    <div class="v"><i class="fas fa-film"></i><h4>Member Spotlight Series</h4><p>Short interview clips distributed to each featured member.</p></div>
-    <div class="v"><i class="fas fa-film"></i><h4>Facility Tour (New Members)</h4><p>Walkthrough used during second-week orientation.</p></div>
-  </div>
-  <p class="n">Full reels available on request.</p>
-</div>
-</body></html>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Video Library | Amador Club</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+      body { background-color: #0d1117; color: #c9d1d9; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+      .container { max-width: 1200px; margin: 40px auto; padding: 0 24px 60px; animation: fadeIn 0.6s ease forwards; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      .business-impact { background: #161b22; border: 1px solid #c7a86d; border-radius: 8px; padding: 20px; margin-bottom: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; font-family: 'Inter', sans-serif;}
+      .impact-col h4 { color: #c7a86d; margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+      .impact-col p { margin: 0; font-size: 14px; line-height: 1.5; color: #e6edf3; }
+      .header-wrapper { text-align: center; margin-bottom: 40px; }
+      .header-wrapper h1 { font-family: 'Playfair Display', serif; font-size: 42px; color: #f0e6d2; margin-bottom: 10px; font-weight: 600; }
+      .header-wrapper p { color: #8b949e; font-size: 16px; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+      .batkid-hero { background: linear-gradient(145deg, #161b22 0%, #0d1117 100%); border: 1px solid #c7a86d; border-radius: 16px; padding: 28px; margin-bottom: 50px; box-shadow: 0 12px 35px rgba(199, 168, 109, 0.15); display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: center; }
+      .batkid-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(199, 168, 109, 0.15); color: #c7a86d; border: 1px solid #c7a86d; padding: 6px 14px; border-radius: 999px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+      .batkid-content h2 { font-family: 'Playfair Display', serif; font-size: 32px; color: #fff; margin: 0 0 12px 0; line-height: 1.2; }
+      .batkid-content p { color: #8b949e; font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+      .batkid-location-tag { font-size: 12px; color: #f0e6d2; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+      .batkid-location-tag i { color: #c7a86d; }
+      .thumbnail-container { position: relative; aspect-ratio: 16 / 9; background: #000; border-radius: 12px; overflow: hidden; cursor: pointer; border: 1px solid #30363d; }
+      .thumbnail-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+      .thumbnail-container:hover img { transform: scale(1.05); }
+      .play-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.35); display: flex; align-items: center; justify-content: center; transition: background 0.3s ease; }
+      .play-btn { width: 56px; height: 56px; background: #c7a86d; color: #0d1117; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; padding-left: 3px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6); transition: transform 0.3s ease, background 0.3s ease; }
+      .thumbnail-container:hover .play-overlay { background: rgba(0, 0, 0, 0.15); }
+      .thumbnail-container:hover .play-btn { transform: scale(1.15); background: #f0e6d2; }
+      .section-divider { font-size: 20px; color: #c7a86d; border-bottom: 1px solid #30363d; padding-bottom: 10px; margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
+      .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+      .video-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s ease, border-color 0.3s ease; }
+      .video-card:hover { transform: translateY(-4px); border-color: #c7a86d; }
+      .video-details { padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+      .video-category { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #c7a86d; font-weight: 600; }
+      .video-title { font-size: 15px; color: #f0e6d2; margin: 0; font-weight: 500; line-height: 1.4; }
+      .video-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.94); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 24px; }
+      .video-modal.active { opacity: 1; pointer-events: all; }
+      .modal-body { width: 100%; max-width: 920px; aspect-ratio: 16 / 9; background: #000; border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9); }
+      .modal-body iframe { width: 100%; height: 100%; border: none; }
+      .close-btn { position: absolute; top: -42px; right: 0; background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; transition: color 0.2s ease; }
+      .close-btn:hover { color: #c7a86d; }
+      @media (max-width: 860px) { .batkid-hero { grid-template-columns: 1fr; gap: 20px; } }
+      @media (max-width: 600px) { .header-wrapper h1 { font-size: 32px; } .batkid-content h2 { font-size: 24px; } }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header-wrapper">
+        <h1>Event Video Library</h1>
+        <p>Archival footage, event highlights, and historic moments captured at 550 Montgomery Street.</p>
+      </div>
+
+      <div class="business-impact">
+        <div class="impact-col">
+          <h4>Project Summary</h4>
+          <p>A digital archive hosting historic footage, event highlights, and cultural milestones captured at our venues.</p>
+        </div>
+        <div class="impact-col">
+          <h4>Operational Intent</h4>
+          <p>Preserve club history and utilize high-quality video assets in outbound marketing to prospective members.</p>
+        </div>
+        <div class="impact-col">
+          <h4>Time Saved &amp; ROI</h4>
+          <p>Readily available video assets boosted social media engagement metrics and accelerated the sales conversion cycle.</p>
+        </div>
+      </div>
+
+      <div class="batkid-hero">
+        <div class="batkid-content">
+          <div class="batkid-badge"><i class="fas fa-star"></i> Historic Highlight &middot; Make-A-Wish</div>
+          <h2>San Francisco Batkid: The Bank Vault Heist</h2>
+          <div class="batkid-location-tag"><i class="fas fa-landmark"></i> Location: 550 Montgomery St (The Bank at Amador)</div>
+          <p>
+            On November 15, 2013, San Francisco transformed into Gotham City for 5-year-old Miles Scott (Batkid).
+            Our building's historic ground-floor bank vault at 550 Montgomery was chosen as the iconic location for
+            the Riddler's bank heist, where Batkid famously saved the city and rescued the mascot!
+          </p>
+        </div>
+        <div class="thumbnail-container" onclick="playVideo('Gw3aWPxtpfE')">
+          <img src="https://img.youtube.com/vi/Gw3aWPxtpfE/hqdefault.jpg" alt="Batkid Make a Wish Event at The Bank">
+          <div class="play-overlay"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+        </div>
+      </div>
+
+      <h3 class="section-divider"><i class="fas fa-film"></i> Featured Event Archive</h3>
+      <div class="video-grid" id="videoGrid"></div>
+    </div>
+
+    <div class="video-modal" id="videoModal" onclick="closeVideo()">
+      <div class="modal-body" onclick="event.stopPropagation()">
+        <button class="close-btn" onclick="closeVideo()">&times;</button>
+        <iframe id="modalIframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <script>
+      const archiveVideos = [
+        { id: 'bOaCwCHZiPo', title: 'Amador Obscura Event Feature', category: 'Immersive Theater' },
+        { id: '2Fqn8aQM9XA', title: 'Private Club Cultural Highlights', category: 'Member Events' },
+        { id: 'haaeTKi-wh0', title: 'Sommelier Reserve & Tasting Night', category: 'Wine & Dining' },
+        { id: '-_ksKSl11zA', title: '550 Montgomery Historical Showcase', category: 'Building History' }
+      ];
+
+      function renderGallery() {
+        const grid = document.getElementById('videoGrid');
+        grid.innerHTML = archiveVideos.map(video => `
+          <div class="video-card">
+            <div class="thumbnail-container" onclick="playVideo('${video.id}')">
+              <img src="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" alt="${video.title}">
+              <div class="play-overlay"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+            </div>
+            <div class="video-details">
+              <span class="video-category">${video.category}</span>
+              <h4 class="video-title">${video.title}</h4>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const modal = document.getElementById('videoModal');
+      const iframe = document.getElementById('modalIframe');
+
+      function playVideo(youtubeId) {
+        iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`;
+        modal.classList.add('active');
+      }
+
+      function closeVideo() {
+        modal.classList.remove('active');
+        iframe.src = '';
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeVideo();
+      });
+
+      document.addEventListener('DOMContentLoaded', renderGallery);
+    </script>
+  </body>
+  </html>
 </template>
 
 <template id="tpl-somaroutines">
