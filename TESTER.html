@@ -1,0 +1,411 @@
+<template id="tpl-memberexp">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Experience Portfolio - Elevated</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    /* =========================================
+       CORE VARIABLES & RESET
+       ========================================= */
+    :root {
+        --bg-main: #FCFAF8;
+        --bg-surface: #FFFFFF;
+        --bg-dark: #1F1A17;
+        --text-dark: #2A2421;
+        --text-muted: #6B5E55;
+        --accent-gold: #B89065;
+        --accent-gold-light: #DFCDBA;
+        --accent-gold-dark: #8C6A47;
+        --border-light: rgba(184, 144, 101, 0.2);
+        --shadow-soft: 0 8px 30px rgba(42, 36, 33, 0.04);
+        --shadow-hover: 0 12px 40px rgba(42, 36, 33, 0.08);
+        --radius-sm: 6px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg-main);
+        font-family: "Inter", sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5 {
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-weight: 600;
+        margin: 0;
+        color: var(--text-dark);
+    }
+
+    /* =========================================
+       HEADER & NAVIGATION
+       ========================================= */
+    .portfolio-header {
+        background: var(--bg-dark);
+        color: var(--bg-main);
+        padding: 24px 48px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid var(--accent-gold);
+        flex-wrap: wrap;
+        gap: 20px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .portfolio-header h1 {
+        font-size: 26px;
+        color: var(--bg-main);
+        letter-spacing: 0.02em;
+    }
+
+    .portfolio-nav {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .nav-btn {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #A3968C;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        padding: 10px 16px;
+        border-radius: 30px;
+        transition: var(--transition);
+    }
+
+    .nav-btn:hover {
+        color: var(--bg-main);
+        border-color: rgba(255,255,255,0.3);
+    }
+
+    .nav-btn.active {
+        background: var(--accent-gold);
+        color: var(--bg-dark);
+        border-color: var(--accent-gold);
+        font-weight: 600;
+    }
+
+    /* =========================================
+       SLIDE CONTAINERS
+       ========================================= */
+    .slide-container {
+        display: none;
+        max-width: 1100px;
+        margin: 60px auto;
+        padding: 0 24px;
+        animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .slide-container.active { display: block; }
+
+    @keyframes slideUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-head {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent-gold-dark);
+        margin-bottom: 12px;
+    }
+
+    .slide-title { font-size: 38px; line-height: 1.1; margin-bottom: 16px; }
+    .slide-sub { max-width: 700px; font-size: 15px; color: var(--text-muted); margin-bottom: 40px; }
+
+    /* =========================================
+       TIMELINE & STAGES (Matches Untitled 8.jpg)
+       ========================================= */
+    .ad-timeline {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        margin-bottom: 40px;
+        padding-top: 20px;
+    }
+
+    .ad-timeline::before {
+        content: '';
+        position: absolute;
+        top: 42px;
+        left: 40px;
+        right: 40px;
+        height: 1px;
+        background: var(--border-light);
+        z-index: 1;
+    }
+
+    .ad-node {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 25%;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .ad-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--bg-surface);
+        border: 1px solid var(--accent-gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--accent-gold-dark);
+        margin-bottom: 16px;
+        transition: var(--transition);
+    }
+
+    .ad-node:hover .ad-icon { transform: scale(1.1); }
+    .ad-node.active .ad-icon {
+        background: var(--bg-dark);
+        color: var(--accent-gold-light);
+        border-color: var(--bg-dark);
+        box-shadow: 0 4px 15px rgba(31, 26, 23, 0.15);
+    }
+
+    .ad-title { font-size: 13px; font-weight: 500; text-align: center; color: var(--text-muted); }
+    .ad-node.active .ad-title { color: var(--text-dark); font-weight: 600; }
+
+    .split-stage {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    .stage-front, .stage-back {
+        border-radius: var(--radius-lg);
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 250px;
+    }
+
+    .stage-front {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-light);
+        box-shadow: var(--shadow-soft);
+    }
+
+    /* Color-Coordinated Console Design (Back Stage) */
+    .stage-back {
+        background: #151515;
+        color: #E2DFDB;
+        font-family: "JetBrains Mono", monospace, sans-serif;
+        font-size: 13px;
+        border: 1px solid #2A2421;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stage-back::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 3px;
+        background: var(--accent-gold);
+    }
+
+    .stage-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        margin-bottom: 24px;
+        font-weight: 600;
+    }
+
+    .stage-front .stage-label { color: var(--accent-gold-dark); border-bottom: 1px solid var(--border-light); padding-bottom: 12px; }
+    .stage-back .stage-label { color: #8C9975; border-bottom: 1px solid #333; padding-bottom: 12px; }
+
+    /* Syntax Highlighting Classes for the Console */
+    .sys-log { color: #8C9975; margin-bottom: 12px; display: block; font-weight: 600; } /* Green Protocol Headers */
+    .sys-cmd { color: #A8B8C2; display: block; padding-left: 12px; border-left: 1px solid #333; margin-bottom: 8px;} /* Light Gray Console text */
+    .sys-hl { color: #c7a86d; font-weight: 600; } /* Gold Variables & Highlights */
+    .sys-success { color: #8C9975; font-weight: 600; } /* Green success states */
+
+    /* =========================================
+       BUTTONS
+       ========================================= */
+    .btn {
+        padding: 14px 24px;
+        border-radius: 30px;
+        font-weight: 500;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        border: none;
+        transition: var(--transition);
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: var(--bg-dark);
+        color: var(--accent-gold-light);
+    }
+
+    .btn-primary:hover {
+        background: black;
+        transform: translateY(-2px);
+    }
+</style>
+</head>
+<body>
+
+<header class="portfolio-header">
+    <h1>Member Experience Architecture</h1>
+    <nav class="portfolio-nav">
+        <!-- Replicating the 5 buttons from your reference image -->
+        <button class="nav-btn" onclick="switchSlide('slide1', this)">1. Intelligence</button>
+        <button class="nav-btn active" onclick="switchSlide('slide2', this)">2. Execution</button>
+        <button class="nav-btn" onclick="switchSlide('slide3', this)">3. Partnerships</button>
+        <button class="nav-btn" onclick="switchSlide('slide4', this)">4. Anticipation</button>
+        <button class="nav-btn" onclick="switchSlide('slide5', this)">5. Use Cases</button>
+    </nav>
+</header>
+
+<!-- SLIDE 2: EXECUTION (Matches your image) -->
+<div id="slide2" class="slide-container active">
+    <div class="slide-head">Operational Execution</div>
+    <h3 class="slide-title">Frictionless Handoffs: Front vs. Back Stage</h3>
+    <p class="slide-sub">
+        The hallmark of luxury hospitality is effortless execution. The member experiences one simple, elegant interaction, while the backend systems handle the complex routing, departmental alerts, and preparation protocols.
+    </p>
+
+    <!-- Timeline Interactive Elements -->
+    <div class="ad-timeline">
+        <div class="ad-node active" onclick="showTouchpoint(1)" id="node1">
+            <div class="ad-icon">1</div>
+            <div class="ad-title">Initiation</div>
+        </div>
+        <div class="ad-node" onclick="showTouchpoint(2)" id="node2">
+            <div class="ad-icon">2</div>
+            <div class="ad-title">Routing</div>
+        </div>
+        <div class="ad-node" onclick="showTouchpoint(3)" id="node3">
+            <div class="ad-icon">3</div>
+            <div class="ad-title">Staging</div>
+        </div>
+        <div class="ad-node" onclick="showTouchpoint(4)" id="node4">
+            <div class="ad-icon">4</div>
+            <div class="ad-title">Delivery</div>
+        </div>
+    </div>
+
+    <!-- The Split Stage Output Area -->
+    <div class="split-stage">
+        <div class="stage-front">
+            <div class="stage-label">Front Stage (Member POV)</div>
+            <div id="frontStageDisplay"></div>
+        </div>
+
+        <div class="stage-back">
+            <div class="stage-label">Back Stage (Operations)</div>
+            <div id="backStageDisplay"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab Switching Logic for Top Navbar
+    function switchSlide(slideId, btnEl) {
+        document.querySelectorAll('.slide-container').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        
+        const newSlide = document.getElementById(slideId);
+        if(newSlide) {
+            newSlide.classList.remove('active');
+            void newSlide.offsetWidth; // trigger reflow for animation
+            newSlide.classList.add('active');
+        }
+        if (btnEl) btnEl.classList.add('active');
+    }
+
+    // Interactive Stage Data (Color Coordinated via HTML Classes)
+    const stageData = {
+        1: {
+            front: `<div style="text-align:center;"><button class="btn btn-primary" style="font-size:16px; padding: 16px 32px; width:auto;">Confirm Request</button><p style="font-size: 14px; color: var(--text-muted); margin-top: 24px;">The member executes a single, clear action. The interface is intentionally minimal to reduce cognitive load.</p></div>`,
+            back: `<span class="sys-log">[PROTOCOL: INTAKE_01]</span>
+                   <span class="sys-cmd">> Payload received: <span class="sys-hl">req_id_8842</span></span>
+                   <span class="sys-cmd">> Validating membership status... <span class="sys-hl">ACTIVE</span></span>
+                   <span class="sys-cmd">> Compiling historical preferences</span>
+                   <span class="sys-cmd">> Injecting into operational queue</span>`
+        },
+        2: {
+            front: `<div style="text-align:center;"><p style="font-size: 24px; font-family: 'Cormorant Garamond'; color: var(--text-dark); margin-bottom: 8px;">Zero Friction</p><p style="font-size: 14px; color: var(--text-muted); margin-top: 16px;">The member is not tasked with repeating information, filling redundant forms, or chasing department heads.</p></div>`,
+            back: `<span class="sys-log">[PROTOCOL: ROUTING_CRITICAL]</span>
+                   <span class="sys-cmd">> Analyzing request parameters</span>
+                   <span class="sys-cmd">> Cross-referencing department availability</span>
+                   <span class="sys-cmd">> Alerting: <span class="sys-hl">Concierge / Floor Manager</span></span>
+                   <span class="sys-cmd">> Syncing CRM data to mobile POS</span>`
+        },
+        3: {
+            front: `<div style="text-align:center;"><p style="font-size: 24px; font-family: 'Cormorant Garamond'; color: var(--text-dark); margin-bottom: 8px;">Invisible Preparation</p><p style="font-size: 14px; color: var(--text-muted); margin-top: 16px;">While the member goes about their day, the club aligns resources to ensure flawless delivery.</p></div>`,
+            back: `<span class="sys-log">[PROTOCOL: STAGE_OPS]</span>
+                   <span class="sys-cmd">> Task claimed by: <span class="sys-hl">Agent_04</span></span>
+                   <span class="sys-cmd">> Physical staging commenced</span>
+                   <span class="sys-cmd">> F&B overrides confirmed</span>
+                   <span class="sys-cmd">> Status updated: <span class="sys-success">READY_FOR_GUEST</span></span>`
+        },
+        4: {
+            front: `<div style="text-align:center;"><p style="font-size: 28px; font-family: 'Cormorant Garamond'; color: var(--text-dark); font-weight: 600; margin-bottom: 8px;">Seamless Delivery</p><p style="font-size: 14px; color: var(--text-muted); margin-top: 16px;">The member receives a polished, highly personalized service experience that feels completely organic.</p></div>`,
+            back: `<span class="sys-log">[PROTOCOL: EXECUTION_FINAL]</span>
+                   <span class="sys-cmd">> Service rendered successfully</span>
+                   <span class="sys-cmd">> Ledger updated & billed to account</span>
+                   <span class="sys-cmd">> Feedback loop initialized</span>
+                   <span class="sys-cmd">> Ticket closed.</span>`
+        }
+    };
+
+    // Render Data into Front/Back Stages
+    function showTouchpoint(id) {
+        document.querySelectorAll('.ad-node').forEach(n => n.classList.remove('active'));
+        document.getElementById('node' + id).classList.add('active');
+        
+        const front = document.getElementById('frontStageDisplay');
+        const back = document.getElementById('backStageDisplay');
+        
+        front.style.opacity = 0; back.style.opacity = 0;
+        
+        setTimeout(() => {
+            front.innerHTML = stageData[id].front;
+            back.innerHTML = stageData[id].back;
+            front.style.transition = "opacity 0.3s ease";
+            back.style.transition = "opacity 0.3s ease";
+            front.style.opacity = 1; back.style.opacity = 1;
+        }, 150);
+    }
+
+    window.onload = function() {
+        showTouchpoint(1);
+    };
+</script>
+</body>
+</html>
+</template>
