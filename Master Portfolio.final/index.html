@@ -325,49 +325,127 @@
 
 <body>
   <aside class="sidebar">
+    <style>
+      /* Custom Premium Dropdown Styles */
+      .nav-dropdown { position: relative; width: 100%; margin-top: 10px; }
+      .nav-dropdown-btn {
+        background: var(--panel-2); border: 1px solid var(--border); color: var(--text-main);
+        padding: 14px 16px; border-radius: 8px; width: 100%; text-align: left; cursor: pointer;
+        display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500;
+        transition: border-color 0.2s;
+      }
+      .nav-dropdown-btn:hover { border-color: var(--accent); }
+      .nav-dropdown-btn i.arrow { margin-left: auto; font-size: 12px; transition: transform 0.3s; }
+      .nav-dropdown.open .nav-dropdown-btn i.arrow { transform: rotate(180deg); }
+      
+      .nav-dropdown-menu {
+        position: absolute; top: 100%; left: 0; right: 0; background: var(--panel);
+        border: 1px solid var(--border); border-radius: 8px; margin-top: 8px; z-index: 100;
+        max-height: 50vh; overflow-y: auto; display: none; box-shadow: var(--shadow-elev);
+      }
+      .nav-dropdown.open .nav-dropdown-menu { display: block; animation: fadeIn 0.2s ease; }
+      .nav-dropdown-menu .nav-label { padding: 16px 16px 8px; margin: 0; }
+      .nav-dropdown-menu .project-item { border-radius: 0; border-left: none; border-bottom: 1px solid var(--panel-2); }
+      .nav-dropdown-menu .project-item:last-child { border-bottom: none; }
+    </style>
+
     <div>
       <div class="profile-pic">SB</div>
       <div class="name">Sovantha Bun</div>
       <div class="title">Office &amp; Workplace Operations</div>
     </div>
-    <ul class="project-list" style="margin-top: 10px;">
-      <li class="project-item active" id="nav-home" onclick="loadProject('tpl-home', this)"><i
-          class="fas fa-user-circle"></i> Professional Overview</li>
-    </ul>
-    <div class="nav-label">Featured Projects</div>
-    <div class="nav-spacer">
-      <ul class="project-list">
-        <li class="project-item" id="nav-crm" role="button" tabindex="0" onclick="loadProject('tpl-crm', this)"><i
-            class="fas fa-server"></i> CRM &amp; Automation</li>
-        <li class="project-item" id="nav-onboarding" role="button" tabindex="0"
-          onclick="loadProject('tpl-onboarding', this)"><i class="fas fa-tasks"></i> Onboarding Touchpoints</li>
-        <li class="project-item" id="nav-locker" role="button" tabindex="0" onclick="loadProject('tpl-locker', this)"><i
-            class="fas fa-wine-bottle"></i> Locker Management</li>
-        <li class="project-item" id="nav-reciprocal" role="button" tabindex="0"
-          onclick="loadProject('tpl-reciprocal', this)"><i class="fas fa-globe"></i> Reciprocal Network</li>
-        <li class="project-item" id="nav-marketing" role="button" tabindex="0"
-          onclick="loadProject('tpl-marketing', this)"><i class="fas fa-bullhorn"></i> Marketing &amp; Media Ops</li>
-        <li class="project-item" id="nav-video" role="button" tabindex="0" onclick="loadProject('tpl-video', this)"><i
-            class="fas fa-photo-film"></i> Video &amp; Photo Recaps</li>
-        <li class="project-item" id="nav-memberexp" role="button" tabindex="0"
-          onclick="loadProject('tpl-memberexp', this)"><i class="fas fa-users"></i> Member Experience</li>
-      </ul>
-      <div class="nav-label">Personal Brand</div>
-      <ul class="project-list">
-        <li class="project-item" id="nav-somaroutines" onclick="loadProject('tpl-somaroutines', this)"><i
-            class="fas fa-spa"></i> Skincare Routines</li>
-        <li class="project-item" id="nav-somaskin" onclick="loadProject('tpl-somaskin', this)"><i
-            class="fas fa-sparkles"></i> Folsom Skin Shade Lab</li>
-      </ul>
+    
+    <div class="nav-label">Select Project View</div>
+    
+    <!-- Custom Dropdown Component -->
+    <div class="nav-dropdown" id="mainNavDropdown">
+      <button class="nav-dropdown-btn" onclick="toggleNavDropdown()">
+        <i class="fas fa-user-circle" id="selected-icon"></i> 
+        <span id="selected-text">Professional Overview</span>
+        <i class="fas fa-chevron-down arrow"></i>
+      </button>
+      
+      <div class="nav-dropdown-menu">
+        <div class="nav-label">Overview</div>
+        <div class="project-item active" onclick="selectProject('tpl-home', 'Professional Overview', 'fa-user-circle', this)">
+          <i class="fas fa-user-circle"></i> Professional Overview
+        </div>
+        
+        <div class="nav-label">Featured Projects</div>
+        <div class="project-item" onclick="selectProject('tpl-crm', 'CRM & Automation', 'fa-server', this)">
+          <i class="fas fa-server"></i> CRM &amp; Automation
+        </div>
+        <div class="project-item" onclick="selectProject('tpl-onboarding', 'Onboarding Touchpoints', 'fa-tasks', this)">
+          <i class="fas fa-tasks"></i> Onboarding Touchpoints
+        </div>
+        <div class="project-item" onclick="selectProject('tpl-locker', 'Locker Management', 'fa-wine-bottle', this)">
+          <i class="fas fa-wine-bottle"></i> Locker Management
+        </div>
+        <div class="project-item" onclick="selectProject('tpl-reciprocal', 'Reciprocal Network', 'fa-globe', this)">
+          <i class="fas fa-globe"></i> Reciprocal Network
+        </div>
+        <div class="project-item" onclick="selectProject('tpl-marketing', 'Marketing & Media Ops', 'fa-bullhorn', this)">
+          <i class="fas fa-bullhorn"></i> Marketing &amp; Media Ops
+        </div>
+        <div class="project-item" onclick="selectProject('tpl-video', 'Video & Photo Recaps', 'fa-photo-film', this)">
+          <i class="fas fa-photo-film"></i> Video &amp; Photo Recaps
+        </div>
+        <div class="project-item" onclick="selectProject('tpl-memberexp', 'Member Experience', 'fa-users', this)">
+          <i class="fas fa-users"></i> Member Experience
+        </div>
+        <div class="project-item" onclick="selectProject('tpl-memberexp-elevated', 'Elevated Experience', 'fa-crown', this)">
+          <i class="fas fa-crown"></i> Elevated Experience
+        </div>
+        
+        <div class="nav-label">Personal Brand</div>
+        <div class="project-item" onclick="selectProject('tpl-somaroutines', 'Skincare Routines', 'fa-spa', this)">
+          <i class="fas fa-spa"></i> Skincare Routines
+        </div>
+        <div class="project-item" onclick="selectProject('tpl-somaskin', 'Folsom Skin Shade Lab', 'fa-sparkles', this)">
+          <i class="fas fa-sparkles"></i> Folsom Skin Shade Lab
+        </div>
+      </div>
     </div>
+
+    <div class="nav-spacer"></div>
+
     <div class="social-links">
       <a href="mailto:sbvantha415@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
-      <a href="https://linkedin.com/in/sovantha-bun" target="_blank" title="LinkedIn"><i
-          class="fab fa-linkedin"></i></a>
-      <a href="Sovantha_Bun_Resume_PrivateClub.pdf" target="_blank" title="Download Resume"><i
-          class="fas fa-file-pdf"></i></a>
+      <a href="https://linkedin.com/in/sovantha-bun" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="Sovantha_Bun_Resume_PrivateClub.pdf" target="_blank" title="Download Resume"><i class="fas fa-file-pdf"></i></a>
     </div>
   </aside>
+
+  <!-- Add this short script to handle the dropdown logic just below the aside -->
+  <script>
+    function toggleNavDropdown() {
+      document.getElementById('mainNavDropdown').classList.toggle('open');
+    }
+
+    function selectProject(templateId, title, iconClass, el) {
+      // Update Button Text & Icon
+      document.getElementById('selected-text').textContent = title;
+      document.getElementById('selected-icon').className = 'fas ' + iconClass;
+      
+      // Highlight selected option
+      document.querySelectorAll('.nav-dropdown-menu .project-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+      
+      // Close dropdown
+      document.getElementById('mainNavDropdown').classList.remove('open');
+      
+      // Fire your existing routing function
+      loadProject(templateId);
+    }
+
+    // Close dropdown if clicked outside
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('mainNavDropdown');
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
+  </script>
   <main class="main-content">
     <div class="top-bar">
       <div class="top-bar-title"><span class="status-dot"></span> Live application preview</div>
