@@ -380,19 +380,22 @@
     </div>
     <div class="iframe-container"><iframe id="demo-frame"></iframe></div>
   </main>
-
   <template id="tpl-home">
-  <head>
+    <head>
       <meta charset="UTF-8">
+      <!-- Added "La Belle Aurore" for the messy signature and requested thinner Inter weights -->
       <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&family=Inter:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
         rel="stylesheet">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+      
       <style>
+        /* Scoped styles for the Overview Page */
         body {
           background: #0d1117;
           color: #c9d1d9;
           font-family: 'Inter', sans-serif;
+          font-weight: 300; /* Thinner base font style */
           margin: 0;
           padding: 40px;
         }
@@ -404,17 +407,11 @@
         }
 
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px)
-          }
-
-          to {
-            opacity: 1;
-            transform: translateY(0)
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Profile Header with Ambient Glow */
         .profile-header {
           display: flex;
           align-items: center;
@@ -423,6 +420,20 @@
           border-bottom: 1px solid #30363d;
           margin-bottom: 40px;
           justify-content: center;
+          position: relative;
+        }
+
+        .profile-header::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 100%;
+          height: 150%;
+          background: radial-gradient(ellipse at center, rgba(64, 108, 125, 0.15) 0%, rgba(199, 168, 109, 0.05) 40%, transparent 70%);
+          z-index: -1;
+          pointer-events: none;
         }
 
         .profile-circle {
@@ -434,39 +445,49 @@
           align-items: center;
           justify-content: center;
           font-size: 40px;
-          font-weight: 600;
+          font-weight: 400; /* Thinner circle text */
           color: #fff;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(64, 108, 125, 0.3);
           flex-shrink: 0;
         }
 
-        .profile-text {
-          max-width: 600px;
-        }
+        .profile-text { max-width: 600px; }
 
         .eyebrow {
           font-size: 11px;
           color: #c7a86d;
           text-transform: uppercase;
           letter-spacing: 2px;
-          font-weight: 600;
+          font-weight: 500;
           display: block;
           margin-bottom: 10px;
         }
 
-        .hero-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 48px;
-          color: #f0e6d2;
-          margin: 0 0 8px;
-          font-weight: 600;
+        /* 
+         * MESSY AUTOGRAPH TYPOGRAPHY 
+         */
+        .hero-title.signature {
+          font-family: 'La Belle Aurore', cursive;
+          font-size: 58px;
+          color: #f3e0b5;
+          margin: 10px 0 15px 0;
+          font-weight: 400;
+          display: inline-block;
+          transform: rotate(-5deg); /* Tilts the signature upward slightly */
+          text-shadow: 0 4px 15px rgba(199, 168, 109, 0.15);
+        }
+
+        .hero-title.signature .big {
+          font-size: 78px;
+          color: #c7a86d;
+          line-height: 0.8;
         }
 
         .hero-subtitle {
           font-size: 18px;
           color: #8b949e;
           margin: 0 0 16px;
-          font-weight: 400;
+          font-weight: 300;
         }
 
         .hero-summary {
@@ -474,6 +495,7 @@
           color: #c9d1d9;
           line-height: 1.7;
           margin: 0;
+          font-weight: 300;
         }
 
         .section-eyebrow {
@@ -481,15 +503,105 @@
           color: #6e7681;
           text-transform: uppercase;
           letter-spacing: 2px;
-          font-weight: 600;
+          font-weight: 500;
           margin-bottom: 20px;
+          margin-top: 40px;
         }
 
+        /* VISUAL ARTIFACTS / FACE CARDS */
+        .artifact-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 20px;
+          margin-bottom: 50px;
+        }
+
+        .artifact-card {
+          background: #161b22;
+          border: 1px solid #30363d;
+          border-radius: 12px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          transition: transform 0.3s ease, border-color 0.3s ease;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .artifact-card:hover {
+          transform: translateY(-6px);
+          border-color: #c7a86d;
+          box-shadow: 0 15px 40px rgba(64, 108, 125, 0.2);
+        }
+
+        .artifact-img-wrap {
+          height: 140px; 
+          width: 100%;
+          background: #0d1117;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .artifact-img-wrap img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          opacity: 0.9;
+          transition: opacity 0.3s ease, transform 0.5s ease;
+        }
+
+        .artifact-card:hover .artifact-img-wrap img {
+          opacity: 1;
+        }
+
+        /* EXACT IMAGE CROP TARGETING */
+        .crop-brand {
+          object-position: 20% 85%;
+          transform: scale(1.4);
+        }
+        
+        .artifact-card:hover .crop-brand { transform: scale(1.45); }
+        
+        .crop-auto {
+          object-position: center 30%;
+          transform: scale(1.6);
+        }
+
+        .artifact-card:hover .crop-auto { transform: scale(1.65); }
+
+        .crop-sop {
+          object-position: center 55%;
+          transform: scale(1.3);
+        }
+
+        .artifact-card:hover .crop-sop { transform: scale(1.35); }
+
+        .artifact-meta {
+          padding: 14px 16px;
+          background: #161b22;
+          border-top: 1px solid #30363d;
+          flex-grow: 1;
+        }
+
+        .artifact-meta h5 {
+          color: #f0e6d2;
+          font-size: 13px;
+          margin: 0 0 4px 0;
+          font-weight: 500;
+        }
+
+        .artifact-meta p {
+          color: #8b949e;
+          font-size: 11px;
+          margin: 0;
+          font-weight: 300;
+        }
+
+        /* Work Grid */
         .work-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 20px;
-          margin-bottom: 40px;
+          margin-bottom: 50px;
         }
 
         .work-card {
@@ -504,7 +616,7 @@
 
         .work-card:hover {
           transform: translateY(-4px);
-          border-color: #c7a86d;
+          border-color: #406C7D;
         }
 
         .work-card i {
@@ -519,7 +631,7 @@
           text-transform: uppercase;
           letter-spacing: .5px;
           margin: 0 0 12px;
-          font-weight: 600;
+          font-weight: 500;
         }
 
         .work-card p {
@@ -527,29 +639,21 @@
           font-size: 13px;
           line-height: 1.55;
           margin: 0;
+          font-weight: 300;
         }
 
-        .tools-block {
+        /* Platforms & Ecosystems Block */
+        .platforms-block {
           background: #161b22;
           border: 1px solid #30363d;
           border-radius: 12px;
-          padding: 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
+          padding: 30px;
           margin-bottom: 40px;
         }
 
-        .tools-wrapper {
-          display: flex;
-          align-items: center;
-          gap: 20px;
-          flex-wrap: wrap;
-        }
-
-        .inline-eyebrow {
-          margin-bottom: 0;
-          flex-shrink: 0;
+        .platforms-block .section-eyebrow {
+          margin-top: 0;
+          margin-bottom: 20px;
         }
 
         .tags-container {
@@ -559,20 +663,20 @@
         }
 
         .tool-tag {
-          background: transparent;
+          background: rgba(0,0,0,0.2);
           border: 1px solid #30363d;
           color: #c9d1d9;
           font-size: 12px;
-          padding: 6px 14px;
+          padding: 8px 16px;
           border-radius: 6px;
-          font-weight: 500;
-          transition: background .2s;
+          font-weight: 400;
+          transition: background .2s, border-color .2s, color .2s;
         }
 
         .tool-tag:hover {
           background: rgba(199, 168, 109, .1);
           border-color: #c7a86d;
-          color: #c7a86d;
+          color: #f3e0b5;
         }
 
         .footer-text {
@@ -581,231 +685,145 @@
           font-size: 13px;
           margin-top: 40px;
           line-height: 1.6;
+          font-weight: 300;
         }
 
         @media (max-width:900px) {
-          .profile-header {
-            flex-direction: column;
-            text-align: center
-          }
-
-          .work-grid {
-            grid-template-columns: repeat(2, 1fr)
-          }
-
-          .tools-wrapper {
-            flex-direction: column;
-            align-items: flex-start
-          }
+          .profile-header { flex-direction: column; text-align: center; }
+          .work-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width:600px) {
-          .work-grid {
-            grid-template-columns: 1fr
-          }
+          .work-grid { grid-template-columns: 1fr; }
+          .artifact-grid { grid-template-columns: 1fr; }
         }
       </style>
     </head>
 
     <body>
       <div class="overview-container">
+        
+        <!-- Header & Signature -->
         <div class="profile-header">
           <div class="profile-circle">SB</div>
           <div class="profile-text">
             <span class="eyebrow">PROFESSIONAL OVERVIEW</span>
-            <h1 class="hero-title">Sovantha Bun</h1>
+            
+            <!-- Updated Autograph: Messy, thin, and cocked -->
+            <h1 class="hero-title signature">
+              <span class="big">S</span>ovantha <span class="big">B</span>un
+            </h1>
+            
             <h3 class="hero-subtitle">Member Experience &amp; Club Operations</h3>
-            <p class="hero-summary">I've spent the last ten years at The Amador (formerly Wingtip) running member
-              experience end-to-end, from the first application through renewal. I build the onboarding flows, write the
-              SOPs, automate the CRM so the concierge desk doesn't have to chase paperwork, and keep member
-              communications consistent across the rebrand. Everything I ship comes with documentation so the team can
-              run it without me.</p>
+            <p class="hero-summary">I've spent the last ten years at The Amador (formerly Wingtip) running member experience end-to-end, from the first application through renewal. I build the onboarding flows, write the SOPs, automate the CRM so the concierge desk doesn't have to chase paperwork, and keep member communications consistent across the rebrand. Everything I ship comes with documentation so the team can run it without me.</p>
           </div>
         </div>
+
+        <!-- Visual Artifacts / Face Cards -->
+        <h4 class="section-eyebrow">VISUAL ARTIFACTS &amp; BLUEPRINTS</h4>
+        <div class="artifact-grid">
+          
+          <!-- Card 1: Brand Guide -->
+          <div class="artifact-card">
+            <div class="artifact-img-wrap">
+              <img src="artifact_brandguide.png" class="crop-brand" alt="Amador Club Brand Guidelines" loading="lazy">
+            </div>
+            <div class="artifact-meta">
+              <h5>Brand Architecture</h5>
+              <p>Visual standards protecting the Amador voice.</p>
+            </div>
+          </div>
+
+          <!-- Card 2: Automations -->
+          <div class="artifact-card">
+            <div class="artifact-img-wrap">
+              <img src="artifact_automation.png" class="crop-auto" alt="Automation Map" loading="lazy">
+            </div>
+            <div class="artifact-meta">
+              <h5>System Automation Mapping</h5>
+              <p>Architectural layout of Zapier and Webhook data routing.</p>
+            </div>
+          </div>
+
+          <!-- Card 3: SOPs -->
+          <div class="artifact-card">
+            <div class="artifact-img-wrap">
+              <img src="sop_howitworks.png" class="crop-sop" alt="SOP Flowchart" loading="lazy">
+            </div>
+            <div class="artifact-meta">
+              <h5>Standard Operating Procedures</h5>
+              <p>Clear, scalable documentation for staff onboarding.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Areas of Expertise -->
         <h4 class="section-eyebrow">WHAT I WORK ON</h4>
         <div class="work-grid">
           <div class="work-card"><i class="fas fa-user-check"></i>
             <h4>MEMBER ONBOARDING</h4>
-            <p>I designed the full new-member journey from application to orientation: touchpoint tracking, welcome
-              sequences, cross-department document sign-offs.</p>
+            <p>Architected the complete new-member journey—streamlining applications, welcome sequences, and cross-department sign-offs.</p>
           </div>
           <div class="work-card"><i class="fas fa-server"></i>
             <h4>CRM AUTOMATION</h4>
-            <p>Built a Google Apps Script layer on top of PeopleVine that catches membership webhooks, runs trial
-              lifecycles, and sends the endorsement emails the desk used to handle by hand.</p>
+            <p>Engineered custom Google Apps Scripts to catch webhooks, automate trial lifecycles, and eliminate manual data entry.</p>
           </div>
           <div class="work-card"><i class="fas fa-book-open"></i>
             <h4>TRAINING &amp; SOPS</h4>
-            <p>Wrote the staff guides, orientation templates, and standard operating procedures so any team member can
-              follow the process without re-inventing it.</p>
+            <p>Authored comprehensive staff guides and SOPs to ensure consistent, scalable service standards across all departments.</p>
           </div>
           <div class="work-card"><i class="fas fa-envelope"></i>
             <h4>CLUB COMMUNICATIONS</h4>
-            <p>Managed the member newsletter, HTML email campaigns, and event communications, and kept the voice steady
-              through the full club rebrand from Wingtip to Amador.</p>
+            <p>Directed HTML email campaigns and newsletters, maintaining a unified brand voice throughout a major club rebrand.</p>
           </div>
         </div>
-        <div class="tools-block">
-          <div class="tools-wrapper">
-            <h4 class="section-eyebrow inline-eyebrow">STACK &amp; TOOLS</h4>
-            <div class="tags-container">
-              <span class="tool-tag">PeopleVine CRM</span>
-              <span class="tool-tag">Google Workspace</span>
-              <span class="tool-tag">Apps Script</span>
-              <span class="tool-tag">Microsoft 365</span>
-              <span class="tool-tag">HTML Email</span>
-              <span class="tool-tag">SOP Documentation</span>
-              <span class="tool-tag">REST Webhooks</span>
-            </div>
+
+        <!-- Full Width Platforms Tag Cloud -->
+        <div class="platforms-block">
+          <h4 class="section-eyebrow">PLATFORMS &amp; SOFTWARE PROFICIENCIES</h4>
+          <div class="tags-container">
+            <span class="tool-tag">Canva</span>
+            <span class="tool-tag">PeopleVine</span>
+            <span class="tool-tag">Square POS</span>
+            <span class="tool-tag">Squarespace</span>
+            <span class="tool-tag">Perfect Venue</span>
+            <span class="tool-tag">Tripleseat</span>
+            <span class="tool-tag">SevenRooms</span>
+            <span class="tool-tag">Gusto</span>
+            <span class="tool-tag">Microsoft Teams</span>
+            <span class="tool-tag">Google Workspace</span>
+            <span class="tool-tag">Google Apps</span>
+            <span class="tool-tag">Toast POS</span>
+            <span class="tool-tag">Bevager</span>
+            <span class="tool-tag">Sonato</span>
+            <span class="tool-tag">Zenefits</span>
+            <span class="tool-tag">Zendesk</span>
+            <span class="tool-tag">Gemini</span>
+            <span class="tool-tag">Cloudflare</span>
+            <span class="tool-tag">GitHub</span>
+            <span class="tool-tag">Salesforce</span>
+            <span class="tool-tag">PeopleSoft</span>
+            <span class="tool-tag">Homebase</span>
+            <span class="tool-tag">Stripe</span>
+            <span class="tool-tag">CardConnect</span>
+            <span class="tool-tag">Flodesk</span>
+            <span class="tool-tag">Visual Studio Code</span>
+            <span class="tool-tag">Genspark.ai</span>
+            <span class="tool-tag">...and more</span>
           </div>
         </div>
+
+        <!-- Footer -->
         <div class="footer-text">
-          Based in San Francisco. Open to member experience, club operations, and hospitality ops roles. Reach me at
-          sbvantha415@gmail.com.
+          Based in San Francisco. Open to member experience, club operations, and hospitality ops roles.<br> Reach me at sbvantha415@gmail.com.
         </div>
       </div>
-      <script type="module"
-        src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496"
-        integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ=="
-        data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}'
-        crossorigin="anonymous"></script>
+      
+      <!-- Analytics Script -->
+      <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
     </body>
   </template>
-  <script>
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-      if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-      }
-      document.getElementById('tab-' + tabId).classList.add('active');
-    }
-
-    const simOutputs = {
-      lookup: `[API EVENT: TOAST POS ➔ PEOPLEVINE MEMBER SEARCH]
-Endpoint: GET /v1/peoplevine/members/search?id=MEM-99201
-Latency: 142ms | Status: HTTP 200 OK
-------------------------------------------------------------------
-{
-  "member_id": "MEM-99201",
-  "full_name": "Sarah Jenkins",
-  "status": "ACTIVE_MEMBER",
-  "house_account": {
-    "status": "APPROVED",
-    "credit_limit": 15000.00,
-    "available_balance": 2500.00
-  },
-  "action": "Profile MEM-99201 successfully attached to Toast Check #88192"
-}`,
-
-      seated: `[WEBHOOK EVENT: SEVENROOMS ➔ TOAST POS TABLE LINK]
-Event: reservation.seated | Table: Table 42
-Latency: 184ms | Status: HTTP 200 OK
-------------------------------------------------------------------
-{
-  "reservation_id": "SR-901823",
-  "table_number": "Table 42",
-  "member_id": "MEM-99201",
-  "guest_tags": ["FOUNDING_ELITE", "ALLERGY_PEANUT"],
-  "action": "Auto-opened Toast Check #88192 on Table 42 with KDS allergy alerts pushed"
-}`,
-
-      beo: `[WEBHOOK EVENT: PERFECT VENUE ➔ TOAST POS BEO TAB]
-Event: banquet.contract_signed | Deposit Collected: $4,000.00
-Latency: 210ms | Status: HTTP 201 CREATED
-------------------------------------------------------------------
-{
-  "event_id": "PV-2026-9041",
-  "host_member_id": "MEM-99201",
-  "applied_sku": "SKU-DEP-4000",
-  "credit_amount": -4000.00,
-  "action": "Pre-opened Event Tab in Toast POS with $4,000 credit pre-applied"
-}`,
-
-      error: `[API ERROR: INTEGRATION GATEWAY VALIDATION]
-Payload: POST /v1/toast/orders/deposit-credit
-Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
-------------------------------------------------------------------
-{
-  "error_code": "INVALID_NUMERIC_INPUT",
-  "message": "Deposit credit value cannot be negative (-4000.00 USD).",
-  "action": "Transaction rejected at gateway. Rolled back transaction to protect ledger integrity."
-}`
-    };
-
-    function runSim(type, btnElem) {
-      document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
-      btnElem.classList.add('active');
-      document.getElementById('console-output').innerText = simOutputs[type];
-    }
-
-    const scenarioData = {
-      1: {
-        kicker: "Use Case: Front Desk",
-        title: "Arrival & Recognition",
-        intro: "First impressions set the standard. The reception team identifies the member, confirms status, and logs nuanced preferences to build a stronger profile for future visits.",
-        steps: [
-          { step: "Phase 1", title: "Identity Verification", text: "Host identifies member upon arrival, instantly accessing historical preferences and pending operational notes." },
-          { step: "Phase 2", title: "Live Data Capture", text: "During natural conversation, staff discretely logs arrival cadence, seating biases, or specific guest dynamics." },
-          { step: "Phase 3", title: "System Sync", text: "Observations are pushed to the central CRM, updating the digital dossier across all club departments simultaneously." },
-          { step: "Phase 4", title: "Elevated Return", text: "On the subsequent visit, the floor team utilizes these insights to offer anticipatory service, eliminating redundant inquiries." }
-        ]
-      },
-      2: {
-        kicker: "Use Case: Administration",
-        title: "Administrative Handoffs",
-        intro: "Complex requests require flawless routing. Operations management captures critical context so departments can execute without dropping the ball.",
-        steps: [
-          { step: "Phase 1", title: "Inbound Request", text: "Member submits a high-friction request regarding billing, membership structure, or specialized access." },
-          { step: "Phase 2", title: "Contextual Triage", text: "Management logs intent, urgency protocols, and specific member constraints directly into the ticketing framework." },
-          { step: "Phase 3", title: "Departmental Routing", text: "The request is assigned to specialized teams (Accounting, Concierge) with complete historical context attached." },
-          { step: "Phase 4", title: "Unified Resolution", text: "The member experiences a cohesive, single-point-of-contact resolution, entirely unaware of the complex backend coordination." }
-        ]
-      },
-      3: {
-        kicker: "Use Case: Sales & Catering",
-        title: "Event Qualification",
-        intro: "Private events drive massive revenue. Capturing exact commercial intent and VIP metrics early ensures a personalized, high-conversion proposal.",
-        steps: [
-          { step: "Phase 1", title: "Initial Inquiry", text: "Member expresses intent to utilize club real estate for a high-value personal or corporate function." },
-          { step: "Phase 2", title: "Strategic Qualification", text: "Sales precisely documents F&B requirements, budgetary scope, VIP attendees, and critical timeline markers." },
-          { step: "Phase 3", title: "Operational Briefing", text: "Logistical constraints (AV needs, security protocols, layout) are immediately mapped to avoid downstream friction." },
-          { step: "Phase 4", title: "Tailored Acquisition", text: "The resulting proposal reflects deep understanding of the member's exact needs, drastically improving closing rates." }
-        ]
-      }
-    };
-
-    function showScenario(id) {
-      document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('scenarioBtn' + id).classList.add('active');
-
-      const data = scenarioData[id];
-
-      document.getElementById('scenarioSummary').innerHTML = `
-      <div class="scenario-kicker">${data.kicker}</div>
-      <h4>${data.title}</h4>
-      <p style="font-size: 14px; color: #8b949e; max-width: 800px; margin: 0;">${data.intro}</p>
-    `;
-
-      document.getElementById('scenarioGrid').innerHTML = data.steps.map(item => `
-      <div class="scenario-card">
-        <div class="scenario-step">${item.step}</div>
-        <h5>${item.title}</h5>
-        <p>${item.text}</p>
-      </div>
-    `).join('');
-    }
-
-    window.onload = function () {
-      runSim('lookup', document.querySelectorAll('.sim-btn')[0]);
-      showScenario(1);
-    };
-  </script>
-
-</body>
-
-</template>
 
 <template id="tpl-crm">
   <head>
@@ -5066,770 +5084,586 @@ h1{font-size:18px;font-weight:bold;text-transform:uppercase;color:#c7a86d;border
   </body>
   </template>
 <template id="tpl-marketing">
-  <head>
-    <meta charset="UTF-8">
-    <title>Marketing &amp; Media Operations | Studio</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&display=swap"
-      rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <style>
-      :root {
-        --bg: #0a0a0a;
-        --panel: rgba(22, 26, 33, .65);
-        --panel-border: rgba(199, 168, 109, .18);
-        --gold: #c7a86d;
-        --gold-hover: #e0c28b;
-        --gold-light: #f3e0b5;
-        --action-btn: #7a1a1a;
-        --action-btn-hover: #962222;
-        --text-main: #f0e6d2;
-        --text-dim: #8b949e;
-        --border: 1px solid #2d2d2d;
-        --shadow-elev: 0 16px 40px rgba(0, 0, 0, .5);
-        --font-sans: 'Inter', sans-serif;
-        --font-serif: 'Playfair Display', serif;
-        --font-mono: 'DM Mono', monospace;
-      }
-
-      body.light-theme {
-        --bg: #f4f5f7;
-        --panel: rgba(255, 255, 255, .85);
-        --panel-border: rgba(199, 168, 109, .30);
-        --gold: #a68449;
-        --gold-hover: #8a6a34;
-        --gold-light: #c89e52;
-        --action-btn: #a32a2a;
-        --action-btn-hover: #7a1a1a;
-        --text-main: #111827;
-        --text-dim: #4b5563;
-        --border: 1px solid #e5e7eb;
-        --shadow-elev: 0 16px 40px rgba(0, 0, 0, .08);
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box
-      }
-
-      body {
-        background: var(--bg);
-        color: var(--text-dim);
-        font-family: var(--font-sans);
-        margin: 0;
-        padding: 30px;
-        line-height: 1.6;
-        transition: background-color .4s ease, color .4s ease
-      }
-
-      .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        animation: fadeIn .6s ease forwards
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(15px)
+    <head>
+      <meta charset="UTF-8">
+      <title>Marketing &amp; Media Operations | Studio</title>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+      
+      <!-- ========================================== -->
+      <!-- CSS SECTION: Only styling and animations   -->
+      <!-- ========================================== -->
+      <style>
+        :root {
+          --bg: #0a0a0a;
+          --panel: rgba(22, 26, 33, .65);
+          --panel-border: rgba(199, 168, 109, .18);
+          --gold: #c7a86d;
+          --gold-hover: #e0c28b;
+          --gold-light: #f3e0b5;
+          --action-btn: #161b22;
+          --action-btn-hover: #c7a86d;
+          --text-main: #f0e6d2;
+          --text-dim: #8b949e;
+          --border: 1px solid #2d2d2d;
+          --shadow-elev: 0 16px 40px rgba(0, 0, 0, .5);
+          --font-sans: 'Inter', sans-serif;
+          --font-serif: 'Playfair Display', serif;
+          --font-serif-alt: 'Cormorant Garamond', serif;
+          --font-mono: 'DM Mono', monospace;
         }
 
-        to {
-          opacity: 1;
-          transform: translateY(0)
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+          background: var(--bg);
+          color: var(--text-dim);
+          font-family: var(--font-sans);
+          margin: 0;
+          padding: 30px;
+          line-height: 1.6;
         }
-      }
 
-      .utility-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-        background: var(--panel);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid var(--panel-border);
-        border-radius: 8px;
-        padding: 12px 20px
-      }
+        .container { max-width: 1400px; margin: 0 auto; animation: fadeIn .6s ease forwards; }
 
-      .disclaimer-pill {
-        font-size: 11px;
-        color: var(--gold);
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 8px
-      }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
 
-      .theme-toggle {
-        background: transparent;
-        border: var(--border);
-        color: var(--text-main);
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 12px;
-        cursor: pointer;
-        font-family: var(--font-mono);
-        transition: all .3s ease
-      }
+        .header-wrapper { text-align: center; margin-bottom: 40px; }
+        .header-wrapper h1 { font-family: var(--font-serif); font-size: 44px; color: var(--text-main); margin-bottom: 10px; font-weight: 600; }
 
-      .theme-toggle:hover {
-        background: var(--gold);
-        color: #fff;
-        border-color: var(--gold)
-      }
-
-      .header-wrapper {
-        text-align: center;
-        margin-bottom: 40px
-      }
-
-      .header-wrapper h1 {
-        font-family: var(--font-serif);
-        font-size: 44px;
-        color: var(--text-main);
-        margin-bottom: 10px;
-        font-weight: 600;
-        letter-spacing: -.5px
-      }
-
-      .studio-grid {
-        display: grid;
-        grid-template-columns: 380px 1fr;
-        gap: 30px;
-        align-items: start
-      }
-
-      @media (max-width:960px) {
         .studio-grid {
-          grid-template-columns: 1fr
+          display: grid;
+          grid-template-columns: 380px 1fr;
+          gap: 30px;
+          align-items: start;
         }
-      }
 
-      .control-panel {
-        background: var(--panel);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--panel-border);
-        border-radius: 12px;
-        box-shadow: var(--shadow-elev);
-        height: calc(100vh - 200px);
-        position: sticky;
-        top: 20px;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden
-      }
+        @media (max-width:960px) { .studio-grid { grid-template-columns: 1fr; } }
 
-      .panel-header {
-        padding: 20px;
-        border-bottom: var(--border);
-        background: inherit;
-        z-index: 10
-      }
+        /* Control Panel */
+        .control-panel {
+          background: var(--panel);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid var(--panel-border);
+          border-radius: 12px;
+          box-shadow: var(--shadow-elev);
+          height: calc(100vh - 160px);
+          position: sticky;
+          top: 20px;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
 
-      .panel-title {
-        font-family: var(--font-serif);
-        font-size: 22px;
-        color: var(--text-main);
-        font-weight: 600
-      }
+        .panel-header { padding: 20px; border-bottom: var(--border); background: inherit; z-index: 10; }
+        .panel-title { font-family: var(--font-serif); font-size: 22px; color: var(--text-main); font-weight: 600; }
+        .panel-scroll-area { padding: 20px; overflow-y: auto; flex-grow: 1; }
+        
+        .input-group { border: var(--border); border-radius: 8px; padding: 16px; margin-bottom: 24px; background: rgba(0, 0, 0, .2); }
+        .input-group legend { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); padding: 0 8px; font-weight: 600; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label { display: block; font-size: 11px; font-family: var(--font-mono); color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+        
+        .form-control {
+          width: 100%; background: transparent; border: var(--border); color: var(--text-main);
+          font-family: var(--font-sans); font-size: 13px; padding: 10px 12px; border-radius: 6px;
+          outline: none; transition: all .3s ease;
+        }
+        .form-control:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(199, 168, 109, .15); }
+        textarea.form-control { resize: vertical; min-height: 80px; }
 
-      .panel-scroll-area {
-        padding: 20px;
-        overflow-y: auto;
-        flex-grow: 1
-      }
+        /* Preview Area */
+        .preview-wrapper {
+          background: var(--panel);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid var(--panel-border);
+          border-radius: 12px;
+          box-shadow: var(--shadow-elev);
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
 
-      .panel-scroll-area::-webkit-scrollbar {
-        width: 6px
-      }
+        .tabs { display: flex; gap: 8px; padding: 20px 20px 0; border-bottom: var(--border); background: transparent; flex-wrap: wrap; }
+        .tab-btn {
+          background: transparent; border: 1px solid transparent; border-bottom: none;
+          color: var(--text-dim); padding: 10px 18px; border-radius: 8px 8px 0 0;
+          font-size: 12px; font-weight: 600; cursor: pointer; transition: all .3s; font-family: var(--font-mono);
+        }
+        .tab-btn.active { background: rgba(199, 168, 109, .1); border: 1px solid var(--border); border-bottom-color: transparent; color: var(--gold); }
+        .tab-btn:hover:not(.active) { color: var(--text-main); }
 
-      .panel-scroll-area::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 3px
-      }
+        .tab-content { display: none; padding: 40px; justify-content: center; align-items: center; flex-direction: column; }
+        .tab-content.active { display: flex; }
 
-      .input-group {
-        border: var(--border);
-        border-radius: 8px;
-        padding: 16px;
-        margin-bottom: 24px;
-        background: rgba(0, 0, 0, .1)
-      }
+        .action-btn {
+          background: var(--action-btn); color: var(--text-main); border: 1px solid var(--border);
+          padding: 12px 24px; border-radius: 6px; font-family: var(--font-mono); font-size: 12px;
+          font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all .3s ease;
+          display: inline-flex; align-items: center; gap: 10px; margin-bottom: 24px;
+        }
+        .action-btn:hover { background: var(--action-btn-hover); color: #000; border-color: var(--gold); }
 
-      body.light-theme .input-group {
-        background: rgba(255, 255, 255, .4)
-      }
+        /* Dynamic Templates */
+        .email-preview-box {
+          width: 100%; max-width: 600px; border: var(--border); padding: 40px; background: #fff;
+          border-radius: 4px; color: #111; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .signage-preview-box {
+          width: 100%; max-width: 510px; aspect-ratio: 8.5 / 11; /* Standard Print Ratio */
+          background-size: cover; background-position: center; border: var(--border);
+          border-radius: 4px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+          display: flex; flex-direction: column; justify-content: flex-end; padding: 40px;
+        }
 
-      .input-group legend {
-        font-family: var(--font-mono);
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: var(--gold);
-        padding: 0 8px;
-        font-weight: 600
-      }
+        .signage-overlay {
+          position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.9) 100%); z-index: 1;
+        }
 
-      .form-group {
-        margin-bottom: 16px
-      }
+        .signage-content { position: relative; z-index: 2; text-align: left; }
+        
+        .social-preview-box {
+          width: 100%; max-width: 400px; aspect-ratio: 1 / 1; /* Instagram Square Ratio */
+          background-size: cover; background-position: center; border: var(--border);
+          border-radius: 4px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+          display: flex; align-items: center; justify-content: center; text-align: center; padding: 30px;
+        }
 
-      .form-group:last-child {
-        margin-bottom: 0
-      }
+        /* Typography inside dynamic templates */
+        .tpl-sponsor { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); margin-bottom: 10px; display: block; }
+        .tpl-title { font-family: var(--font-serif-alt); font-size: 42px; line-height: 1.1; margin: 0 0 15px 0; font-weight: 500; }
+        .tpl-date { font-family: var(--font-sans); font-size: 14px; letter-spacing: 1px; margin-bottom: 20px; font-weight: 600; text-transform: uppercase; }
+        .tpl-desc { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; margin-bottom: 30px; }
 
-      .form-group label {
-        display: block;
-        font-size: 11px;
-        font-family: var(--font-mono);
-        color: var(--text-dim);
-        margin-bottom: 6px;
-        text-transform: uppercase;
-        letter-spacing: .5px
-      }
+        .signage-preview-box .tpl-title { color: #fff; font-size: 48px; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
+        .signage-preview-box .tpl-date { color: var(--gold-light); }
+        .signage-preview-box .tpl-desc { color: #ddd; }
 
-      .form-control {
-        width: 100%;
-        background: transparent;
-        border: var(--border);
-        color: var(--text-main);
-        font-family: var(--font-sans);
-        font-size: 13px;
-        padding: 10px 12px;
-        border-radius: 6px;
-        outline: none;
-        transition: all .3s ease
-      }
+        .social-preview-box .social-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 1; backdrop-filter: blur(3px); }
+        .social-preview-box .signage-content { text-align: center; }
+        .social-preview-box .tpl-title { color: #fff; font-size: 36px; }
+        .social-preview-box .tpl-date { color: var(--gold); }
 
-      .form-control:focus {
-        border-color: var(--gold);
-        box-shadow: 0 0 0 3px rgba(199, 168, 109, .15)
-      }
+        /* Gallery Grid */
+        .archive-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 20px;
+          width: 100%;
+        }
+        .archive-card {
+          position: relative;
+          aspect-ratio: 1 / 1;
+          border-radius: 8px;
+          overflow: hidden;
+          border: 1px solid var(--border);
+          transition: transform 0.3s ease;
+          background: #000;
+        }
+        .archive-card:hover { transform: scale(1.02); border-color: var(--gold); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .archive-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: opacity 0.3s ease; }
+        .archive-card:hover img { opacity: 1; }
 
-      textarea.form-control {
-        resize: vertical;
-        min-height: 80px
-      }
+        /* SMS Specific Styling */
+        .sms-canvas {
+          background: #000; width: 320px; height: 400px; border-radius: 36px; border: 12px solid #2d2d2d;
+          padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; position: relative;
+          box-shadow: 0 20px 50px rgba(0, 0, 0, .4);
+        }
+        .sms-header {
+          position: absolute; top: 0; left: 0; width: 100%; text-align: center; padding: 15px 0; color: #fff;
+          font-size: 12px; font-weight: 600; border-bottom: 1px solid #333; background: rgba(0, 0, 0, .8);
+          backdrop-filter: blur(5px); border-radius: 24px 24px 0 0;
+        }
+        .sms-bubble {
+          background: #0b93f6; color: white; padding: 12px 16px; border-radius: 20px 20px 4px 20px;
+          font-size: 13px; line-height: 1.4; max-width: 85%; align-self: flex-end; margin-bottom: 20px;
+          word-wrap: break-word; box-shadow: 0 2px 10px rgba(11, 147, 246, .3); white-space: pre-wrap;
+        }
+        .sms-timestamp { text-align: center; font-size: 10px; color: var(--text-dim); margin-bottom: 10px; font-family: var(--font-mono); }
 
-      .preview-wrapper {
-        background: var(--panel);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--panel-border);
-        border-radius: 12px;
-        box-shadow: var(--shadow-elev);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column
-      }
+        #toast {
+          position: fixed; top: 30px; right: 30px; background: var(--gold); color: #000;
+          padding: 12px 24px; border-radius: 8px; font-family: var(--font-mono); font-size: 13px;
+          font-weight: 600; box-shadow: 0 10px 30px rgba(0, 0, 0, .3); z-index: 9999;
+          transform: translateX(150%); opacity: 0; transition: all .4s cubic-bezier(.68, -.55, .265, 1.55);
+        }
+        #toast.show { transform: translateX(0); opacity: 1; }
+      </style>
+    </head>
 
-      .browser-top-bar {
-        background: rgba(0, 0, 0, .2);
-        border-bottom: var(--border);
-        padding: 12px 20px;
-        display: flex;
-        align-items: center;
-        gap: 8px
-      }
+    <body>
+      <div id="toast"><i class="fas fa-check-circle"></i> Action completed</div>
+      
+      <div class="container">
+        <div class="header-wrapper">
+          <h1>Marketing &amp; Media Operations</h1>
+          <p>Generate unified campaigns, print-ready signage, and HTML templates dynamically using reusable placeholders.</p>
+        </div>
+        
+        <div class="studio-grid">
+          <!-- Control Panel -->
+          <aside class="control-panel">
+            <div class="panel-header">
+              <h2 class="panel-title"><i class="fas fa-sliders-h" style="color:var(--gold);margin-right:8px;"></i> Template Engine</h2>
+            </div>
+            <div class="panel-scroll-area">
+              <fieldset class="input-group">
+                <legend>Load Preset</legend>
+                <div class="form-group">
+                  <select id="presetSelect" class="form-control" style="font-weight:600;">
+                    <option value="derby">14th Annual Kentucky Derby</option>
+                    <option value="obscura">Amador Obscura</option>
+                    <option value="fashion">The Garden Fashion Show</option>
+                  </select>
+                </div>
+              </fieldset>
 
-      body.light-theme .browser-top-bar {
-        background: rgba(0, 0, 0, .05)
-      }
+              <fieldset class="input-group">
+                <legend>Dynamic Placeholders</legend>
+                <div class="form-group">
+                  <label>Company / Sponsor {{SPONSOR}}</label>
+                  <input type="text" id="inSponsor" class="form-control" value="Woodford Reserve Presents">
+                </div>
+                <div class="form-group">
+                  <label>Event Title {{TITLE}}</label>
+                  <input type="text" id="inTitle" class="form-control" value="The 14th Annual Kentucky Derby Party">
+                </div>
+                <div class="form-group">
+                  <label>Date &amp; Time {{DATE}}</label>
+                  <input type="text" id="inTime" class="form-control" value="Saturday, May 2 · Doors at 2:00 PM">
+                </div>
+                <div class="form-group">
+                  <label>Event Description {{DESC}}</label>
+                  <textarea id="inDesc" class="form-control">Join us for an afternoon at the races. Mint Juleps and live coverage of every post.</textarea>
+                </div>
+                <div class="form-group">
+                  <label>Background Image URL {{IMG_URL}}</label>
+                  <input type="text" id="inImage" class="form-control" value="https://images.unsplash.com/photo-1511193311914-0346f16efe90?auto=format&fit=crop&w=1000&q=80">
+                </div>
+              </fieldset>
+            </div>
+          </aside>
 
-      .mac-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%
-      }
+          <!-- Preview Wrapper -->
+          <main class="preview-wrapper">
+            <div class="tabs">
+              <button class="tab-btn active" onclick="switchTab('av')"><i class="fas fa-tv"></i> Animated Display</button>
+              <button class="tab-btn" onclick="switchTab('email')"><i class="fas fa-envelope"></i> Email HTML</button>
+              <button class="tab-btn" onclick="switchTab('signage')"><i class="fas fa-print"></i> Print Signage</button>
+              <button class="tab-btn" onclick="switchTab('sms')"><i class="fas fa-comment-dots"></i> PCI Compliant SMS</button>
+              <button class="tab-btn" onclick="switchTab('gallery')"><i class="fas fa-images"></i> Event Archive</button>
+            </div>
 
-      .dot-close {
-        background: #ff5f56
-      }
+            <!-- TAB: Animated AV Display via Iframe -->
+            <div id="tab-av" class="tab-content active" style="padding: 0; background: #000;">
+              <!-- 
+                This iframe loads the raw-av-display script content and isolates its CSS. 
+                The onload triggers the JS to inject the vintage animation!
+              -->
+              <iframe id="avIframe" onload="initIframeData()" style="width: 100%; height: 100%; aspect-ratio: 16/9; border: none;"></iframe>
+            </div>
 
-      .dot-min {
-        background: #ffbd2e
-      }
+            <!-- Tab: Email HTML -->
+            <div id="tab-email" class="tab-content">
+              <button class="action-btn" onclick="copyAsset('emailBodyWrapper', 'HTML Code')">
+                <i class="fas fa-code"></i> Copy HTML Payload
+              </button>
+              <div id="emailBodyWrapper" class="email-preview-box">
+                <span class="tpl-sponsor" id="outEmailSponsor" style="color: #c7a86d;">Woodford Reserve Presents</span>
+                <h1 class="tpl-title" id="outEmailTitle" style="color: #111;">The 14th Annual Kentucky Derby Party</h1>
+                <p class="tpl-date" id="outEmailTime" style="color: #555;">Saturday, May 2 · Doors at 2:00 PM</p>
+                <hr style="border:none; border-top:1px solid #eee; margin: 20px 0;">
+                <p class="tpl-desc" id="outEmailDesc" style="color: #444;">Join us for an afternoon at the races. Mint Juleps and live coverage of every post.</p>
+                <a href="#" style="background: #111; color: #fff; padding: 12px 24px; text-decoration: none; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; font-weight: bold;">Reserve Tickets</a>
+              </div>
+            </div>
 
-      .dot-max {
-        background: #27c93f
-      }
+            <!-- Tab: Print Signage -->
+            <div id="tab-signage" class="tab-content">
+              <button class="action-btn" onclick="triggerPrint()">
+                <i class="fas fa-print"></i> Generate PDF Signage
+              </button>
+              <div class="signage-preview-box" id="signageBg" style="background-image:url('https://images.unsplash.com/photo-1511193311914-0346f16efe90?auto=format&fit=crop&w=1000&q=80');">
+                <div class="signage-overlay"></div>
+                <div class="signage-content">
+                  <span class="tpl-sponsor" id="outSignageSponsor">Woodford Reserve Presents</span>
+                  <h1 class="tpl-title" id="outSignageTitle">The 14th Annual Kentucky Derby Party</h1>
+                  <p class="tpl-date" id="outSignageTime">Saturday, May 2 · Doors at 2:00 PM</p>
+                  <p class="tpl-desc" id="outSignageDesc">Join us for an afternoon at the races. Mint Juleps and live coverage of every post.</p>
+                </div>
+              </div>
+            </div>
 
-      .browser-url {
-        margin-left: 15px;
-        font-family: var(--font-mono);
-        font-size: 11px;
-        color: var(--text-dim);
-        background: rgba(255, 255, 255, .05);
-        padding: 4px 12px;
-        border-radius: 4px;
-        flex-grow: 1;
-        text-align: center;
-        border: var(--border)
-      }
+            <!-- Tab: Social Post -->
+            <div id="tab-social" class="tab-content">
+              <div class="social-preview-box" id="socialBg" style="background-image:url('https://images.unsplash.com/photo-1511193311914-0346f16efe90?auto=format&fit=crop&w=1000&q=80');">
+                <div class="social-overlay"></div>
+                <div class="signage-content">
+                  <span class="tpl-sponsor" id="outSocialSponsor">Woodford Reserve Presents</span>
+                  <h1 class="tpl-title" id="outSocialTitle">The 14th Annual Kentucky Derby Party</h1>
+                  <p class="tpl-date" id="outSocialTime">Saturday, May 2 · Doors at 2:00 PM</p>
+                </div>
+              </div>
+            </div>
 
-      .tabs {
-        display: flex;
-        gap: 8px;
-        padding: 20px 20px 0;
-        border-bottom: var(--border);
-        background: transparent
-      }
+            <!-- Tab: Event Archive Gallery -->
+            <div id="tab-gallery" class="tab-content" style="align-items: flex-start; justify-content: flex-start;">
+              <h2 style="font-family: var(--font-serif); font-size: 28px; color: #fff; margin-bottom: 20px;">Past Event Collateral</h2>
+              <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 30px;">A visual archive of marketing assets, digital flyers, and event branding created for previous club functions.</p>
+              
+              <div class="archive-grid">
+                <!-- Accurately mapped exact filenames for rendering -->
+                <div class="archive-card"><img src="OFFICIAL -- Private Event Signage (8.5 x 11 in).jpg" alt="Photo Booth Signage" loading="lazy"></div>
+                <div class="archive-card"><img src="maison-noir-1of3.jpg" alt="Maison Noir Campaign" loading="lazy"></div>
+                <div class="archive-card"><img src="34.jpg" alt="Mother's Day Brunch" loading="lazy"></div>
+                <div class="archive-card"><img src="2.jpg" alt="The Garden Fashion Show" loading="lazy"></div>
+                <div class="archive-card"><img src="31.jpg" alt="Pinot Noir Release" loading="lazy"></div>
+                <div class="archive-card"><img src="1.jpg" alt="Veuve Clicquot Rosé" loading="lazy"></div>
+                <div class="archive-card"><img src="1.png" alt="Halfway to Freedom Panel" loading="lazy"></div>
+                <div class="archive-card"><img src="6.jpg" alt="R.O.C.K. Benefit" loading="lazy"></div>
+                <div class="archive-card"><img src="8.png" alt="Bond Theme Party" loading="lazy"></div>
+                <div class="archive-card"><img src="36.jpg" alt="The Charles Estate" loading="lazy"></div>
+                <div class="archive-card"><img src="39.jpg" alt="Mars Aeternum Whisky" loading="lazy"></div>
+                <div class="archive-card"><img src="6.png" alt="System Override Classified" loading="lazy"></div>
+              </div>
+            </div>
 
-      .tab-btn {
-        background: transparent;
-        border: 1px solid transparent;
-        border-bottom: none;
-        color: var(--text-dim);
-        padding: 10px 18px;
-        border-radius: 8px 8px 0 0;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all .3s;
-        font-family: var(--font-mono)
-      }
-
-      .tab-btn.active {
-        background: rgba(199, 168, 109, .1);
-        border: 1px solid var(--border);
-        border-bottom-color: transparent;
-        color: var(--gold)
-      }
-
-      .tab-btn:hover:not(.active) {
-        color: var(--text-main)
-      }
-
-      .tab-content {
-        display: none;
-        padding: 40px;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column
-      }
-
-      .tab-content.active {
-        display: flex
-      }
-
-      .action-btn {
-        background: var(--action-btn);
-        color: #fff;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 6px;
-        font-family: var(--font-mono);
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        cursor: pointer;
-        transition: all .3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 24px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, .2)
-      }
-
-      .action-btn:hover {
-        background: var(--action-btn-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(122, 26, 26, .4)
-      }
-
-      .action-btn:active {
-        transform: translateY(0)
-      }
-
-      #toast {
-        position: fixed;
-        top: 30px;
-        right: 30px;
-        background: var(--gold);
-        color: #000;
-        padding: 12px 24px;
-        border-radius: 8px;
-        font-family: var(--font-mono);
-        font-size: 13px;
-        font-weight: 600;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
-        z-index: 9999;
-        transform: translateX(150%);
-        opacity: 0;
-        transition: all .4s cubic-bezier(.68, -.55, .265, 1.55)
-      }
-
-      #toast.show {
-        transform: translateX(0);
-        opacity: 1
-      }
-
-      .av-canvas {
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 16/9;
-        background-color: #1c1815;
-        background-size: cover;
-        background-position: center;
-        border-radius: 8px;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 40px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
-        overflow: hidden
-      }
-
-      .av-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(0, 0, 0, .2) 0%, rgba(0, 0, 0, .9) 100%)
-      }
-
-      .av-content {
-        position: relative;
-        z-index: 2
-      }
-
-      .av-title {
-        font-family: 'Playfair Display', serif;
-        font-size: clamp(2rem, 5vw, 3.5rem);
-        color: #fff;
-        margin: 0 0 10px;
-        line-height: 1.1
-      }
-
-      .av-details {
-        font-family: var(--font-sans);
-        font-size: clamp(1rem, 2vw, 1.2rem);
-        color: var(--gold);
-        letter-spacing: 1px
-      }
-
-      .banner-canvas {
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 4/1;
-        background-color: #1c1815;
-        background-size: cover;
-        background-position: center;
-        border-radius: 8px;
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 40px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
-        overflow: hidden
-      }
-
-      .qr-canvas {
-        background: #fff;
-        padding: 30px;
-        border-radius: 16px;
-        text-align: center;
-        color: #000;
-        font-family: var(--font-sans);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .2)
-      }
-
-      .qr-img {
-        width: 200px;
-        height: 200px;
-        margin-top: 15px
-      }
-
-      .sms-canvas {
-        background: #000;
-        width: 320px;
-        height: 400px;
-        border-radius: 36px;
-        border: 12px solid #2d2d2d;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        position: relative;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, .4)
-      }
-
-      body.light-theme .sms-canvas {
-        border-color: #e5e7eb;
-        background: #f9fafb
-      }
-
-      .sms-header {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        text-align: center;
-        padding: 15px 0;
-        color: #fff;
-        font-size: 12px;
-        font-weight: 600;
-        border-bottom: 1px solid #333;
-        background: rgba(0, 0, 0, .8);
-        backdrop-filter: blur(5px);
-        border-radius: 24px 24px 0 0
-      }
-
-      body.light-theme .sms-header {
-        background: rgba(255, 255, 255, .8);
-        color: #000;
-        border-bottom-color: #e5e7eb
-      }
-
-      .sms-bubble {
-        background: #0b93f6;
-        color: white;
-        padding: 12px 16px;
-        border-radius: 20px 20px 4px 20px;
-        font-size: 14px;
-        line-height: 1.4;
-        max-width: 85%;
-        align-self: flex-end;
-        margin-bottom: 20px;
-        word-wrap: break-word;
-        box-shadow: 0 2px 10px rgba(11, 147, 246, .3)
-      }
-
-      .sms-timestamp {
-        text-align: center;
-        font-size: 10px;
-        color: var(--text-dim);
-        margin-bottom: 10px;
-        font-family: var(--font-mono)
-      }
-
-      #emailBodyWrapper {
-        width: 100%;
-        max-width: 600px;
-        margin: 0 auto;
-        border: var(--border);
-        padding: 10px;
-        background: #0e0b09;
-        border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .3)
-      }
-    </style>
-  </head>
-
-  <body>
-    <div id="toast"><i class="fas fa-check-circle"></i> Asset copied to clipboard</div>
-    <div class="container">
-      <div class="utility-bar">
-        <div class="disclaimer-pill"><i class="fas fa-vial"></i> Interactive asset studio</div>
-        <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-adjust"></i> Switch theme</button>
+          </main>
+        </div>
       </div>
-      <div class="header-wrapper">
-        <h1>Marketing &amp; Media Operations</h1>
-        <p>Generate clean HTML for Peoplevine, digital AV signage, scannable QR codes, and SMS blasts from one profile.
-        </p>
+
+      <!-- ========================================== -->
+      <!-- RAW HTML TEMPLATE FOR THE VINTAGE AV DISPLAY-->
+      <!-- ========================================== -->
+      <script type="text/html" id="raw-av-display">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background-color: #fff; color: #111; font-family: 'Cormorant Garamond', serif; -webkit-font-smoothing: antialiased; }
+    
+    /* Vintage Signage Borders */
+    .vintage-border { 
+      position: absolute; inset: 24px; border: 2px solid #111; outline: 1px solid #111; 
+      outline-offset: -6px; pointer-events: none; z-index: 10; 
+    }
+    
+    /* Animation Cycle */
+    .slide-stage { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .slide { 
+      position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; 
+      display: flex; flex-direction: column; align-items: center; justify-content: center; 
+      text-align: center; padding: 40px; animation: cycleSlide 24s infinite; 
+    }
+    .slide:nth-child(1) { animation-delay: 0s; z-index: 3; }
+    .slide:nth-child(2) { animation-delay: 8s; z-index: 2; }
+    .slide:nth-child(3) { animation-delay: 16s; z-index: 1; }
+
+    @keyframes cycleSlide { 
+      0%, 25% { opacity: 1; transform: scale(1); } 
+      33%, 100% { opacity: 0; transform: scale(1.02); } 
+    }
+
+    /* Typography */
+    .script-title { font-family: 'Alex Brush', cursive; font-size: 10vw; margin: 0 0 2vh; font-weight: 400; line-height: 1; }
+    .event-title { font-size: 2.5vw; letter-spacing: 4px; text-transform: uppercase; margin: 2vh 0 1vh; font-weight: 700; }
+    .event-desc { font-size: 2vw; font-style: italic; margin: 0 0 5px; }
+    .event-time { font-size: 1.5vw; margin: 0; }
+    
+    /* Animated Pointing Hands */
+    .hand { font-size: 3vw; display: inline-block; animation: point 1.5s infinite alternate ease-in-out; }
+    .hand-left { animation: pointLeft 1.5s infinite alternate ease-in-out; }
+    @keyframes point { 0% { transform: translateX(0); } 100% { transform: translateX(8px); } }
+    @keyframes pointLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-8px); } }
+    
+    .divider { width: 100%; text-align: center; letter-spacing: 15px; margin: 2vh 0; font-size: 2vw; }
+    .footer { position: absolute; bottom: 6vh; font-size: 1.2vw; letter-spacing: 6px; text-transform: uppercase; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="vintage-border"></div>
+  <div class="slide-stage">
+    
+    <!-- Slide 1: Welcome Overview -->
+    <div class="slide">
+      <h1 class="script-title">Welcome</h1>
+      
+      <div class="event-title" id="av-title-1">POOL TOURNAMENT</div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <span class="hand">☞</span>
+        <div>
+          <div class="event-desc" id="av-desc-1">Billiards Room</div>
+          <div class="event-time" id="av-time-1">(5:30 PM - 7:30 PM)</div>
+        </div>
       </div>
-      <div class="studio-grid">
-        <aside class="control-panel">
-          <div class="panel-header">
-            <h2 class="panel-title"><i class="fas fa-sliders-h" style="color:var(--gold);margin-right:8px;"></i> Studio
-              controls</h2>
-          </div>
-          <div class="panel-scroll-area">
-            <fieldset class="input-group">
-              <legend>Global preset</legend>
-              <div class="form-group">
-                <select id="presetSelect" class="form-control" style="font-weight:600;">
-                  <option value="derby">14th Annual Kentucky Derby</option>
-                  <option value="obscura"> Obscura x Peaches Christ</option>
-                  <option value="folsom">Folsom Skin VIP Launch</option>
-                </select>
-              </div>
-            </fieldset>
-            <fieldset class="input-group">
-              <legend>Event details</legend>
-              <div class="form-group"><label>Headline title</label><input type="text" id="inTitle" class="form-control"
-                  value="The 14th Annual Kentucky Derby Party"></div>
-              <div class="form-group"><label>Date &amp; time</label><input type="text" id="inTime" class="form-control"
-                  value="Saturday, May 2 · Doors at 2:00 PM"></div>
-              <div class="form-group"><label>Attire / meta</label><input type="text" id="inAttire" class="form-control"
-                  value="Derby best · hats & bowties"></div>
-              <div class="form-group"><label>Description</label><textarea id="inDesc"
-                  class="form-control">Join us for an afternoon at the races. Mint Juleps and live coverage of every post.</textarea>
-              </div>
-            </fieldset>
-            <fieldset class="input-group">
-              <legend>Visuals &amp; links</legend>
-              <div class="form-group"><label>Background hero image URL</label><input type="text" id="inImage"
-                  class="form-control"
-                  value="https://images.unsplash.com/photo-1511193311914-0346f16efe90?auto=format&fit=crop&w=1000&q=80">
-              </div>
-              <div class="form-group"><label>RSVP destination URL</label><input type="text" id="inRSVP"
-                  class="form-control" value="https://club.com/rsvp/derby-14"></div>
-            </fieldset>
-          </div>
-        </aside>
-        <main class="preview-wrapper">
-          <div class="browser-top-bar">
-            <div class="mac-dots">
-              <div class="mac-dot dot-close"></div>
-              <div class="mac-dot dot-min"></div>
-              <div class="mac-dot dot-max"></div>
-            </div>
-            <div class="browser-url"><i class="fas fa-lock" style="margin-right:5px;color:#2ecc71;"></i>
-              studio.club.internal/asset-generator</div>
-          </div>
-          <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('email')"><i class="fas fa-envelope"></i> Email
-              HTML</button>
-            <button class="tab-btn" onclick="switchTab('av')"><i class="fas fa-tv"></i> AV promo</button>
-            <button class="tab-btn" onclick="switchTab('banner')"><i class="fas fa-image"></i> Banner</button>
-            <button class="tab-btn" onclick="switchTab('qr')"><i class="fas fa-qrcode"></i> QR</button>
-            <button class="tab-btn" onclick="switchTab('sms')"><i class="fas fa-comment-dots"></i> SMS</button>
-          </div>
-          <div id="tab-email" class="tab-content active">
-            <button class="action-btn" onclick="copyAsset('emailBodyWrapper', 'HTML Code')"><i class="fas fa-code"></i>
-              Copy inline HTML</button>
-            <div id="emailBodyWrapper">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0"
-                style="background-color:#120e0b;border:1px solid #c7a86d;border-radius:8px;max-width:600px;margin:0 auto;font-family:Arial,sans-serif;">
-                <tr>
-                  <td style="padding:40px 20px;text-align:center;">
-                    <h1 id="outEmailTitle"
-                      style="margin:0 0 15px;color:#f0e6d2;font-size:28px;font-weight:normal;font-family:Georgia,serif;">
-                      The 14th Annual Kentucky Derby Party</h1>
-                    <p id="outEmailTime"
-                      style="margin:0 0 10px;color:#c7a86d;font-size:14px;text-transform:uppercase;letter-spacing:2px;">
-                      Saturday, May 2 · Doors at 2:00 PM</p>
-                    <p id="outEmailAttire" style="margin:0 0 20px;color:#8b949e;font-size:14px;">Derby best · hats &
-                      bowties</p>
-                    <hr style="border:none;border-top:1px solid rgba(199,168,109,.3);width:60%;margin:20px auto;">
-                    <p id="outEmailDesc" style="margin:0 0 30px;color:#e6edf3;font-size:16px;line-height:1.6;">Join us
-                      for an afternoon at the races. Mint Juleps and live coverage of every post.</p>
-                    <a id="outEmailBtn" href="https://club.com/rsvp/derby-14"
-                      style="display:inline-block;background-color:#7a1a1a;color:#fff;padding:14px 28px;text-decoration:none;border-radius:4px;font-weight:bold;text-transform:uppercase;font-size:12px;letter-spacing:1px;">Reserve
-                      your spot</a>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
-          <div id="tab-av" class="tab-content">
-            <div class="av-canvas" id="avBg"
-              style="background-image:url('https://images.unsplash.com/photo-1511193311914-0346f16efe90?auto=format&fit=crop&w=1000&q=80');">
-              <div class="av-overlay"></div>
-              <div class="av-content">
-                <h1 class="av-title" id="outAvTitle">The 14th Annual Kentucky Derby Party</h1>
-                <p class="av-details"><span id="outAvTime">Saturday, May 2 · Doors at 2:00 PM</span></p>
-                <p style="color:#fff;font-family:var(--font-sans);margin-top:15px;font-size:1.1rem;" id="outAvAttire">
-                  Derby best · hats & bowties</p>
-              </div>
-            </div>
-          </div>
-          <div id="tab-banner" class="tab-content">
-            <div class="banner-canvas" id="bannerBg"
-              style="background-image:url('https://images.unsplash.com/photo-1511193311914-0346f16efe90?auto=format&fit=crop&w=1000&q=80');">
-              <div class="av-overlay" style="background:linear-gradient(90deg,rgba(0,0,0,.9) 0%,rgba(0,0,0,.2) 100%);">
-              </div>
-              <div class="av-content" style="text-align:left;">
-                <h2 style="font-family:var(--font-serif);color:#fff;font-size:2.2rem;margin:0;" id="outBannerTitle">The
-                  14th Annual Kentucky Derby Party</h2>
-                <p style="color:#c7a86d;font-family:var(--font-mono);font-size:.85rem;text-transform:uppercase;margin-top:5px;"
-                  id="outBannerTime">Saturday, May 2 · Doors at 2:00 PM</p>
-              </div>
-            </div>
-          </div>
-          <div id="tab-qr" class="tab-content">
-            <div class="qr-canvas">
-              <h3 style="margin-bottom:5px;font-weight:600;font-family:var(--font-serif);font-size:24px;">Scan to RSVP
-              </h3>
-              <p style="font-size:13px;color:#666;margin-bottom:10px;font-family:var(--font-mono);" id="outQrUrl">
-                club.com/rsvp/derby-14</p>
-              <img id="qrImage" class="qr-img"
-                src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://club.com/rsvp/derby-14"
-                alt="QR Code">
-            </div>
-          </div>
-          <div id="tab-sms" class="tab-content">
-            <button class="action-btn" onclick="copyAsset('outSmsText', 'SMS text', true)"><i
-                class="fas fa-paper-plane"></i> Copy SMS text</button>
-            <div class="sms-canvas">
-              <div class="sms-header"> Club Messaging</div>
-              <div class="sms-timestamp" id="smsTimestamp">Today</div>
-              <div class="sms-bubble" id="outSmsText">You're invited to The 14th Annual Kentucky Derby Party. Sat, May 2
-                · doors at 2pm. RSVP: https://club.com/rsvp/derby-14</div>
-            </div>
-          </div>
-        </main>
+      
+      <div class="divider">......</div>
+      
+      <div class="event-title" id="av-title-2">BIG BOTTLE NIGHT</div>
+      <div style="display:flex; align-items:center; gap:20px;">
+        <div>
+          <div class="event-desc" id="av-desc-2">Wine Cave</div>
+          <div class="event-time" id="av-time-2">(6 PM - 8 PM)</div>
+        </div>
+        <span class="hand hand-left">☜</span>
       </div>
+      
+      <div class="footer" id="av-sponsor">FRIDAY, AUGUST 4TH &nbsp;&bull;&nbsp; WINGTIP</div>
     </div>
-    <script>
-      const presets = {
-        derby: { title: "The 14th Annual Kentucky Derby Party", time: "Saturday, May 2 · Doors at 2:00 PM", attire: "Derby best · hats & bowties", desc: "Join us for an afternoon at the races. Mint Juleps and live coverage of every post.", rsvp: "https://xclub.com/rsvp/derby-14", img: "https://images.unsplash.com/photo-1511193311914-0346f16efe90?auto=format&fit=crop&w=1000&q=80" },
-        obscura: { title: "Obscura x Peaches Christ", time: "May 30 · 5:00 PM", attire: "Masquerade / dark luxury", desc: "Queer LifeSpace turns three floors into an immersive night inspired by the seven deadly sins.", rsvp: "https:/club.com/obscura-tickets", img: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1000&q=80" },
-        folsom: { title: "Complexion Studio VIP Diagnostic", time: "June 15 · 6:00 PM", attire: "Elevated casual", desc: "A launch event for the 3,000+ foundation matching engine. Live 1-on-1 undertone diagnostics.", rsvp: "https://somaskinproject.com/rsvp", img: "https://images.unsplash.com/photo-1512496015851-a1dc8a4746bc?auto=format&fit=crop&w=1000&q=80" }
-      };
-      const inTitle = document.getElementById('inTitle');
-      const inTime = document.getElementById('inTime');
-      const inAttire = document.getElementById('inAttire');
-      const inDesc = document.getElementById('inDesc');
-      const inImage = document.getElementById('inImage');
-      const inRSVP = document.getElementById('inRSVP');
-      document.getElementById('smsTimestamp').textContent = 'Today ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      window.toggleTheme = function () { document.body.classList.toggle('light-theme'); };
-      window.switchTab = function (tabName) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        document.getElementById('tab-' + tabName).classList.add('active');
-      };
-      window.copyAsset = function (elementId, assetName, isTextContent = false) {
-        const content = isTextContent ? document.getElementById(elementId).textContent.trim() : document.getElementById(elementId).innerHTML;
-        navigator.clipboard.writeText(content).then(() => {
+    
+    <!-- Slide 2: Event 1 Highlight -->
+    <div class="slide">
+      <div class="event-title" id="av-highlight-1" style="font-size: 6vw; line-height: 1.2;">POOL<br>TOURNAMENT</div>
+      <span class="hand" style="font-size: 6vw; margin-top: 4vh; transform: rotate(-90deg); animation: none;">☝</span>
+    </div>
+    
+    <!-- Slide 3: Event 2 Highlight -->
+    <div class="slide">
+      <div class="event-title" id="av-highlight-2" style="font-size: 6vw; line-height: 1.2;">BIG BOTTLE<br>NIGHT</div>
+      <span class="hand" style="font-size: 6vw; margin-top: 4vh; transform: rotate(-90deg); animation: none;">☝</span>
+      <div style="margin-top: 4vh; font-size: 1.5vw; letter-spacing: 4px; text-transform: uppercase;">*THIS IS A TICKETED EVENT.</div>
+    </div>
+
+  </div>
+</body>
+</html>
+      </script>
+
+      <!-- ========================================== -->
+      <!-- JAVASCRIPT SECTION: All logic & JSON data  -->
+      <!-- ========================================== -->
+      <script>
+        const presets = {
+          derby: { 
+            sponsor: "Woodford Reserve Presents",
+            title: "The 14th Annual Kentucky Derby Party", 
+            time: "Saturday, May 2 · Doors at 2:00 PM", 
+            desc: "Join us for an afternoon at the races. Mint Juleps and live coverage of every post.", 
+            img: "https://images.unsplash.com/photo-1511193311914-0346f16efe90?auto=format&fit=crop&w=1000&q=80" 
+          },
+          obscura: { 
+            sponsor: "Queer LifeSpace & Peaches Christ",
+            title: "Amador Obscura", 
+            time: "May 30 · 5:00 PM", 
+            desc: "An immersive night of theater inspired by the seven deadly sins. Masquerade masks are mandatory.", 
+            img: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1000&q=80" 
+          },
+          fashion: { 
+            sponsor: "AÉ33 Studios",
+            title: "The Garden: Fashion Show", 
+            time: "Saturday, May 16 · 7:00 PM", 
+            desc: "Artistry meets the runway. Witness the historic marble halls transform into a living botanical masterpiece.", 
+            img: "2.jpg" 
+          }
+        };
+
+        const inSponsor = document.getElementById('inSponsor');
+        const inTitle = document.getElementById('inTitle');
+        const inTime = document.getElementById('inTime');
+        const inDesc = document.getElementById('inDesc');
+        const inImage = document.getElementById('inImage');
+        const iframe = document.getElementById('avIframe');
+
+        function initIframeData() {
+          if (!iframe.srcdoc) {
+            iframe.srcdoc = document.getElementById('raw-av-display').innerHTML;
+          }
+        }
+
+        window.switchTab = function (tabName) {
+          document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+          event.currentTarget.classList.add('active');
+          document.getElementById('tab-' + tabName).classList.add('active');
+        };
+
+        window.copyAsset = function (elementId, assetName, isTextContent = false) {
+          const content = isTextContent ? document.getElementById(elementId).textContent.trim() : document.getElementById(elementId).innerHTML;
+          navigator.clipboard.writeText(content).then(() => {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + assetName + ' copied';
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+          });
+        };
+
+        window.triggerPrint = function() {
           const toast = document.getElementById('toast');
-          toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + assetName + ' copied';
+          toast.innerHTML = '<i class="fas fa-print"></i> Preparing PDF Generator...';
           toast.classList.add('show');
           setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        };
+
+        function updateViews() {
+          const s = inSponsor.value; const t = inTitle.value; 
+          const tm = inTime.value; const d = inDesc.value; const i = inImage.value;
+          
+          // Update Email Tab
+          document.getElementById('outEmailSponsor').textContent = s;
+          document.getElementById('outEmailTitle').textContent = t;
+          document.getElementById('outEmailTime').textContent = tm;
+          document.getElementById('outEmailDesc').textContent = d;
+          
+          // Update Signage Tab
+          document.getElementById('outSignageSponsor').textContent = s;
+          document.getElementById('outSignageTitle').textContent = t;
+          document.getElementById('outSignageTime').textContent = tm;
+          document.getElementById('outSignageDesc').textContent = d;
+          document.getElementById('signageBg').style.backgroundImage = "url('" + i + "')";
+          
+          // Update Social Tab
+          document.getElementById('outSocialSponsor').textContent = s;
+          document.getElementById('outSocialTitle').textContent = t;
+          document.getElementById('outSocialTime').textContent = tm;
+          document.getElementById('socialBg').style.backgroundImage = "url('" + i + "')";
+
+          // Update SMS Tab with PCI / TCPA Compliance
+          document.getElementById('outSmsText').textContent = "AMADOR: You're invited to " + t + ". " + tm + ". Secure RSVP: " + document.getElementById('inRSVP').value + "\n\nReply STOP to opt-out. We will never ask for credit card details via SMS.";
+        
+          // Update the Live Animated AV Iframe DOM
+          if(iframe.contentDocument && iframe.contentDocument.body) {
+            const idoc = iframe.contentDocument;
+            const safeSet = (id, text) => { if(idoc.getElementById(id)) idoc.getElementById(id).innerHTML = text; };
+            
+            // Map the global inputs to the vintage layout
+            safeSet('av-sponsor', s);
+            safeSet('av-title-1', t);
+            safeSet('av-highlight-1', t.replace(' ', '<br>')); // Break long titles in half for impact
+            safeSet('av-desc-1', d.substring(0, 30) + '...');  // Shorten desc for layout
+            safeSet('av-time-1', '(' + tm + ')');
+          }
+        }
+
+        [inSponsor, inTitle, inTime, inDesc, inImage].forEach(input => { 
+          input.addEventListener('input', updateViews); 
         });
-      };
-      function updateViews() {
-        const t = inTitle.value; const tm = inTime.value; const a = inAttire.value;
-        const d = inDesc.value; const r = inRSVP.value; const i = inImage.value;
-        document.getElementById('outEmailTitle').textContent = t;
-        document.getElementById('outEmailTime').textContent = tm;
-        document.getElementById('outEmailAttire').textContent = a;
-        document.getElementById('outEmailDesc').textContent = d;
-        document.getElementById('outEmailBtn').href = r;
-        document.getElementById('outAvTitle').textContent = t;
-        document.getElementById('outBannerTitle').textContent = t;
-        document.getElementById('outAvTime').textContent = tm;
-        document.getElementById('outBannerTime').textContent = tm;
-        document.getElementById('outAvAttire').textContent = a;
-        document.getElementById('avBg').style.backgroundImage = "url('" + i + "')";
-        document.getElementById('bannerBg').style.backgroundImage = "url('" + i + "')";
-        document.getElementById('outQrUrl').textContent = r;
-        document.getElementById('qrImage').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(r);
-        document.getElementById('outSmsText').textContent = "You're invited to " + t + ". " + tm + ". RSVP: " + r;
-      }
-      [inTitle, inTime, inAttire, inDesc, inImage, inRSVP].forEach(input => { input.addEventListener('input', updateViews); });
-      document.getElementById('presetSelect').addEventListener('change', (e) => {
-        const p = presets[e.target.value];
-        if (!p) return;
-        inTitle.value = p.title; inTime.value = p.time; inAttire.value = p.attire;
-        inDesc.value = p.desc; inRSVP.value = p.rsvp; inImage.value = p.img;
-        updateViews();
-      });
-    </script>
-  </body>
+
+        document.getElementById('presetSelect').addEventListener('change', (e) => {
+          const p = presets[e.target.value];
+          if (!p) return;
+          inSponsor.value = p.sponsor; inTitle.value = p.title; 
+          inTime.value = p.time; inDesc.value = p.desc; inImage.value = p.img;
+          updateViews();
+        });
+        
+        // Boot up the iframe on load
+        initIframeData();
+      </script>
+    </body>
   </template>
 
 <template id="tpl-video">
@@ -7802,22 +7636,22 @@ Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
     <div id="routine-normal" class="routine-panel active">
       <div class="products-grid">
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/cerave-hydrating-cleanse.jpg" alt="CeraVe Hydrating Cleanser"></div>
+          <div class="product-img-wrap"><img src="cerave-hydrating-cleanse.jpg" alt="CeraVe Hydrating Cleanser"></div>
           <span class="step-label">Step 1: Cleanse</span>
           <h4>CeraVe Hydrating Cleanser</h4>
           <p class="product-desc">Gentle, non-foaming. Keeps moisture balance without stripping.</p>
         </div>
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/olay-regenerist-micro-sculpting.jpg" alt="Olay Cream"></div>
+          <div class="product-img-wrap"><img src="olay-regenerist-micro-sculpting.jpg" alt="Olay Cream"></div>
           <span class="step-label">Step 2: Moisturize</span>
           <h4>Olay Regenerist Cream</h4>
           <p class="product-desc">Lightweight hydration with firming peptides. Daily use, year-round.</p>
         </div>
         <!-- SPF Product: Lotion Tube Icon -->
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/neutrogena-ultra-sheer-dry-touch-sunsreen-spf55.jpg"
-              alt="Neutrogena Ultra Sheer SPF 55"></div>
-          <span class="step-label">Step 3: Protect</span>
+          <div class="product-img-wrap"><img src="jovs-4d-later-light-therapy-mask.jpg"
+              alt="JOVS 4D Laser Light Face Mask"></div>
+          <span class="step-label">Step 3: Restore</span>
           <div class="spf-formula-type">
             <svg viewBox="0 0 36 56" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
               stroke-linejoin="round">
@@ -7830,9 +7664,9 @@ Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
               <line x1="11" y1="22" x2="9" y2="22" />
               <line x1="27" y1="22" x2="25" y2="22" />
             </svg>
-            <span>Fluid / Lotion</span>
+            <span>UV | Light Therapy</span>
           </div>
-          <p class="product-desc">Drugstore classic. Non-greasy, undetectable finish for an easy everyday choice.</p>
+          <p class="product-desc">Representing the pinnacle of at-home tech evolution. </p>
         </div>
       </div>
     </div>
@@ -7841,21 +7675,21 @@ Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
     <div id="routine-combination" class="routine-panel">
       <div class="products-grid">
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/La Roche-Posay Toleriane Hydrating Gentle Face Wash.jpg"
+          <div class="product-img-wrap"><img src="La Roche-Posay Toleriane Hydrating Gentle Face Wash.jpg"
               alt="La Roche-Posay Cleanser"></div>
           <span class="step-label">Step 1: Cleanse</span>
           <h4>La Roche-Posay Toleriane</h4>
           <p class="product-desc">Removes excess oil from the T-Zone without drying the cheeks.</p>
         </div>
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/Belif True Cream Aqua Bomb.jpg" alt="Belif True Cream"></div>
+          <div class="product-img-wrap"><img src="Belif True Cream Aqua Bomb.jpg" alt="Belif True Cream"></div>
           <span class="step-label">Step 2: Moisturize</span>
           <h4>Belif True Cream Aqua Bomb</h4>
           <p class="product-desc">A water-based gel-cream that hydrates deeply without any heaviness.</p>
         </div>
         <!-- SPF Product: Gel Pump Icon -->
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/supergoop-unseen.jpg" alt="Supergoop SPF"></div>
+          <div class="product-img-wrap"><img src="supergoop-unseen.jpg" alt="Supergoop SPF"></div>
           <span class="step-label">Step 3: Protect</span>
           <div class="spf-formula-type">
             <svg viewBox="0 0 32 60" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
@@ -7880,20 +7714,20 @@ Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
     <div id="routine-dry" class="routine-panel">
       <div class="products-grid">
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/cerave-hydrating-cleanse.jpg" alt="CeraVe Hydrating Cleanser"></div>
+          <div class="product-img-wrap"><img src="cerave-hydrating-cleanse.jpg" alt="CeraVe Hydrating Cleanser"></div>
           <span class="step-label">Step 1: Cleanse</span>
           <h4>CeraVe Hydrating Cleanser</h4>
           <p class="product-desc">Fragrance-free and infused with ceramides. Safe for sensitive, dry skin.</p>
         </div>
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/CeraVe Moisturizing Cream.jpg" alt="CeraVe Moisturizing Cream"></div>
+          <div class="product-img-wrap"><img src="CeraVe Moisturizing Cream.jpg" alt="CeraVe Moisturizing Cream"></div>
           <span class="step-label">Step 2: Moisturize</span>
           <h4>CeraVe Moisturizing Cream</h4>
           <p class="product-desc">Rich 24-hour hydration with essential ceramides to repair the barrier.</p>
         </div>
         <!-- SPF Product: Lotion Tube Icon -->
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/cerave-mineral-spf30.jpg" alt="CeraVe Mineral SPF"></div>
+          <div class="product-img-wrap"><img src="cerave-mineral-spf30.jpg" alt="CeraVe Mineral SPF"></div>
           <span class="step-label">Step 3: Protect</span>
           <div class="spf-formula-type">
             <svg viewBox="0 0 36 56" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
@@ -7920,7 +7754,7 @@ Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
       <div class="products-grid">
         <div class="product-card">
           <div class="product-img-wrap"><img
-              src="images/cerave-hydrating-mineral-spf30.jpg"
+              src="/Users/esbe/Documents/GitHub/somaskinproject/portfolio/cerave-hydrating-mineral-spf30.jpg"
               alt="CeraVe Foaming Cleanser"></div>
           <span class="step-label">Step 1: Cleanse</span>
           <h4>CeraVe Foaming Cleanser</h4>
@@ -7928,7 +7762,7 @@ Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
         </div>
         <div class="product-card">
           <div class="product-img-wrap"><img
-              src="images/tatcha-silk-sunscreen.jpg"
+              src="/Users/esbe/Documents/GitHub/somaskinproject/portfolio/tatcha-silk-sunscreen.jpg"
               alt="TATCHA Silk Sunscreen SPF50"></div>
           <span class="step-label">Step 2: Moisturize</span>
           <h4>TATCHA Silk Sunscreen SPF50</h4>
@@ -7938,7 +7772,7 @@ Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
         <!-- SPF Product: Tinted Moisturizer Jar Icon -->
         <div class="product-card">
           <div class="product-img-wrap"><img
-              src="images/Unsun Mineral Tinted SPF 30 and.jpg"
+              src="/Users/esbe/Documents/GitHub/somaskinproject/portfolio/Unsun Mineral Tinted SPF 30 and.jpg"
               alt="Unsun Mineral Tinted SPF 30"></div>
           <span class="step-label">Step 3: Protect</span>
           <div class="spf-formula-type">
@@ -7961,14 +7795,14 @@ Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
     <div id="routine-acne" class="routine-panel">
       <div class="products-grid">
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/PanOxyl 4% Foaming Wash.png" alt="PanOxyl Foaming Wash"></div>
+          <div class="product-img-wrap"><img src="PanOxyl 4% Foaming Wash.png" alt="PanOxyl Foaming Wash"></div>
           <span class="step-label">Step 1: Cleanse</span>
           <h4>PanOxyl 4% Foaming Wash</h4>
           <p class="product-desc">Targets acne-causing bacteria. Use daily or every other day depending on tolerance.
           </p>
         </div>
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/first-aid-beauty-ultra-repair.jpg"
+          <div class="product-img-wrap"><img src="first-aid-beauty-ultra-repair.jpg"
               alt="First Aid Beauty Ultra Repair"></div>
           <span class="step-label">Step 2: Moisturize</span>
           <h4>First Aid Beauty Ultra Repair</h4>
@@ -7976,7 +7810,7 @@ Latency: 45ms | Status: HTTP 422 UNPROCESSABLE ENTITY
         </div>
         <!-- Elevated SPF Card: Serum Pump Icon -->
         <div class="product-card">
-          <div class="product-img-wrap"><img src="images/eltamd-uv-clear.jpg" alt="EltaMD UV Clear SPF"></div>
+          <div class="product-img-wrap"><img src="eltamd-uv-clear.jpg" alt="EltaMD UV Clear SPF"></div>
           <span class="step-label">Step 3: Protect</span>
           <div class="spf-formula-type">
             <svg viewBox="0 0 32 60" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
