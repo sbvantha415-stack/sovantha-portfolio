@@ -1,0 +1,287 @@
+<style>
+    :root {
+        --derby-red: #db0032;     /* Official Derby Red */
+        --derby-gold: #be955b;    /* Official Derby Gold */
+        --derby-dark: #1a1a1a;
+        --bg-light: #f3f3f3;      /* Derby light gray background */
+        --bg-lighter: #ffffff;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--bg-light);
+        color: var(--derby-dark);
+        overflow-x: hidden;
+    }
+
+    /* --- HERO SECTION --- */
+    .hero {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                    url('https://peoplevine.blob.core.windows.net/media/1048/e8e02b1b-574d-4a42-9b0b-f17453dba824/Club_Event-_Derby.jpg') center/cover no-repeat;
+        color: white;
+        border-bottom: 8px solid var(--derby-gold);
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        color: var(--derby-gold);
+        text-transform: uppercase;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 1.1;
+    }
+
+    .date-location {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-style: italic;
+        margin: 20px 0;
+    }
+
+    /* --- BUTTONS --- */
+    .cta-button {
+        display: inline-block;
+        padding: 12px 32px;
+        background-color: var(--derby-red);
+        color: #fff;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: 1.5px solid var(--derby-red);
+        border-radius: 32px;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        margin-top: 10px;
+    }
+
+    .cta-button:hover {
+        border: 1.5px solid #000;
+        background-color: #000;
+        color: #fff;
+    }
+
+    /* --- QUICK INFO GRID --- */
+    .quick-info {
+        max-width: 1000px;
+        margin: -50px auto 40px auto; 
+        position: relative;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        background: var(--bg-lighter);
+        border: 1px solid var(--derby-gold);
+        border-radius: 8px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    .info-item {
+        padding: 25px 15px;
+        text-align: center;
+        border-right: 1px solid rgba(190, 149, 91, 0.3);
+    }
+
+    .info-item:last-child {
+        border-right: none;
+    }
+
+    .info-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        color: var(--derby-red);
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .info-desc {
+        font-size: 0.95rem;
+        color: #555;
+        line-height: 1.4;
+    }
+
+    /* --- DERBY EXPERIENCE CARDS --- */
+    .cards-section {
+        padding: 40px 20px 40px;
+        max-width: 1100px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        color: var(--derby-dark);
+        margin-bottom: 40px;
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+
+    .card {
+        background: var(--bg-lighter);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        border-bottom: 4px solid var(--derby-gold);
+    }
+
+    .card-content {
+        padding: 25px;
+        text-align: left;
+    }
+
+    .card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--derby-red);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        color: #444;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* --- AFTER PARTY --- */
+    .after-party {
+        max-width: 1060px;
+        margin: 0 auto 60px auto;
+        background-color: var(--derby-dark);
+        color: var(--bg-lighter);
+        padding: 40px 20px;
+        border-radius: 8px;
+        border-left: 8px solid var(--derby-gold);
+        text-align: center;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+
+    .after-party h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: var(--derby-gold);
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+
+    .after-party p {
+        font-size: 1rem;
+        line-height: 1.6;
+        max-width: 800px;
+        margin: 0 auto;
+        color: #eaeaea;
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 900px) {
+        .quick-info {
+            grid-template-columns: repeat(2, 1fr);
+            margin: 20px;
+        }
+        .info-item { border-bottom: 1px solid rgba(190, 149, 91, 0.3); }
+        .info-item:nth-child(2) { border-right: none; }
+        .info-item:nth-child(3), .info-item:nth-child(4) { border-bottom: none; }
+        .cards-grid { grid-template-columns: repeat(2, 1fr); }
+        h1 { font-size: 2.8rem; }
+    }
+
+    @media (max-width: 600px) {
+        .quick-info { grid-template-columns: 1fr; }
+        .info-item { border-right: none; border-bottom: 1px solid rgba(190, 149, 91, 0.3); }
+        .info-item:last-child { border-bottom: none; }
+        .cards-grid { grid-template-columns: 1fr; }
+        .after-party { margin: 20px; }
+    }
+</style>
+<section class="hero">
+<div class="subtitle">Save the Date</div>
+<h1>Kentucky Derby Viewing Party</h1>
+<div class="date-location">Saturday, May 2, 2026 <br /> at The Amador Club</div>
+<a href="#" class="cta-button">Reserve Your Spot</a></section>
+<section class="quick-info">
+<div class="info-item">
+<div class="info-title">Post Time</div>
+<div class="info-desc">Doors open at 2:00 PM.<br />Main Race at 6:57 PM ET.</div>
+</div>
+<div class="info-item">
+<div class="info-title">The Attire</div>
+<div class="info-desc">Derby Best.<br />Extravagant hats &amp; bowties encouraged.</div>
+</div>
+<div class="info-item">
+<div class="info-title">The Fare</div>
+<div class="info-desc">Southern-inspired bites<br />&amp; classic Derby cocktails.</div>
+</div>
+<div class="info-item">
+<div class="info-title">The Location</div>
+<div class="info-desc">The Amador Club<br />San Francisco, CA</div>
+</div>
+</section>
+<section class="cards-section">
+<h2 class="section-title">The Amador Derby Experience</h2>
+<div class="cards-grid">
+<div class="card"><img src="https://peoplevine.blob.core.windows.net/media/1048/257389ec-acff-41fe-8cbe-149bb26e7edc/julep.JPG" alt="Mint Juleps" class="card-img" />
+<div class="card-content">
+<h3 class="card-title">Signature Cocktails</h3>
+<p class="card-text">Enjoy perfectly crafted, ice-cold Mint Juleps paired perfectly with the afternoon races.</p>
+</div>
+</div>
+<div class="card"><img src="https://peoplevine.blob.core.windows.net/media/1048/10484f46e6ae-e903-413a-954a-1e3f15627646.png" alt="Derby Fashion" class="card-img" style="object-position: top;" />
+<div class="card-content">
+<h3 class="card-title">Derby Fashion</h3>
+<p class="card-text">Show off your most creative and elegant race-day attire. Extravagant hats and sharp bowties are highly encouraged!</p>
+</div>
+</div>
+<div class="card"><img src="https://peoplevine.blob.core.windows.net/media/1048/5543f90f-4b3f-4c83-8100-1843d2785a89/derby_race.gif" alt="The Main Event Derby Race" class="card-img" />
+<div class="card-content">
+<h3 class="card-title">The Main Event</h3>
+<p class="card-text">Live music, excellent company, and entertainment leading up to the most exciting two minutes in sports.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="after-party">
+<h2>The After Party at The Bank</h2>
+<p>The race may be over, but the night is just getting started! Keep the celebration going and join us downstairs at <strong>The Bank at Amador</strong> immediately following the main event. We are keeping the energy high with continued cocktails, entertainment, and dancing well into the night. Keep those fascinators and bowties on!</p>
+</section>
