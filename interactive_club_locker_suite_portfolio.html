@@ -7,7 +7,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     :root {
@@ -21,7 +21,7 @@
       background-color: #050505;
       margin: 0;
       padding: 0;
-      font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     #lockerDemo {
@@ -58,11 +58,10 @@
 
     #lockerDemo h3 {
       margin: 0;
-      font-family: "Instrument Serif", Georgia, serif;
+      font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
       font-size: 32px;
       color: #ffffff;
-      font-weight: 400;
-      letter-spacing: -0.01em;
+      font-weight: 600;
     }
 
     #lockerDemo .ld-view-tabs {
@@ -116,7 +115,7 @@
     }
 
     .ld-metric-val {
-      font-family: "Instrument Serif", Georgia, serif;
+      font-family: "Cormorant Garamond", Georgia, serif;
       font-size: 24px;
       font-weight: 700;
       color: var(--club-brass-light);
@@ -369,22 +368,6 @@
       box-shadow: inset 0 5px 15px rgba(0,0,0,1), inset 0 -20px 40px rgba(200, 162, 92, 0.12);
     }
 
-    /* Administrative Alert States */
-    .ld-cell.payment-issue .locker-frame { border-color: #8b3a3a; }
-    .ld-cell.payment-issue .label-plate { background: linear-gradient(to bottom, #d66, #8b3a3a); color: #fff; }
-    .ld-cell.payment-issue .window-pane { box-shadow: inset 0 5px 15px rgba(0,0,0,1), inset 0 -20px 40px rgba(139, 58, 58, 0.25); }
-
-    .ld-cell.maintenance .locker-frame { border-color: #555; }
-    .ld-cell.maintenance .label-plate { background: linear-gradient(to bottom, #888, #444); color: #ccc; }
-
-    .ld-admin-btn {
-      background: rgba(255,255,255,0.05); border: 1px solid #5a4a3a; color: #c5b8ab;
-      padding: 6px 10px; font-size: 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s; flex: 1;
-    }
-    .ld-admin-btn:hover, .ld-admin-btn.active {
-      background: rgba(212, 175, 55, 0.15); color: #fff; border-color: var(--club-brass);
-    }
-
     #ldModalBg {
       display: none;
       position: fixed;
@@ -413,7 +396,7 @@
       box-sizing: border-box;
     }
 
-    #ldModal h4 { margin: 0 0 4px; font-family: "Instrument Serif", Georgia, serif; font-size: 28px; color: var(--club-brass-light); }
+    #ldModal h4 { margin: 0 0 4px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 28px; color: var(--club-brass-light); }
     #ldModal .ld-meta { margin: 0 0 10px; font-size: 12px; color: #a89a8c; text-transform: uppercase; }
 
     .ld-modal-tabs {
@@ -603,7 +586,6 @@
         <button class="ld-mtab active" onclick="switchModalTab('assign', this)">Reservation & Assignment</button>
         <button class="ld-mtab" onclick="switchModalTab('inventory', this)">Inventory & Service</button>
         <button class="ld-mtab" onclick="switchModalTab('sync', this)">System Integrations</button>
-        <button class="ld-mtab" onclick="switchModalTab('comms', this)">Comms & History</button>
       </div>
 
       <!-- TAB 1: ASSIGNMENT -->
@@ -631,16 +613,6 @@
             <span style="font-size: 11px; color: #c5b8ab;">Member acknowledges and signs the Private Locker Terms & Conditions</span>
           </label>
         </div>
-
-        <hr style="border: 0; border-top: 1px solid #3d3127; margin: 18px 0;">
-        <label>Administrative Actions & Locker Status</label>
-        <div style="display: flex; gap: 8px; margin-bottom: 4px;">
-           <button class="ld-admin-btn active" type="button" id="btnStatActive" onclick="setLockerStatus('active')">Active / Assigned</button>
-           <button class="ld-admin-btn" type="button" id="btnStatCancel" onclick="setLockerStatus('cancel')">Cancel & Vacate</button>
-           <button class="ld-admin-btn" type="button" id="btnStatPayment" onclick="setLockerStatus('payment')">Payment Issue</button>
-           <button class="ld-admin-btn" type="button" id="btnStatMaint" onclick="setLockerStatus('maintenance')">Maintenance</button>
-        </div>
-        <input type="hidden" id="ldHiddenStatus" value="active">
       </div>
 
       <!-- TAB 2: INVENTORY & CORKAGE -->
@@ -669,15 +641,11 @@
         <label>Hardware & Fulfillment</label>
         
         <div class="ld-inventory-box" style="display: flex; gap: 14px; align-items: center; margin-bottom: 12px; border-color: rgba(212, 175, 55, 0.3); background: rgba(212, 175, 55, 0.03);">
-          <span aria-label="Locker key" title="Locker key" style="display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="4.5" stroke="currentColor" stroke-width="1.6"/><path d="M11.2 11.2 L20 20 M17 17 l2 -2 M14.5 14.5 l2 -2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <img src="image_ed48f5.png" alt="Timberline Key" style="width: 32px; height: auto; border-radius: 4px; object-fit: contain;">
           <div style="flex: 1;">
             <div style="font-size: 11px; color: var(--club-brass-light); font-weight: 600; margin-bottom: 2px;">Replacement Key Orders</div>
             <div style="font-size: 10px; color: #c5b8ab; margin-bottom: 6px; line-height: 1.3;">Order Timberline CompX keys directly from EasyKeys via secure URL.</div>
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-              <a id="ldKeyOrderBtn" href="#" target="_blank" style="display: inline-block; font-size: 10px; padding: 5px 10px; background: rgba(212, 175, 55, 0.15); border: 1px solid var(--club-brass); border-radius: 4px; color: #fff; text-decoration: none; transition: all 0.2s;">Order Key <span id="ldKeyDisplay" style="font-weight:700;"></span> ↗</a>
-              <a href="https://easykeys.com/#:~:text=Live-,Support,-From%208%3A30" target="_blank" style="font-size: 9px; color: #a89a8c; text-decoration: none; border-bottom: 1px dashed #5a4a3a; transition: color 0.2s;" onmouseover="this.style.color='#f3e0b5'" onmouseout="this.style.color='#a89a8c'">💬 Use LiveChat & Email</a>
-            </div>
-            <div style="font-size: 9px; color: #6f5f52; margin-top: 6px; line-height: 1.3;">* From 8:30 AM - 5:00 PM ET M - F. For key copying questions or security concerns, consult the live agent.</div>
+            <a id="ldKeyOrderBtn" href="#" target="_blank" style="display: inline-block; font-size: 10px; padding: 5px 10px; background: rgba(212, 175, 55, 0.15); border: 1px solid var(--club-brass); border-radius: 4px; color: #fff; text-decoration: none; transition: all 0.2s;">Order Key <span id="ldKeyDisplay" style="font-weight:700;"></span> ↗</a>
           </div>
         </div>
 
@@ -714,38 +682,6 @@
         <button class="ld-save" type="button" style="width:100%; text-align: center; justify-content: center;" onclick="runSimulatedWorkflow()">Execute Provisioning Workflow</button>
       </div>
 
-      <!-- TAB 4: COMMS & HISTORY -->
-      <div id="mtabComms" class="ld-mtab-pane">
-        
-        <div class="ld-inventory-box" style="background: rgba(255, 255, 255, 0.02); border-color: #3d3127; margin-bottom: 16px;">
-          <div style="font-size: 11px; color: var(--club-brass-light); font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.1em;">Standard Operating Procedures (SOP)</div>
-          <p style="font-size: 10px; color: #a89a8c; margin: 0; line-height: 1.4;">
-            <strong>Status Changes:</strong> Always update the administrative status <em>before</em> sending communications. <br>
-            <strong>Cancellations:</strong> Ensure the locker is physically emptied and the Timberline key is returned to the Concierge prior to executing a "Cancel & Vacate" command.<br>
-            <strong>Auditing:</strong> All actions are permanently logged to this locker's hardware ID. Do not use this panel for test entries on live member accounts.
-          </p>
-        </div>
-
-        <label for="ldEmailTemplate">Automated Member Communication</label>
-        <select id="ldEmailTemplate" onchange="updateEmailPreview()">
-          <option value="active">Welcome & Activation Notice</option>
-          <option value="payment">Payment Hold / Decline Notice</option>
-          <option value="maintenance">Facilities Maintenance Notice</option>
-          <option value="cancel">Cancellation & Vacate Confirmation</option>
-        </select>
-
-        <textarea id="ldEmailPreview" rows="5" style="margin-top: 8px; font-size: 11px; color: #c5b8ab; background: #0a0806; line-height: 1.4;" readonly></textarea>
-        
-        <button class="ld-save" type="button" style="width:100%; text-align: center; justify-content: center; margin-top: 8px; padding: 8px; font-size: 10px;" onclick="simulateEmailDispatch()">Send Simulated Communication</button>
-
-        <hr style="border: 0; border-top: 1px solid #3d3127; margin: 20px 0;">
-        
-        <label>Permanent Locker Audit Log</label>
-        <div id="ldAuditLog" style="background: #0a0806; border: 1px solid #2e241c; border-radius: 8px; height: 140px; overflow-y: auto; padding: 12px; font-family: monospace; font-size: 10px; color: #9e8e7c;">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
       <div class="ld-btnrow">
         <button class="ld-save" type="button" onclick="ldSave()">Save Locker Record</button>
         <button class="ld-cancel" type="button" onclick="ldClose()">Close</button>
@@ -771,25 +707,11 @@
 
     // Database State seed for occupied lockers
     var lockerData = {
-      "A1": { name: "A. SMITH", bottles: 10, notes: "6x Region A 2015, 4x Sparkling", rate: "$900/yr", price: 900, status: "active" },
-      "D2": { name: "B. JOHNSON", bottles: 5, notes: "Domestic reserves", rate: "$600/yr", price: 600, status: "active" },
-      "C3": { name: "C. WILLIAMS", bottles: 8, notes: "Imported selections", rate: "$900/yr", price: 900, status: "active" },
-      "F5": { name: "RESERVED", bottles: 0, notes: "Pending member drop-off", rate: "$90/mo", price: 90, status: "active" },
-      "B7": { name: "CLUB CELLARS", bottles: 12, notes: "House library reserve", rate: "$90/mo", price: 90, status: "active" }
-    };
-
-    // Permanent Audit Log State (Persists even if locker is vacated)
-    var lockerLogs = {
-      "A1": [{ date: new Date(Date.now() - 8640000000).toLocaleString(), action: "Assigned to A. SMITH", user: "Admin" }],
-      "D2": [{ date: new Date(Date.now() - 4320000000).toLocaleString(), action: "Assigned to B. JOHNSON", user: "System" }],
-      "F5": [{ date: new Date().toLocaleString(), action: "Reserved pending key pickup", user: "Concierge" }]
-    };
-
-    const emailTemplates = {
-      'active': "Dear [Member],\n\nWelcome to the Executive Cellar Suite. Your wine locker assignment has been successfully processed. Your secure key is ready for pickup at the cellar concierge desk. A standard $10 corkage fee applies to bottles pulled for on-premise dining.\n\nCheers,\nClub Management",
-      'payment': "Dear [Member],\n\nWe were unable to process the recent recurring charge for your Private Cellar subscription. Please update your payment method on file via the member portal to avoid a temporary hold on locker access and corkage privileges.\n\nThank you,\nClub Billing",
-      'maintenance': "Dear [Member],\n\nWe are conducting routine facilities maintenance in Cellar Bay 2. Your locker contents remain completely secure, but physical access may be temporarily restricted over the next 48 hours. We apologize for any inconvenience.\n\nRegards,\nFacilities Team",
-      'cancel': "Dear [Member],\n\nThis confirms that your Private Cellar locker has been officially vacated and your subscription canceled. We have received your returned key. We hope you enjoyed the program.\n\nBest,\nClub Management"
+      "A1": { name: "A. SMITH", bottles: 10, notes: "6x Region A 2015, 4x Sparkling", rate: "$90/mo", price: 90 },
+      "D2": { name: "B. JOHNSON", bottles: 5, notes: "Domestic reserves", rate: "$60/mo", price: 60 },
+      "C3": { name: "C. WILLIAMS", bottles: 8, notes: "Imported selections", rate: "$90/mo", price: 90 },
+      "F5": { name: "RESERVED", bottles: 0, notes: "Pending member drop-off", rate: "$90/mo", price: 90 },
+      "B7": { name: "CLUB CELLARS", bottles: 12, notes: "House library reserve", rate: "$90/mo", price: 90 }
     };
 
     var currentFilter = 'all';
@@ -812,25 +734,17 @@
         
         // Define label text: Show assigned name, otherwise show the structural locker number
         var plateName = record ? record.name : num;
-        if(record && record.status === 'maintenance' && !record.name) plateName = "MAINT";
 
         if(isAvail) {
           openCount++;
         } else {
-          if(record.status !== 'maintenance') occupiedCount++;
+          occupiedCount++;
           totalBottles += (record.bottles || 0);
-          if(record.status === 'active') totalRevenue += record.price || price; // Exclude suspended items from projected revenue
-        }
-
-        var statusClass = "";
-        if(!isAvail) {
-            if(record.status === 'payment') statusClass = " payment-issue";
-            else if(record.status === 'maintenance') statusClass = " maintenance";
-            else statusClass = " occupied";
+          totalRevenue += record.price || price;
         }
 
         var cell = document.createElement("div");
-        cell.className = "ld-cell" + statusClass;
+        cell.className = "ld-cell" + (isAvail ? "" : " occupied");
         cell.dataset.loc = loc;
         cell.dataset.num = num;
         cell.dataset.size = size;
@@ -870,18 +784,14 @@
         var rec = lockerData[loc];
         if(!rec) return; // Only list active accounts
 
-        var statusHtml = '<span style="color:#71896c">● Active Billing</span>';
-        if(rec.status === 'payment') statusHtml = '<span style="color:#cf6666">● Payment Hold</span>';
-        if(rec.status === 'maintenance') statusHtml = '<span style="color:#a89a8c">● Maintenance</span>';
-
         var tr = document.createElement("tr");
         tr.innerHTML =
           '<td><strong>Locker ' + loc + '</strong> (#' + num + ')</td>' +
           '<td>' + size + '-Bottle Reserve</td>' +
-          '<td><span style="color:var(--club-brass-light)">' + (rec.name || "N/A") + '</span></td>' +
+          '<td><span style="color:var(--club-brass-light)">' + rec.name + '</span></td>' +
           '<td>' + rec.bottles + ' bottles stored</td>' +
           '<td>' + rec.rate + '</td>' +
-          '<td>' + statusHtml + '</td>';
+          '<td><span style="color:#71896c">● Active Billing</span></td>';
         tbody.appendChild(tr);
       });
     }
@@ -904,32 +814,6 @@
       document.getElementById("mtab" + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add("active");
     };
 
-    window.setLockerStatus = function(status) {
-      document.getElementById("ldHiddenStatus").value = status;
-      document.querySelectorAll(".ld-admin-btn").forEach(function(b){ b.classList.remove("active"); });
-      
-      if(status === 'active') document.getElementById("btnStatActive").classList.add("active");
-      if(status === 'cancel') document.getElementById("btnStatCancel").classList.add("active");
-      if(status === 'payment') document.getElementById("btnStatPayment").classList.add("active");
-      if(status === 'maintenance') document.getElementById("btnStatMaint").classList.add("active");
-
-      // Auto-update the email template to match the selected status
-      var templateSelect = document.getElementById("ldEmailTemplate");
-      if(templateSelect.querySelector('option[value="'+status+'"]')) {
-        templateSelect.value = status;
-        updateEmailPreview();
-      }
-
-      // Auto-clear inputs if cancel is selected to quickly vacate the locker
-      if(status === 'cancel') {
-        document.getElementById("ldFirst").value = "";
-        document.getElementById("ldLast").value = "";
-        document.getElementById("ldPlate").value = "";
-        document.getElementById("ldBottleCount").value = 0;
-        document.getElementById("ldWineNotes").value = "";
-      }
-    };
-
     window.ldOpen = function(loc, num, key, size, price){
       var title = document.getElementById("ldTitle");
       title.textContent = "Locker " + loc;
@@ -941,7 +825,7 @@
       document.getElementById("ldMeta").textContent = "Locker #" + num + " · Key " + key + " · " + size + "-bottle capacity";
 
       var defaultRateStr = size === 12 ? "$90/mo" : "$60/mo";
-      var rec = lockerData[loc] || { name: "", bottles: 0, notes: "", rate: defaultRateStr, price: price, status: "active" };
+      var rec = lockerData[loc] || { name: "", bottles: 0, notes: "", rate: defaultRateStr, price: price };
       
       document.getElementById("ldPlate").value = rec.name;
       document.getElementById("ldBottleCount").value = rec.bottles;
@@ -974,55 +858,9 @@
           sel.value = size === 12 ? "monthly-12" : "monthly-6";
       }
 
-      setLockerStatus(rec.status || 'active');
-      renderAuditLog(loc);
-
       switchModalTab('assign', document.querySelector('.ld-mtab'));
       document.getElementById("ldModalBg").classList.add("open");
     };
-
-    window.updateEmailPreview = function() {
-      var templateType = document.getElementById("ldEmailTemplate").value;
-      var memberName = document.getElementById("ldFirst").value || document.getElementById("ldPlate").value || "Member";
-      
-      var body = emailTemplates[templateType] || "";
-      body = body.replace("[Member]", memberName);
-      
-      document.getElementById("ldEmailPreview").value = body;
-    };
-
-    window.simulateEmailDispatch = function() {
-      var loc = document.getElementById("ldTitle").dataset.loc;
-      var templateType = document.getElementById("ldEmailTemplate").value;
-      addAuditLog(loc, "Communication dispatched: " + templateType.toUpperCase() + " notice.");
-      showToast("Simulated notification dispatched to member.");
-    };
-
-    function addAuditLog(loc, action) {
-      if(!lockerLogs[loc]) lockerLogs[loc] = [];
-      var dateStr = new Date().toLocaleString('en-US', {month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'numeric'});
-      lockerLogs[loc].unshift({ date: dateStr, action: action, user: "Current User" });
-      renderAuditLog(loc);
-    }
-
-    function renderAuditLog(loc) {
-      var logContainer = document.getElementById("ldAuditLog");
-      var logs = lockerLogs[loc] || [];
-      
-      if(logs.length === 0) {
-        logContainer.innerHTML = '<div style="color:#5a4a3a; font-style:italic;">No historical records found for this unit.</div>';
-        return;
-      }
-
-      var html = "";
-      logs.forEach(function(entry) {
-        html += '<div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #2e241c;">';
-        html += '<span style="color:#6f5f52; margin-right: 6px;">[' + entry.date + ']</span>';
-        html += '<span style="color:#c5b8ab;">' + entry.action + '</span>';
-        html += '</div>';
-      });
-      logContainer.innerHTML = html;
-    }
 
     window.ldClose = function(){
       document.getElementById("ldModalBg").classList.remove("open");
@@ -1039,31 +877,21 @@
       var bottles = parseInt(document.getElementById("ldBottleCount").value) || 0;
       var notes = document.getElementById("ldWineNotes").value.trim();
       var selVal = document.getElementById("ldSize").value;
-      var currentStatus = document.getElementById("ldHiddenStatus").value;
       
       // Format the display rate for the reports table based on selection
       var displayRate = size === 12 ? "$90/mo" : "$60/mo";
       if(selVal.includes("annual")) displayRate = size === 12 ? "$900/yr" : "$600/yr";
 
-      var previousStatus = lockerData[loc] ? lockerData[loc].status : 'avail';
-      var statusChanged = (previousStatus !== currentStatus);
-      var nameChanged = lockerData[loc] ? (lockerData[loc].name !== plateText.toUpperCase()) : !!plateText;
-
-      if(currentStatus === 'cancel' || (currentStatus === 'active' && !plateText)) {
-        if(lockerData[loc]) addAuditLog(loc, "Locker vacated and member records cleared.");
-        delete lockerData[loc]; // Reset to Available
-      } else {
-        if(!lockerData[loc] || nameChanged) addAuditLog(loc, "Assigned / Nameplate updated to: " + plateText.toUpperCase());
-        if(statusChanged) addAuditLog(loc, "Administrative status updated to: " + currentStatus.toUpperCase());
-
+      if(plateText){
         lockerData[loc] = {
           name: plateText.toUpperCase(),
           bottles: bottles,
           notes: notes,
           rate: displayRate,
-          price: defaultPrice,
-          status: currentStatus
+          price: defaultPrice
         };
+      } else {
+        delete lockerData[loc]; // Reset to Available
       }
 
       updateEngravingLink(num, plateText);
@@ -1074,7 +902,7 @@
 
     function updateEngravingLink(num, text) {
       var displayName = text ? text : "[Member Name]";
-      var mailtoStr = "mailto:engraving@example.com?subject=New Locker Engraving - Locker " + num + "&body=Hi team,%0D%0A%0D%0APlease engrave a new nameplate for Locker " + num + ".%0D%0A%0D%0AText to engrave: " + encodeURIComponent(displayName) + "%0D%0A%0D%0AThanks!";
+      var mailtoStr = "mailto:dennis@mastertrophys.com?subject=New Locker Engraving - Locker " + num + "&body=Hi Dennis,%0D%0A%0D%0APlease engrave a new nameplate for Locker " + num + ".%0D%0A%0D%0AText to engrave: " + encodeURIComponent(displayName) + "%0D%0A%0D%0AThanks!";
       var btn = document.getElementById("ldEngraveBtn");
       if(btn) btn.href = mailtoStr;
     }
@@ -1136,333 +964,5 @@
     drawGrid();
   })();
   </script>
-<script data-pplx-inline-edit>
-(function () {
-  if (window === window.top) return;
-
-  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
-  const MAX_FONT_BYTES = 500 * 1024;
-  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
-  let scrollForwarding = false;
-  let scrollRaf = 0;
-  let trustedTopOrigin = null;
-
-  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
-  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
-  // across multiple labels.
-  function matchesAllowedOrigin(origin) {
-    if (!origin) return false;
-    for (const entry of allowedParentOrigins) {
-      if (!entry.includes("*")) {
-        if (entry === origin) return true;
-        continue;
-      }
-      const pattern = new RegExp(
-        "^" +
-          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
-          "$",
-      );
-      if (pattern.test(origin)) return true;
-    }
-    return false;
-  }
-
-  // Trust decision: when the sender is same-origin-visible (event.origin is a
-  // real origin like https://www.perplexity.ai) we trust event.origin directly.
-  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
-  // broker's stamped `parentOrigin` to identify the top window. The fallback
-  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
-  // on the response path (see postToTrustedTop) to ensure replies can't be
-  // delivered to anyone but the actual top window of that claimed origin.
-  function getTrustedParentOrigin(event) {
-    const forwardedParentOrigin =
-      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
-    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
-    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
-  }
-
-  // All responses go to window.top with targetOrigin = the allowlisted origin.
-  // An attacker that iframes us inside their own null-origin broker can claim
-  // any parentOrigin they like, but the browser will drop the reply whenever
-  // the real top's origin doesn't match — so the screenshot never leaves.
-  function postToTrustedTop(message) {
-    if (!trustedTopOrigin) return;
-    try {
-      window.top.postMessage(message, trustedTopOrigin);
-    } catch (_error) {}
-  }
-
-  function inlineAll(original, clone) {
-    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
-
-    try {
-      const computedStyle = getComputedStyle(original);
-      // cssText on a computed style is the serialized declaration in modern
-      // Chromium/Safari — a single read beats enumerating ~400 longhand
-      // properties. Firefox returns "" here, so we fall back on empty.
-      const serialized = computedStyle.cssText;
-      if (serialized) {
-        clone.style.cssText = serialized;
-      } else {
-        const parts = new Array(computedStyle.length);
-        for (let index = 0; index < computedStyle.length; index += 1) {
-          const property = computedStyle[index];
-          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
-        }
-        clone.style.cssText = parts.join("");
-      }
-    } catch (_error) {}
-
-    const originalChildren = original.children;
-    const clonedChildren = clone.children;
-    for (
-      let index = 0;
-      index < originalChildren.length && index < clonedChildren.length;
-      index += 1
-    ) {
-      inlineAll(originalChildren[index], clonedChildren[index]);
-    }
-  }
-
-  function extractFontUrl(srcValue) {
-    const matches = [
-      ...srcValue.matchAll(
-        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
-      ),
-    ];
-    if (matches.length === 0) return null;
-    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
-    if (woff2) return woff2[1];
-    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
-    if (woff) return woff[1];
-    return matches[0][1];
-  }
-
-  // Cache resolved font URL -> data URI across captures. Fonts on a page
-  // essentially never change, and a batch run emits multiple captures back to
-  // back — without this we'd refetch + re-base64 every time.
-  const fontDataUriCache = new Map();
-  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
-
-  async function fetchAsDataUri(url) {
-    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
-    let dataUri = null;
-    try {
-      const response = await fetch(url, { mode: "cors", credentials: "omit" });
-      if (response.ok) {
-        const blob = await response.blob();
-        if (blob.size <= MAX_FONT_BYTES) {
-          dataUri = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () =>
-              resolve(typeof reader.result === "string" ? reader.result : null);
-            reader.onerror = () => resolve(null);
-            reader.readAsDataURL(blob);
-          });
-        }
-      }
-    } catch (_error) {
-      dataUri = null;
-    }
-    fontDataUriCache.set(url, dataUri);
-    return dataUri;
-  }
-
-  function collectFontFaceRuleTexts() {
-    const rules = [];
-    for (const sheet of document.styleSheets) {
-      let cssRules;
-      try {
-        cssRules = sheet.cssRules;
-      } catch (_error) {
-        continue;
-      }
-      if (!cssRules) continue;
-      for (const rule of cssRules) {
-        const cssText = rule.cssText || "";
-        if (cssText.startsWith("@font-face")) rules.push(cssText);
-      }
-    }
-    return rules;
-  }
-
-  async function buildInlinedFontCss() {
-    const ruleTexts = collectFontFaceRuleTexts();
-    if (ruleTexts.length === 0) return null;
-
-    const resolved = ruleTexts.map((cssText) => {
-      if (!SRC_DECLARATION_RE.test(cssText)) return null;
-      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
-      if (!srcMatch) return null;
-      const url = extractFontUrl(srcMatch[1]);
-      if (!url) return null;
-      try {
-        return { cssText, url: new URL(url, document.baseURI).href };
-      } catch (_error) {
-        return null;
-      }
-    });
-
-    const dataUris = await Promise.all(
-      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
-    );
-
-    const inlined = [];
-    let totalBytes = 0;
-    for (let index = 0; index < resolved.length; index += 1) {
-      const entry = resolved[index];
-      const dataUri = dataUris[index];
-      if (!entry || !dataUri) continue;
-      const approxBytes = dataUri.length * 0.75;
-      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
-      totalBytes += approxBytes;
-      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
-    }
-    return inlined.length > 0 ? inlined.join("\n") : null;
-  }
-
-  function stripExternal(clone) {
-    const images = clone.querySelectorAll("img");
-    for (let index = 0; index < images.length; index += 1) {
-      const src = images[index].getAttribute("src");
-      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
-    }
-
-    const elements = clone.querySelectorAll("*");
-    for (let index = 0; index < elements.length; index += 1) {
-      const style = elements[index].style.cssText;
-      if (style && style.includes("url(")) {
-        elements[index].style.cssText = style.replace(
-          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
-          "none",
-        );
-      }
-    }
-  }
-
-  function emitScroll() {
-    scrollRaf = 0;
-    if (!scrollForwarding) return;
-    postToTrustedTop({
-      type: "INLINE_EDIT_SCROLL",
-      scrollX: window.scrollX,
-      scrollY: window.scrollY,
-    });
-  }
-
-  window.addEventListener(
-    "scroll",
-    function () {
-      if (!scrollForwarding || scrollRaf) return;
-      scrollRaf = requestAnimationFrame(emitScroll);
-    },
-    { passive: true, capture: true },
-  );
-
-  async function handleCaptureRequest(event) {
-    const requestId = event.data.requestId;
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    function postResult(dataUrl) {
-      postToTrustedTop({
-        type: "INLINE_EDIT_SCREENSHOT_RESULT",
-        requestId,
-        dataUrl,
-        scrollX,
-        scrollY,
-      });
-    }
-
-    try {
-      // Wait for any pending web fonts to resolve so both inline metrics and
-      // the @font-face inlining below see the same loaded faces.
-      if (document.fonts && document.fonts.ready) {
-        try {
-          await document.fonts.ready;
-        } catch (_error) {}
-      }
-
-      const clone = document.documentElement.cloneNode(true);
-      inlineAll(document.documentElement, clone);
-
-      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
-      for (let index = 0; index < removedNodes.length; index += 1) {
-        removedNodes[index].remove();
-      }
-
-      stripExternal(clone);
-
-      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
-      // can resolve them — external font URLs aren't fetched during
-      // foreignObject rendering, which would otherwise force a fallback face
-      // and change text metrics.
-      const inlinedFontCss = await buildInlinedFontCss();
-      if (inlinedFontCss) {
-        const styleEl = document.createElement("style");
-        styleEl.textContent = inlinedFontCss;
-        const head = clone.querySelector("head");
-        if (head) head.appendChild(styleEl);
-        else clone.insertBefore(styleEl, clone.firstChild);
-      }
-
-      const html = new XMLSerializer().serializeToString(clone);
-      const svg =
-        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
-        '<foreignObject width="100%" height="100%">' +
-        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
-        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
-        html +
-        "</div></div></foreignObject></svg>";
-      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-      const image = new Image();
-      image.onload = function () {
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext("2d").drawImage(image, 0, 0);
-        postResult(canvas.toDataURL("image/png"));
-      };
-      image.onerror = function () {
-        postResult(null);
-      };
-      image.src = svgUrl;
-    } catch (_error) {
-      postResult(null);
-    }
-  }
-
-  window.addEventListener("message", function (event) {
-    if (!event.data) return;
-    // Only accept messages from the direct parent frame. Blocks sibling /
-    // unrelated-window postMessage senders that could otherwise reach us.
-    if (event.source !== window.parent) return;
-
-    const trustedParentOrigin = getTrustedParentOrigin(event);
-    if (!trustedParentOrigin) return;
-    trustedTopOrigin = trustedParentOrigin;
-
-    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
-      scrollForwarding = true;
-      emitScroll();
-      return;
-    }
-
-    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
-      scrollForwarding = false;
-      if (scrollRaf) cancelAnimationFrame(scrollRaf);
-      scrollRaf = 0;
-      return;
-    }
-
-    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
-
-    handleCaptureRequest(event);
-  });
-})();
-
-
-</script></body>
+</body>
 </html>

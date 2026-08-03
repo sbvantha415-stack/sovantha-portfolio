@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 
   <style>
     /* ========================================== */
@@ -112,7 +112,7 @@
         </li>
       </ul>
 
-      <!-- Personal Brand moved to bottom -->
+      <!-- Personal Brand -->
       <div class="nav-label">Personal Brand</div>
       <ul class="project-list">
         <li class="project-item" id="nav-somaroutines" onclick="loadProject('tpl-somaroutines', this)">
@@ -126,7 +126,7 @@
 
     <div class="social-links">
       <a href="mailto:sbvantha415@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
-      <a href="https://linkedin.com/in/your-profile" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="https://linkedin.com/in/sovantha-bun" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
       <a href="Sovantha_Bun_Resume_Office_Manager.pdf" target="_blank" title="Download Resume"><i class="fas fa-file-pdf"></i></a>
     </div>
   </aside>
@@ -284,7 +284,6 @@
         .impact-col h4 { color: #c7a86d; margin: 0 0 8px 0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
         .impact-col p { margin: 0; font-size: 13px; line-height: 1.5; color: #e6edf3; }
 
-        /* Backend Summary CSS */
         .backend-summary { background: #120e0b; border-left: 4px solid #c7a86d; padding: 20px; margin-bottom: 30px; border-radius: 0 8px 8px 0; }
         .backend-summary h4 { color: #c7a86d; margin-top: 0; margin-bottom: 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
         .backend-summary p { color: #c9d1d9; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
@@ -598,10 +597,7 @@
     </html>
   </template>
 
-
-  <!-- ==========================================================================
-       TEMPLATE 2: AUTOMATED CRM ENGINE
-       ========================================================================== -->
+  <!-- AUTOMATED CRM ENGINE -->
   <template id="tpl-crm">
     <!DOCTYPE html>
     <html lang="en">
@@ -729,6 +725,9 @@ const COLS = {
   TRIAL_START: 14, TRIAL_EXP: 15, NOTES: 16
 };
 
+// ==========================================
+// MODULE 1: INBOUND WEBHOOKS (PeopleVine)
+// ==========================================
 function doPost(e) {
   const lock = LockService.getScriptLock();
   try {
@@ -796,6 +795,230 @@ function handleIntake(sheet, payload) {
   ]);
 
   return createJsonResponse({ status: "success", type: payload.type, emailSent: false });
+}
+
+function handleCancellation(ss, payload) {
+  const sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
+  const email = (payload.email || "").toString().trim().toLowerCase();
+  const firstName = payload.firstName || "Member";
+
+  const lastRow = Math.max(1, sheet.getLastRow() - 1);
+  if (lastRow > 0 && email) {
+    const emails = sheet.getRange(2, COLS.EMAIL, lastRow, 1).getValues().flat().map(String);
+    const existingIndex = emails.findIndex(e => e.toLowerCase() === email);
+    if (existingIndex > -1) {
+      const rowNum = existingIndex + 2;
+      sheet.getRange(rowNum, COLS.STATUS).setValue("Pending Cancellation");
+      dispatchRetentionOffer(email, firstName);
+      appendNote(sheet, rowNum, "Cancellation initiated via Webhook. Sent automated 6-Month Hold Offer.");
+    }
+  }
+  return createJsonResponse({ status: "success" });
+}
+
+// ==========================================
+// MODULE 2: THE STAFF COCKPIT
+// ==========================================
+function handleEditMaster(e) {
+  if (!e || !e.range) return;
+  const sheet = e.range.getSheet();
+  if (sheet.getName() !== CONFIG.SHEET_NAME) return;
+
+  const row = e.range.getRow();
+  const col = e.range.getColumn();
+  const val = String(e.value || "").trim();
+
+  if (row <= 1) return;
+
+  const rowData = sheet.getRange(row, 1, 1, 16).getValues()[0];
+  const email = rowData[COLS.EMAIL - 1];
+  const firstName = rowData[COLS.FIRST_NAME - 1];
+
+  if (col === COLS.STATUS) {
+
+    if (val === "Trial Member") {
+      sendWelcomeEmail(email, firstName);
+      appendNote(sheet, row, "Auto: Welcome Email Sent & Trial Clock Started.");
+    }
+
+    if (val === "Cancelled") {
+      const ui = SpreadsheetApp.getUi();
+      const response = ui.alert("🛡️ RETENTION ENGINE", `Offer the 6-month hold to ${firstName}?`, ui.ButtonSet.YES_NO);
+
+      if (response == ui.Button.YES) {
+        e.range.setValue("Pending Cancellation");
+        dispatchRetentionOffer(email, firstName);
+        appendNote(sheet, row, "Retention Offer Sent.");
+      } else {
+        executeArchive(sheet, row, false, "Immediate Cancellation", rowData);
+      }
+    }
+
+    if (val === "Active") {
+      appendNote(sheet, row, "Member manually marked as Active.");
+    }
+  }
+}
+
+// ==========================================
+// MODULE 3: THE WEB LISTENER
+// ==========================================
+function doGet(e) {
+  const buildWebPage = (msg, color) =>
+    `<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Club</title></head>
+    <body style="margin:0; background:#f4f4f4; font-family:sans-serif; display:flex;
+    justify-content:center; align-items:center; height:100vh; padding:20px; box-sizing:border-box;">
+    <div style="background:#fff; padding:40px 20px; width:100%; max-width:400px; text-align:center;
+    border-top:6px solid #406C7D; box-shadow:0 4px 10px rgba(0,0,0,0.05); box-sizing:border-box;">
+    <h2 style="color:${color}; margin:0; font-family:serif; font-size:24px; line-height:1.4;">${msg}</h2>
+    </div></body></html>`;
+
+  try {
+    if (!e.parameter || e.parameter.token !== CONFIG.VERIFY_TOKEN)
+      return HtmlService.createHtmlOutput(buildWebPage("Access Denied", "#A83232"));
+
+    const action = e.parameter.action;
+    const applicantEmail = (e.parameter.applicant || "").toLowerCase();
+    const endorserEmail = (e.parameter.endorser || "").toLowerCase();
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEET_NAME);
+    const emails = sheet.getRange(2, COLS.EMAIL, Math.max(1, sheet.getLastRow() - 1), 1)
+      .getValues().flat().map(String).map(x => x.toLowerCase());
+    const row = emails.indexOf(applicantEmail) + 2;
+
+    if (row < 2)
+      return HtmlService.createHtmlOutput(buildWebPage("Record not found.", "#406C7D"));
+
+    if (action === "confirm" || action === "decline") {
+      const noteMsg = action === "confirm"
+        ? `Endorsed by ${endorserEmail}`
+        : `🚨 Endorsement DECLINED by ${endorserEmail}`;
+      appendNote(sheet, row, noteMsg);
+
+      const rowData = sheet.getRange(row, 1, 1, 16).getValues()[0];
+      const e1 = String(rowData[COLS.E1_EMAIL - 1]).toLowerCase().trim();
+      const e2 = String(rowData[COLS.E2_EMAIL - 1]).toLowerCase().trim();
+      const fullNotes = String(sheet.getRange(row, COLS.NOTES).getValue()).toLowerCase();
+
+      let endorsedCount = 0;
+      let declinedCount = 0;
+      let activeEmails = [e1, e2];
+      if (!activeEmails.includes(endorserEmail.trim())) activeEmails.push(endorserEmail.trim());
+
+      activeEmails.forEach(emailToCheck => {
+        if (!emailToCheck) return;
+        const endIdx = fullNotes.indexOf(`endorsed by ${emailToCheck}`);
+        const decIdx = fullNotes.indexOf(`declined by ${emailToCheck}`);
+        if (endIdx > -1 && decIdx > -1) {
+          if (endIdx < decIdx) endorsedCount++; else declinedCount++;
+        } else if (endIdx > -1) endorsedCount++;
+        else if (decIdx > -1) declinedCount++;
+      });
+
+      let newStatus = "";
+      if (endorsedCount >= 2) newStatus = "Fully Validated";
+      else if (endorsedCount === 1 && declinedCount >= 1) newStatus = "1/2 Validated (1 Declined)";
+      else if (endorsedCount === 1) newStatus = "1/2 Validated";
+      else if (declinedCount >= 2) newStatus = "Fully Declined";
+      else if (declinedCount === 1) newStatus = "1 Declined";
+      else newStatus = "Pending";
+
+      sheet.getRange(row, COLS.ENDORSEMENT_STATUS).setValue(newStatus);
+
+      return action === "confirm"
+        ? HtmlService.createHtmlOutput(buildWebPage("Thank You.<br><br><span style='font-size:18px; color:#666;'>Your endorsement is recorded.</span>", "#406C7D"))
+        : HtmlService.createHtmlOutput(buildWebPage("Thank You.<br><br><span style='font-size:18px; color:#666;'>Your response has been recorded confidentially.</span>", "#406C7D"));
+    }
+
+    if (action === "acceptHold") {
+      const holdEnd = new Date();
+      holdEnd.setMonth(holdEnd.getMonth() + 6);
+      sheet.getRange(row, COLS.STATUS).setValue("Paused");
+      sheet.getRange(row, COLS.TRIAL_EXP).setValue(holdEnd);
+      appendNote(sheet, row, `🛡️ RETENTION SUCCESS: Member accepted the 6-month hiatus offer.`);
+      return HtmlService.createHtmlOutput(buildWebPage("Hiatus Confirmed.", "#406C7D"));
+    }
+
+    if (action === "confirmCancel") {
+      sheet.getRange(row, COLS.STATUS).setValue("Cancelled");
+      const rowData = sheet.getRange(row, 1, 1, 16).getValues()[0];
+      executeArchive(sheet, row, false, "Member formally confirmed cancellation.", rowData);
+      return HtmlService.createHtmlOutput(buildWebPage("Cancellation Processed.", "#A83232"));
+    }
+
+    return HtmlService.createHtmlOutput(buildWebPage("Invalid action.", "#A83232"));
+  } catch (err) {
+    return HtmlService.createHtmlOutput(buildWebPage("Error processing link.", "#A83232"));
+  }
+}
+
+// ==========================================
+// MODULE 4: AUTOMATION & KPIs
+// ==========================================
+function dailyConveyorBelt() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEET_NAME);
+  const data = sheet.getDataRange().getValues();
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+
+  for (let i = 1; i < data.length; i++) {
+    const status = data[i][COLS.STATUS - 1];
+    const expDate = new Date(data[i][COLS.TRIAL_EXP - 1]); expDate.setHours(0, 0, 0, 0);
+    const startDate = new Date(data[i][COLS.TRIAL_START - 1]);
+    const endorsementStatus = data[i][COLS.ENDORSEMENT_STATUS - 1];
+    const email = data[i][COLS.EMAIL - 1];
+    const firstName = data[i][COLS.FIRST_NAME - 1];
+    const notes = String(data[i][COLS.NOTES - 1] || "");
+
+    if (status === "Trial Member" && today > expDate) {
+      sheet.getRange(i + 1, COLS.STATUS).setValue("Expired");
+      appendNote(sheet, i + 1, "Auto-expired trial.");
+    }
+
+    const daysInTrial = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+    if (
+      status === "Trial Member" &&
+      daysInTrial >= 120 && daysInTrial <= 126 &&
+      endorsementStatus !== "Fully Validated" &&
+      !endorsementStatus.includes("Declined") &&
+      !notes.includes("Month 4 Warning Sent")
+    ) {
+      const sent = sendEmailSafe({
+        to: email,
+        subject: "Apex Club - Action Required: Endorsements",
+        htmlBody: buildEmailHtml("ACTION REQUIRED", firstName, "You are now 4 months into your trial. We need your endorsements.", "Next Steps", "Secure 2 endorsements", "Access will be revoked otherwise", "mailto:staff@example.com", "CONTACT CONCIERGE")
+      });
+      if (sent) {
+        sheet.getRange(i + 1, COLS.ACTION_ITEM).setValue("Month 4 Nudge Sent");
+        appendNote(sheet, i + 1, "Auto-triggered: Month 4 Warning Sent.");
+      }
+    }
+
+    if (status === "Paused" && today > expDate) {
+      const newTrialExp = new Date();
+      newTrialExp.setMonth(newTrialExp.getMonth() + 6);
+      sheet.getRange(i + 1, COLS.STATUS).setValue("Trial Member");
+      sheet.getRange(i + 1, COLS.TRIAL_START).setValue(today);
+      sheet.getRange(i + 1, COLS.TRIAL_EXP).setValue(newTrialExp);
+      sendWelcomeEmail(email, firstName);
+      appendNote(sheet, i + 1, "Auto: Hiatus ended. Trial reactivated.");
+    }
+  }
+}
+
+// ==========================================
+// MODULE 6: MENU & ADMIN TOOLS
+// ==========================================
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu("🚀 ADMIN TOOLS")
+    .addItem("✉️ Send Endorsements (Selected Row)", "sendManualEndorsements")
+    .addItem("🚨 RESET & ARCHIVE ROW", "resetMemberRow")
+    .addSeparator()
+    .addItem("▶️ Send Staff Digest (8-Hour Check)", "sendStaffDigest")
+    .addItem("▶️ Send Weekly Digest", "sendWeeklyDigest")
+    .addItem("▶️ Run Daily Conveyor Belt", "dailyConveyorBelt")
+    .addItem("📊 Check Email Quota", "checkEmailQuota")
+    .addToUi();
 }
       </script>
       <script>
@@ -1718,7 +1941,9 @@ function handleIntake(sheet, payload) {
     </html>
   </template>
 
-  <!-- RECIPROCAL DEMO -->
+  <!-- ==========================================================================
+       TEMPLATE 6: RECIPROCAL DEMO (APEX CLUB)
+       ========================================================================== -->
   <template id="tpl-reciprocal">
     <!DOCTYPE html>
     <html lang="en">
@@ -1730,25 +1955,8 @@ function handleIntake(sheet, payload) {
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
       <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --cream: #E4D8C5;
-            --charcoal: #414042;
-            --teal: #406C7D;
-            --teal-dark: #2f5561;
-            /* Network brand colors */
-            --sonato-bg:   #B59A6A;
-            --sonato-dark: #96784a;
-            --iac-bg:      #1a2044;
-            --iac-dark:    #0f1530;
-            --invited-bg:  #2356a8;
-            --invited-dark:#1a4080;
-            --direct-bg:   #414042;
-            --direct-dark: #2a2a2b;
-        }
-
+        :root { --cream: #E4D8C5; --charcoal: #414042; --teal: #406C7D; --teal-dark: #2f5561; --sonato-bg: #B59A6A; --sonato-dark: #96784a; --iac-bg: #1a2044; --iac-dark: #0f1530; --invited-bg: #2356a8; --invited-dark: #1a4080; --direct-bg: #414042; --direct-dark: #2a2a2b; }
         body { font-family: 'Cormorant Garamond', serif; color: var(--charcoal); line-height: 1.6; background: linear-gradient(180deg, #fbfaf8 0%, #f5f3ef 100%); }
-
-        /* Backend Summary Styles */
         .business-impact { background: #161b22; border: 1px solid #c7a86d; border-radius: 8px; padding: 20px; margin: 24px auto 20px; max-width: 1160px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; font-family: 'Inter', sans-serif;}
         .impact-col h4 { color: #c7a86d; margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
         .impact-col p { margin: 0; font-size: 14px; line-height: 1.5; color: #e6edf3; }
@@ -1758,343 +1966,88 @@ function handleIntake(sheet, payload) {
         .backend-summary p { color: #c9d1d9; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
         .backend-summary p:last-child { margin-bottom: 0; }
 
-        /* ── Member Login Gate ── */
-        #memberLoginScreen {
-            display: flex; align-items: center; justify-content: center;
-            min-height: 100vh;
-            background: radial-gradient(circle at top, rgba(64,108,125,0.22) 0%, rgba(65,64,66,0) 38%), var(--charcoal);
-            position: fixed; inset: 0; z-index: 9999;
-            padding: 24px;
-        }
-        .member-login-box {
-            background: linear-gradient(180deg, #ffffff 0%, #fbf9f5 100%);
-            padding: 34px 34px 30px; border-radius: 18px;
-            width: 100%; max-width: 430px; text-align: center;
-            box-shadow: 0 24px 70px rgba(0,0,0,0.34);
-            border: 1px solid rgba(228,216,197,0.95);
-        }
-        .member-login-title {
-            font-size: 24px;
-            color: var(--charcoal);
-            margin-bottom: 8px;
-            letter-spacing: 1.2px;
-            font-family: 'Playfair Display', serif;
-        }
-        .member-login-kicker {
-            font-size: 12px;
-            color: var(--teal);
-            letter-spacing: 2.2px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-        }
+        /* Member Login Gate */
+        #memberLoginScreen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: radial-gradient(circle at top, rgba(64,108,125,0.22) 0%, rgba(65,64,66,0) 38%), var(--charcoal); position: fixed; inset: 0; z-index: 9999; padding: 24px; }
+        .member-login-box { background: linear-gradient(180deg, #ffffff 0%, #fbf9f5 100%); padding: 34px; border-radius: 18px; width: 100%; max-width: 430px; text-align: center; box-shadow: 0 24px 70px rgba(0,0,0,0.34); border: 1px solid rgba(228,216,197,0.95); }
+        .member-login-title { font-size: 24px; color: var(--charcoal); margin-bottom: 8px; }
+        .member-login-kicker { font-size: 12px; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+        .member-login-box input[type="password"] { width: 100%; height: 50px; padding: 0 18px; border: 1px solid rgba(64,108,125,0.2); border-radius: 8px; font-size: 16px; text-align: center; margin-bottom: 14px; }
+        .member-login-box button { width: 100%; height: 50px; background: var(--teal); color: white; border: none; border-radius: 8px; font-family: 'Libre Baskerville', serif; text-transform: uppercase; cursor: pointer; letter-spacing: 1px; }
         .login-helper { background: rgba(199,168,109,0.15); border: 1px solid #c7a86d; color: #856000; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-family: 'Inter', sans-serif; margin-bottom: 16px; }
 
-        .member-login-box input[type="password"] {
-            width: 100%; height: 58px; padding: 0 18px; border: 1px solid rgba(64,108,125,0.18);
-            border-radius: 14px; font-family: 'Cormorant Garamond', serif;
-            font-size: 18px; color: var(--charcoal); outline: none;
-            text-align: center; letter-spacing: 2px; transition: all 0.2s ease; margin-bottom: 14px;
-            background: white;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
-        }
-        .member-login-box input[type="password"]:focus {
-            border-color: var(--teal);
-            box-shadow: 0 0 0 4px rgba(64,108,125,0.12);
-        }
-        .member-login-box button {
-            width: 100%; height: 58px; background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%); color: white;
-            border: none; border-radius: 14px; font-family: 'Libre Baskerville', serif;
-            font-size: 14px; cursor: pointer; transition: all 0.25s ease; letter-spacing: 1.4px;
-            text-transform: uppercase;
-            box-shadow: 0 16px 28px rgba(64,108,125,0.22);
-        }
-        .member-login-box button:hover { transform: translateY(-1px); box-shadow: 0 20px 30px rgba(64,108,125,0.26); }
-        .member-login-error { display: none; margin-top: 12px; font-size: 13px; color: #c0392b; }
-
-        h1,h2,h3,h4,h5,h6 { font-family: 'Libre Baskerville', serif; }
-        
-        /* ── Header ── */
-        .header { background: #3A3A3C; color: var(--cream); padding: 24px 0 22px; text-align: center; box-shadow: 0 18px 40px rgba(0,0,0,0.16); }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Libre Baskerville', serif; }
+        .header { background: #3A3A3C; color: var(--cream); padding: 24px 0 22px; text-align: center; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16); }
         .header .tagline { font-size: 14px; letter-spacing: 1.4px; opacity: 0.92; }
-
-        /* ── Hero ── */
         .hero { background: linear-gradient(180deg, var(--cream) 0%, #ffffff 100%); padding: 80px 20px; text-align: center; }
         .hero h2 { font-size: 48px; color: var(--charcoal); margin-bottom: 15px; }
         .hero .subheading { font-size: 20px; color: var(--teal); margin-bottom: 40px; }
+        
         .search-container { max-width: 820px; margin: 0 auto; }
-        .search-shell {
-            display: flex;
-            align-items: stretch;
-            gap: 14px;
-            padding: 14px;
-            border-radius: 24px;
-            background: rgba(255,255,255,0.92);
-            border: 1px solid rgba(64,108,125,0.12);
-            box-shadow: 0 18px 40px rgba(65,64,66,0.10);
-            backdrop-filter: blur(6px);
-        }
-        .search-input-wrap {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            min-height: 72px;
-            padding: 0 22px;
-            border-radius: 18px;
-            background: #fff;
-            border: 1px solid rgba(64,108,125,0.12);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
-        }
-        .search-input-wrap i {
-            color: var(--teal);
-            font-size: 18px;
-            opacity: 0.85;
-        }
-        .search-input {
-            flex: 1;
-            height: 72px;
-            padding: 0;
-            font-size: 20px;
-            font-family: 'Cormorant Garamond', serif;
-            border: none;
-            background: transparent;
-            outline: none;
-            color: var(--charcoal);
-        }
-        .search-button {
-            min-width: 190px;
-            height: 72px;
-            padding: 0 34px;
-            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
-            color: white;
-            border: none;
-            font-family: 'Libre Baskerville', serif;
-            font-size: 14px;
-            letter-spacing: 1.4px;
-            text-transform: uppercase;
-            cursor: pointer;
-            border-radius: 18px;
-            transition: all 0.25s ease;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 18px 28px rgba(64,108,125,0.24);
-        }
-        .search-button:hover { transform: translateY(-1px); box-shadow: 0 22px 32px rgba(64,108,125,0.28); }
-
-        /* ── Filter Bar ── */
-        .filter-bar { background: white; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 30px; }
+        .search-shell { display: flex; gap: 14px; padding: 14px; border-radius: 24px; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(64, 108, 125, 0.12); box-shadow: 0 18px 40px rgba(65, 64, 66, 0.10); }
+        .search-input-wrap { flex: 1; display: flex; align-items: center; gap: 14px; padding: 0 22px; border-radius: 18px; background: #fff; border: 1px solid rgba(64, 108, 125, 0.12); }
+        .search-input-wrap i { color: var(--teal); }
+        .search-input { flex: 1; height: 72px; font-size: 20px; font-family: 'Cormorant Garamond', serif; border: none; outline: none; }
+        .search-button { min-width: 190px; background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%); color: white; border: none; border-radius: 18px; font-family: 'Libre Baskerville', serif; text-transform: uppercase; cursor: pointer; transition: all 0.25s ease; box-shadow: 0 18px 28px rgba(64, 108, 125, 0.24); }
+        
+        .filter-bar { background: white; padding: 25px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); margin-bottom: 30px; }
         .filter-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
         .filter-group { display: flex; flex-direction: column; gap: 5px; }
-        .filter-group label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); font-weight: 600; }
-        .filter-group select {
-            padding: 10px 15px; border: 1px solid var(--cream); border-radius: 3px;
-            font-family: 'Cormorant Garamond', serif; font-size: 14px; background: white;
-            cursor: pointer; outline: none; transition: border 0.3s;
-        }
-        .results-count { width: 100%; margin-top: 15px; font-size: 14px; color: var(--charcoal); }
-
-        /* ── Sort Buttons ── */
-        .sort-row {
-            width: 100%; display: flex; align-items: center; gap: 8px;
-            flex-wrap: wrap; padding-top: 14px;
-            border-top: 1px solid rgba(228,216,197,0.6);
-            margin-top: 4px;
-        }
-        .sort-row-label {
-            font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
-            color: var(--teal); font-family: 'Libre Baskerville',serif;
-            margin-right: 4px; white-space: nowrap;
-        }
-        .sort-btn {
-            padding: 7px 16px; border-radius: 20px;
-            border: 1.5px solid rgba(64,108,125,0.3);
-            background: white; font-family: 'Cormorant Garamond',serif;
-            font-size: 14px; color: var(--charcoal); cursor: pointer;
-            transition: all 0.18s; white-space: nowrap;
-            display: inline-flex; align-items: center; gap: 5px;
-        }
-        .sort-btn:hover { border-color: var(--teal); background: rgba(64,108,125,0.06); color: var(--teal); }
-        .sort-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
-        .sort-btn i { font-size: 11px; }
-
-        .adventure-divider {
-            grid-column: 1 / -1;
-            display: flex; align-items: center; gap: 14px;
-            margin: 10px 0 4px;
-        }
-        .adventure-divider-label {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
-            color: var(--teal); white-space: nowrap;
-        }
-        .adventure-divider-line { flex: 1; height: 1px; background: rgba(64,108,125,0.2); }
-
-        /* Distance badge on card */
-        .dist-badge {
-            position: absolute; top: 10px; right: 10px;
-            background: rgba(0,0,0,0.62); color: white;
-            font-size: 11px; padding: 3px 8px; border-radius: 12px;
-            font-family: 'Libre Baskerville', serif; letter-spacing: 0.5px;
-            pointer-events: none; z-index: 3;
-        }
-
-        /* ── Main Content ── */
-        .main-content { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-
-        /* ── Club Grid ── */
-        .club-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 30px; margin-top: 30px; }
-        .club-card {
-            background: linear-gradient(180deg, #ffffff 0%, #fcfaf7 100%);
-            border: 1px solid rgba(228,216,197,0.95);
-            border-radius: 18px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 12px 30px rgba(34,34,34,0.07);
-        }
-        .club-card::before {
-            content: '';
-            position: absolute;
-            inset: 0 0 auto 0;
-            height: 5px;
-            background: linear-gradient(90deg, rgba(64,108,125,0.95) 0%, rgba(228,216,197,0.9) 100%);
-        }
-        .club-card:hover { box-shadow: 0 20px 42px rgba(0,0,0,0.14); border-color: rgba(64,108,125,0.38); transform: translateY(-4px); }
-        .club-card-thumb {
-            position: absolute; top: 20px; left: 20px; width: 52px; height: 52px;
-            border-radius: 14px; object-fit: cover; background: transparent;
-            border: 1px solid rgba(255,255,255,0.8); padding: 0; box-shadow: 0 8px 18px rgba(0,0,0,0.14);
-        }
-        .club-card-thumb.cover { object-fit: cover; }
-        .club-card-body { padding: 30px 28px 28px; padding-top: 20px; flex: 1; display: flex; flex-direction: column; }
-        .network-badge {
-            position: absolute; top: 22px; right: 20px; padding: 7px 11px; border-radius: 999px;
-            font-family: 'Libre Baskerville', serif; font-size: 9px; text-transform: uppercase;
-            letter-spacing: 1.2px; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-        }
-        .badge-sonato  { background: var(--sonato-bg); }
-        .badge-iac     { background: var(--iac-bg); }
-        .badge-invited { background: var(--invited-bg); }
-        .badge-direct  { background: var(--direct-bg); }
-        .club-card h3 { font-size: 21px; color: var(--charcoal); margin-bottom: 10px; padding-top: 56px; line-height: 1.3; }
-        .club-location { font-size: 16px; color: var(--teal); margin-bottom: 15px; display: flex; align-items: center; gap: 6px; }
-        .club-description { font-size: 15px; color: var(--charcoal); margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .view-details-btn {
-            border: none;
-            background: #3A3A3C;
-            color: #fff;
-            width: 100%;
-            height: 46px;
-            padding: 0 20px;
-            font-family: 'Libre Baskerville', serif;
-            font-size: 10px;
-            font-weight: 400;
-            letter-spacing: 1.8px;
-            text-transform: uppercase;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            margin-top: auto;
-        }
-        .view-details-btn i { font-size: 11px; transition: transform 0.2s ease; }
-        .view-details-btn:hover { background: #406C7D; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(64,108,125,0.3); }
-        .view-details-btn:hover i { transform: translateX(3px); }
-
-        /* ── Modal ── */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(65,64,66,0.85); animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        .modal-content { background: white; margin: 5% auto; padding: 50px; border-radius: 8px; max-width: 800px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); position: relative; animation: slideIn 0.3s; }
-        @keyframes slideIn { from{transform:translateY(-50px);opacity:0} to{transform:translateY(0);opacity:1} }
-        .close { position: absolute; right: 30px; top: 30px; font-size: 32px; font-weight: bold; color: var(--charcoal); cursor: pointer; transition: color 0.3s; }
-        .close:hover { color: var(--teal); }
-        .modal-header h2 { font-size: 36px; color: var(--charcoal); margin-bottom: 10px; }
-        .modal-location { font-size: 20px; color: var(--teal); margin-bottom: 20px; }
-        .modal-badges { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .modal-divider { height: 1px; background: var(--cream); margin: 20px 0; }
-        .modal-description { font-size: 16px; line-height: 1.7; color: var(--charcoal); margin-bottom: 30px; }
+        .filter-group label { font-size: 12px; text-transform: uppercase; color: var(--teal); font-weight: 600; }
+        .filter-group select { padding: 10px 15px; border: 1px solid var(--cream); border-radius: 3px; background: white; cursor: pointer; }
+        .results-count { width: 100%; margin-top: 15px; font-size: 14px; font-weight: bold; }
         
-        .access-section { margin-bottom: 30px; }
-        .access-button {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 100%; height: 48px; padding: 0 20px;
-            font-family: 'Libre Baskerville', serif; font-size: 10px; font-weight: 400;
-            letter-spacing: 1.8px; text-transform: uppercase;
-            color: white; text-decoration: none;
-            border-radius: 6px; border: none; cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-        .access-button i { font-size: 12px; }
-        .access-button:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        .access-btn-group { display: flex; flex-direction: column; gap: 0; margin-bottom: 16px; }
-        .access-btn-group .access-button { margin-bottom: 0; border-radius: 0; border-bottom: 1px solid rgba(255,255,255,0.12); }
-        .access-btn-group .access-button:first-child { border-radius: 6px 6px 0 0; }
-        .access-btn-group .access-button:last-child { border-radius: 0 0 6px 6px; border-bottom: none; }
-        .access-sonato  { background: var(--sonato-bg); }
-        .access-sonato:hover  { background: var(--sonato-dark); }
-        .access-iac     { background: var(--iac-bg); }
-        .access-iac:hover     { background: var(--iac-dark); }
-        .access-invited { background: var(--invited-bg); }
-        .access-invited:hover { background: var(--invited-dark); }
-        .access-direct  { background: var(--direct-bg); }
-        .access-direct:hover  { background: var(--direct-dark); }
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .club-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 30px; }
+        .club-card { background: #fff; border: 1px solid var(--cream); border-radius: 18px; overflow: hidden; position: relative; display: flex; flex-direction: column; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 12px 30px rgba(34, 34, 34, 0.07); }
+        .club-card:hover { transform: translateY(-4px); box-shadow: 0 20px 42px rgba(0, 0, 0, 0.14); }
+        .club-card::before { content: ''; position: absolute; top: 0; width: 100%; height: 5px; background: linear-gradient(90deg, var(--teal), var(--cream)); }
+        .club-card-thumb { position: absolute; top: 20px; left: 20px; width: 52px; height: 52px; border-radius: 14px; object-fit: cover; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14); }
+        .club-card-body { padding: 80px 28px 28px; flex: 1; display: flex; flex-direction: column; }
+        
+        .network-badge { position: absolute; top: 22px; right: 20px; padding: 7px 11px; border-radius: 999px; font-family: 'Libre Baskerville', serif; font-size: 9px; text-transform: uppercase; color: white; }
+        .badge-sonato { background: var(--sonato-bg); }
+        .badge-iac { background: var(--iac-bg); }
+        .badge-invited { background: var(--invited-bg); }
+        .badge-direct { background: var(--direct-bg); }
+        
+        .club-card h3 { font-size: 21px; color: var(--charcoal); margin-bottom: 10px; }
+        .club-location { font-size: 16px; color: var(--teal); margin-bottom: 15px; }
+        .club-description { font-size: 15px; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Interactive Buttons in Card */
+        .action-btn-group { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+        .action-btn { border: none; background: #3A3A3C; color: #fff; width: 100%; height: 40px; font-family: 'Libre Baskerville', serif; font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; border-radius: 6px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .action-btn.primary { background: var(--teal); }
+        .action-btn.primary:hover { background: var(--teal-dark); }
+        .action-btn.secondary { background: #f0e6d2; color: #3A3A3C; border: 1px solid #d4aa52; }
+        .action-btn.secondary:hover { background: #e4d8c5; }
 
-        /* ── Destination Panel (Map / Weather / Time) ── */
-        .destination-panel {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-            border: 1px solid var(--cream); border-radius: 8px; overflow: hidden;
-            margin-bottom: 24px;
-        }
-        .destination-map {
-            grid-column: 1 / -1; height: 180px; background: #e8e4dc;
-            overflow: hidden; position: relative;
-        }
-        .destination-map iframe { width: 100%; height: 100%; border: none; display: block; }
-        .destination-map .map-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #aaa; font-family: 'Cormorant Garamond', serif; }
-        .dest-weather, .dest-time { padding: 14px 16px; background: #faf8f5; }
-        .dest-weather { border-right: 1px solid var(--cream); }
-        .dest-panel-label { font-family: 'Libre Baskerville', serif; font-size: 9px; text-transform: uppercase; letter-spacing: 1.6px; color: var(--teal); margin-bottom: 10px; display: block; }
-        .dest-weather-main { display: flex; align-items: center; gap: 10px; }
-        .dest-temp { font-family: 'Libre Baskerville', serif; font-size: 26px; color: var(--charcoal); line-height: 1; }
-        .dest-temp sup { font-size: 14px; vertical-align: top; margin-top: 4px; display: inline-block; }
-        .dest-weather-desc { font-size: 13px; color: #888; margin-top: 4px; font-family: 'Cormorant Garamond', serif; text-transform: capitalize; }
-        .dest-weather-icon { font-size: 28px; line-height: 1; }
-        .dest-time-display { font-family: 'Libre Baskerville', serif; font-size: 24px; color: var(--charcoal); letter-spacing: 1px; line-height: 1; }
-        .dest-time-ampm { font-size: 13px; color: #aaa; margin-left: 4px; font-weight: 400; }
-        .dest-time-zone { font-size: 12px; color: #aaa; margin-top: 6px; font-family: 'Cormorant Garamond', serif; }
-        .dest-time-date { font-size: 13px; color: var(--teal); margin-top: 4px; font-family: 'Cormorant Garamond', serif; }
+        /* Modals */
+        .loi-modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(65,64,66,0.88); animation: fadeIn 0.25s; }
+        .loi-modal-content { background: white; margin: 6% auto; padding: 44px 48px; border-radius: 8px; max-width: 660px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); position: relative; animation: slideIn 0.3s; }
+        .loi-modal-content h3 { font-size: 26px; color: var(--charcoal); margin-bottom: 6px; }
+        .loi-modal-content .loi-subtitle { font-size: 15px; color: var(--teal); margin-bottom: 24px; }
+        .loi-field { margin-bottom: 16px; }
+        .loi-field label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); margin-bottom: 6px; font-family: 'Libre Baskerville', serif; }
+        .loi-field input { width: 100%; padding: 12px 16px; border: 1px solid var(--cream); border-radius: 3px; font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--charcoal); outline: none; }
+        .loi-preview { background: #f7f4ef; border: 1px solid var(--cream); border-radius: 4px; padding: 20px 22px; margin: 20px 0; font-size: 14px; line-height: 1.8; white-space: pre-wrap; color: var(--charcoal); font-family: 'Cormorant Garamond', serif; }
+        .loi-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .loi-send-btn { padding: 14px 28px; background: var(--teal); color: white; border: none; border-radius: 4px; font-family: 'Libre Baskerville', serif; font-size: 14px; cursor: pointer; transition: background 0.3s; }
+        .loi-send-btn:hover { background: var(--teal-dark); }
+        .loi-cancel-btn { padding: 14px 24px; background: transparent; color: var(--charcoal); border: 1px solid var(--cream); border-radius: 4px; font-family: 'Libre Baskerville', serif; font-size: 14px; cursor: pointer; }
+        
+        .close-modal { position: absolute; right: 24px; top: 20px; font-size: 28px; cursor: pointer; color: var(--charcoal); }
 
-        @media (max-width: 768px) {
-            .club-grid { grid-template-columns: 1fr; }
-            .search-shell { flex-direction: column; padding: 12px; border-radius: 20px; }
-            .search-input-wrap { min-height: 64px; border-radius: 16px; }
-            .search-button { width: 100%; min-width: 0; height: 62px; border-radius: 16px; justify-content: center; }
-            .modal-content { margin: 10% 20px; padding: 30px; }
-        }
+        /* Toast Notification */
+        #reciprocalToast { position: fixed; bottom: 30px; right: 30px; background: #261f1a; border: 1px solid #c7a86d; color: #fff; padding: 16px 24px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; z-index: 10000; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); display: none; animation: fadeInOut 4s ease forwards; }
+        @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(10px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(10px); } }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes slideIn { from{transform:translateY(-50px);opacity:0} to{transform:translateY(0);opacity:1} }
+        
+        @media (max-width: 768px) { .club-grid { grid-template-columns: 1fr; } .search-shell { flex-direction: column; } }
       </style>
     </head>
     <body>
-
-      <!-- Login Gate -->
-      <div id="memberLoginScreen">
-        <form class="member-login-box" onsubmit="event.preventDefault(); checkMemberPassword();">
-          <h1 class="member-login-title">Apex Club</h1>
-          <p class="member-login-kicker">Global Reciprocal Network</p>
-          <div class="login-helper">Demo Access Code: <strong>Partner!550</strong></div>
-          <input type="password" id="memberPasswordInput" placeholder="Member access code">
-          <button type="submit">Enter Directory</button>
-          <div class="member-login-error" id="memberLoginError">Incorrect access code.</div>
-        </form>
-      </div>
-
       <header class="header">
         <h2>APEX CLUB</h2>
         <div class="tagline">Global Reciprocal Network</div>
@@ -2121,9 +2074,9 @@ function handleIntake(sheet, payload) {
 
         <div class="backend-summary">
           <h4>The Problem</h4>
-          <p>Members constantly emailed the concierge for details and letters of introduction for global partner clubs (SONATO, IAC, Invited), creating an operational bottleneck.</p>
+          <p>Members constantly emailed the concierge for details and letters of introduction for global partner clubs (SONATO, IAC, Invited), creating an operational bottleneck and delaying member travel plans.</p>
           <h4>The Solution &amp; Backend</h4>
-          <p>A centralized, self-serve front-end directory that categorizes clubs by network and region. It streamlines the request process by pointing members directly to specific app-based workflows or triggering direct automated letters of introduction.</p>
+          <p>A centralized, self-serve front-end directory that categorizes clubs by network and region. It streamlines the request process by pointing members directly to the specific app-based workflows (e.g., the Sonato or IAC apps) or triggering direct automated letters of introduction for non-affiliated clubs.</p>
         </div>
 
         <div class="search-container">
@@ -2158,17 +2111,6 @@ function handleIntake(sheet, payload) {
               <option value="Asia">Asia</option>
             </select>
           </div>
-          <div class="results-count" id="resultsCount"></div>
-
-          <!-- Sort row -->
-          <div class="sort-row" id="sortRow">
-              <span class="sort-row-label"><i class="fas fa-sort"></i>&nbsp; Sort</span>
-              <button class="sort-btn active" id="sortDefault" onclick="setSort('default')"><i class="fas fa-star"></i> Default</button>
-              <button class="sort-btn" id="sortAZ" onclick="setSort('az')"><i class="fas fa-sort-alpha-down"></i> A &rarr; Z</button>
-              <button class="sort-btn" id="sortAdventure" onclick="setSort('adventure')"><i class="fas fa-compass"></i> Choose Your Adventure</button>
-              <button class="sort-btn" id="sortNearest" onclick="setSort('nearest')"><i class="fas fa-map-marker-alt"></i> Nearest</button>
-              <span id="geoStatus" style="font-size:12px;color:#999;font-style:italic;display:none;"></span>
-          </div>
         </div>
       </div>
 
@@ -2176,34 +2118,53 @@ function handleIntake(sheet, payload) {
         <div class="club-grid" id="clubGrid"></div>
       </main>
 
-      <!-- Club Details Modal -->
-      <div id="clubModal" class="modal">
-          <div class="modal-content">
-              <span class="close" onclick="closeModal()">&times;</span>
-              <div class="modal-header">
-                  <h2 id="modalClubName"></h2>
-                  <div class="modal-location" id="modalLocation"></div>
-                  <div class="modal-badges" id="modalBadges"></div>
-              </div>
-              <div class="modal-divider"></div>
-              <!-- Destination Panel -->
-              <div class="destination-panel" id="destinationPanel">
-                  <div class="destination-map" id="destinationMap">
-                      <div class="map-loading"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;color:var(--teal);"></i> Loading map…</div>
-                  </div>
-                  <div class="dest-weather" id="destWeather">
-                      <span class="dest-panel-label"><i class="fas fa-cloud-sun"></i> Local Weather</span>
-                      <div class="dest-loading"><i class="fas fa-circle-notch fa-spin"></i> Loading…</div>
-                  </div>
-                  <div class="dest-time" id="destTime">
-                      <span class="dest-panel-label"><i class="fas fa-clock"></i> Local Time</span>
-                      <div class="dest-loading"><i class="fas fa-circle-notch fa-spin"></i> Loading…</div>
-                  </div>
-              </div>
-              <div class="modal-divider"></div>
-              <div class="modal-description" id="modalDescription"></div>
-              <div class="access-section" id="accessSection"></div>
-          </div>
+      <!-- LOI Modal -->
+      <div id="loiModal" class="loi-modal">
+        <div class="loi-modal-content">
+            <span class="close-modal" onclick="closeLOIModal()">&times;</span>
+            <h3>Request a Letter of Introduction</h3>
+            <p class="loi-subtitle">Fill in your details below. We'll automatically generate the request to our concierge team.</p>
+            <div class="loi-field"><label>Club You Wish to Visit</label><input type="text" id="loiClubName" readonly></div>
+            <div class="loi-field"><label>Your Full Name</label><input type="text" id="loiMemberName" placeholder="e.g. Jane Smith" oninput="updateLOIPreview()"></div>
+            <div class="loi-field"><label>Preferred Visit Dates</label><input type="text" id="loiDates" placeholder="e.g. June 15–17, 2026" oninput="updateLOIPreview()"></div>
+            
+            <p style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--teal);margin-bottom:8px;font-family:'Libre Baskerville',serif;">Automated Email Payload Preview</p>
+            <div class="loi-preview" id="loiPreview">Fill in the fields above to preview the data payload.</div>
+            
+            <div class="loi-actions">
+                <button class="loi-send-btn" onclick="sendLOIEmail()"><i class="fas fa-paper-plane"></i> Submit Request</button>
+                <button class="loi-cancel-btn" onclick="closeLOIModal()">Cancel</button>
+            </div>
+            <p style="margin-top:14px;font-size:13px;color:#888;">Next Step: Our team will verify your standing in the CRM and send the formal LOI within 24 hours.</p>
+        </div>
+      </div>
+
+      <!-- Visit Script Modal -->
+      <div id="visitScriptModal" class="loi-modal" onclick="if(event.target===this)closeVisitScript()">
+        <div class="loi-modal-content" style="max-width:600px;">
+            <span class="close-modal" onclick="closeVisitScript()">&times;</span>
+            <h3>What to Say</h3>
+            <p class="loi-subtitle">Suggested wording for <strong id="visitScriptClubName"></strong></p>
+            <div id="visitScriptBody"></div>
+            <div style="margin-top:24px;"><button class="loi-cancel-btn" onclick="closeVisitScript()">Got it, thanks</button></div>
+        </div>
+      </div>
+
+      <!-- Toast Notification -->
+      <div id="reciprocalToast">
+        <i class="fas fa-check-circle" style="color: #2ecc71; margin-right: 8px;"></i>
+        <span id="toastMessage">Action completed successfully.</span>
+      </div>
+
+      <!-- Login Gate -->
+      <div id="memberLoginScreen">
+        <form class="member-login-box" onsubmit="event.preventDefault(); checkMemberPassword();">
+          <h1 class="member-login-title">Apex Club</h1>
+          <p class="member-login-kicker">Global Reciprocal Network</p>
+          <div class="login-helper">Demo Access Code: <strong>Partner!550</strong></div>
+          <input type="password" id="memberPasswordInput" placeholder="Member access code">
+          <button type="submit">Enter Directory</button>
+        </form>
       </div>
 
       <script>
@@ -2214,22 +2175,18 @@ function handleIntake(sheet, payload) {
             document.getElementById('memberLoginScreen').style.display = 'none';
             loadClubsFromDB();
           } else {
-            document.getElementById('memberLoginError').style.display = 'block';
+            alert('Incorrect access code. Please use Partner!550');
           }
         }
 
         let clubsData = [];
-        let filteredClubs = [];
-        let currentSort = 'default';
-        let userLat = null, userLon = null;
-
         const fallbackData = [
-          { id: '1', name: 'The Tokyo Club', city: 'Tokyo', country: 'Japan', region: 'Asia', network: 'SONATO', category: 'City Club', description: 'A premier private club in the heart of Tokyo offering world-class dining and networking.', photo_url: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80' },
-          { id: '2', name: 'Home House', city: 'London', country: 'UK', region: 'Europe', network: 'IAC', category: 'Club', description: 'London’s most exclusive private member’s club featuring elegant historic architecture.', photo_url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80' },
-          { id: '3', name: 'Core Club', city: 'New York', state: 'NY', country: 'USA', region: 'North America', network: 'INVITED', category: 'City Club', description: 'An international sanctuary for interesting people looking to connect in Manhattan.', photo_url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80' },
-          { id: '4', name: 'The Battery', city: 'San Francisco', state: 'CA', country: 'USA', region: 'North America', network: 'SONATO', category: 'City Club', description: 'An exclusive oasis for minds that create, debate, and inspire in Jackson Square.', photo_url: 'https://images.unsplash.com/photo-1560662105-57f8ad6ae2d1?w=400&q=80' },
-          { id: '5', name: 'Saint James Club', city: 'Paris', country: 'France', region: 'Europe', network: 'IAC', category: 'City Club', description: 'A unique chateau-hotel and private club surrounded by its own private garden.', photo_url: 'https://images.unsplash.com/photo-1502602898657-3e9076006082?w=400&q=80' },
-          { id: '6', name: 'Mandala Club', city: 'Singapore', country: 'Singapore', region: 'Asia', network: 'SONATO', category: 'City Club', description: 'A dynamic community connecting leaders in arts, business, and culture.', photo_url: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=80' }
+          { id: '1', name: 'The Tokyo Club', city: 'Tokyo', country: 'Japan', region: 'Asia', network: 'SONATO', category: 'City Club', description: 'A premier private club in the heart of Tokyo offering world-class dining and networking.', photo_url: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80', loi: true },
+          { id: '2', name: 'Home House', city: 'London', country: 'UK', region: 'Europe', network: 'IAC', category: 'Club', description: 'London’s most exclusive private member’s club featuring elegant historic architecture.', photo_url: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80', loi: false },
+          { id: '3', name: 'Core Club', city: 'New York', state: 'NY', country: 'USA', region: 'North America', network: 'INVITED', category: 'City Club', description: 'An international sanctuary for interesting people looking to connect in Manhattan.', photo_url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80', loi: false },
+          { id: '4', name: 'The Battery', city: 'San Francisco', state: 'CA', country: 'USA', region: 'North America', network: 'SONATO', category: 'City Club', description: 'An exclusive oasis for minds that create, debate, and inspire in Jackson Square.', photo_url: 'https://images.unsplash.com/photo-1560662105-57f8ad6ae2d1?w=400&q=80', loi: true },
+          { id: '5', name: 'Saint James Club', city: 'Paris', country: 'France', region: 'Europe', network: 'DIRECT', category: 'City Club', description: 'A unique chateau-hotel and private club surrounded by its own private garden.', photo_url: 'https://images.unsplash.com/photo-1502602898657-3e9076006082?w=400&q=80', loi: true },
+          { id: '6', name: 'Mandala Club', city: 'Singapore', country: 'Singapore', region: 'Asia', network: 'SONATO', category: 'City Club', description: 'A dynamic community connecting leaders in arts, business, and culture.', photo_url: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=80', loi: false }
         ];
 
         async function loadClubsFromDB() {
@@ -2244,27 +2201,38 @@ function handleIntake(sheet, payload) {
           } catch(e) {
             clubsData = fallbackData;
           }
-          filteredClubs = [...clubsData];
-          renderClubs(filteredClubs);
+          renderClubs(clubsData);
         }
 
         function renderClubs(clubs) {
           const grid = document.getElementById('clubGrid');
-          document.getElementById('heroCount').textContent = `Explore ${clubsData.length} reciprocal clubs around the world`;
-          document.getElementById('resultsCount').textContent = `Showing ${clubs.length} of ${clubsData.length} clubs`;
+          document.getElementById('heroCount').textContent = `Showing ${clubs.length} reciprocal clubs`;
+          
+          grid.innerHTML = clubs.map(club => {
+            let actionButtons = '';
+            
+            if (club.loi) {
+                actionButtons += `<button class="action-btn primary" onclick="openLOIModal('${club.name.replace(/'/g,"\\'")}')"><i class="fas fa-envelope-open-text"></i> Request LOI</button>`;
+            } else if (club.network === 'DIRECT') {
+                actionButtons += `<button class="action-btn primary" onclick="openDirectEmailModal('${club.name.replace(/'/g,"\\'")}')"><i class="fas fa-envelope"></i> Email Front Desk</button>`;
+            }
+            
+            actionButtons += `<button class="action-btn secondary" onclick="openVisitScript('${club.name.replace(/'/g,"\\'")}', '${club.network}')"><i class="fas fa-comment-alt"></i> Booking Script</button>`;
 
-          grid.innerHTML = clubs.map(club => `
-            <div class="club-card" onclick="openModal('${club.id}')">
-              <img src="${club.photo_url}" class="club-card-thumb cover" alt="${club.name}">
+            return `
+            <div class="club-card">
+              <img src="${club.photo_url}" class="club-card-thumb" alt="${club.name}">
               <div class="network-badge badge-${(club.network||'').toLowerCase()}">${club.network}</div>
               <div class="club-card-body">
                 <h3>${club.name}</h3>
                 <div class="club-location"><i class="fas fa-map-marker-alt"></i> ${club.city}, ${club.country}</div>
                 <p class="club-description">${club.description}</p>
-                <button class="view-details-btn">View Club <i class="fas fa-arrow-right"></i></button>
+                <div class="action-btn-group">
+                    ${actionButtons}
+                </div>
               </div>
             </div>
-          `).join('');
+          `}).join('');
         }
 
         function filterClubs() {
@@ -2272,204 +2240,111 @@ function handleIntake(sheet, payload) {
           const network = document.getElementById('networkFilter').value;
           const region = document.getElementById('regionFilter').value;
 
-          filteredClubs = clubsData.filter(club => {
+          const filtered = clubsData.filter(club => {
             const matchSearch = !search || club.name.toLowerCase().includes(search) || club.city.toLowerCase().includes(search);
             const matchNetwork = !network || club.network === network;
             const matchRegion = !region || club.region === region;
             return matchSearch && matchNetwork && matchRegion;
           });
-          applySortAndRender();
+          renderClubs(filtered);
         }
 
-        function setSort(mode) {
-          currentSort = mode;
-          document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
-          const idMap = { default:'sortDefault', az:'sortAZ', adventure:'sortAdventure', nearest:'sortNearest' };
-          document.getElementById(idMap[mode])?.classList.add('active');
-          applySortAndRender();
+        function showToast(message) {
+            const toast = document.getElementById('reciprocalToast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.style.display = 'block';
+            toast.style.animation = 'none';
+            toast.offsetHeight;
+            toast.style.animation = 'fadeInOut 4s ease forwards';
+            setTimeout(() => { toast.style.display = 'none'; }, 4000);
         }
 
-        function applySortAndRender() {
-            let sorted = [...filteredClubs];
-            if (currentSort === 'az') {
-                sorted.sort((a,b) => a.name.localeCompare(b.name));
-                renderClubs(sorted);
-            } else if (currentSort === 'adventure') {
-                const groups = {};
-                sorted.forEach(c => {
-                    const cat = c.category || 'Club';
-                    if (!groups[cat]) groups[cat] = [];
-                    groups[cat].push(c);
-                });
-                let html = '';
-                Object.keys(groups).sort().forEach(cat => {
-                    html += `<div class="adventure-divider"><span class="adventure-divider-label">${cat}s — ${groups[cat].length}</span><span class="adventure-divider-line"></span></div>`;
-                    groups[cat].forEach(club => {
-                        html += `
-                        <div class="club-card" onclick="openModal('${club.id}')">
-                            <img src="${club.photo_url}" class="club-card-thumb cover" alt="${club.name}">
-                            <div class="network-badge badge-${(club.network||'').toLowerCase()}">${club.network}</div>
-                            <div class="club-card-body">
-                                <h3>${club.name}</h3>
-                                <div class="club-location"><i class="fas fa-map-marker-alt"></i> ${club.city}, ${club.country}</div>
-                                <p class="club-description">${club.description}</p>
-                                <button class="view-details-btn">View Club <i class="fas fa-arrow-right"></i></button>
-                            </div>
-                        </div>`;
-                    });
-                });
-                document.getElementById('clubGrid').innerHTML = html;
-            } else if (currentSort === 'nearest') {
-                if (userLat === null) {
-                    requestGeoAndSort();
-                } else {
-                    sortByDistance(sorted);
-                }
-            } else {
-                renderClubs(sorted);
-            }
+        function openDirectEmailModal(clubName) {
+            const subj = encodeURIComponent(`Reciprocal Visit Request – ${clubName}`);
+            const body = encodeURIComponent(`Hi Apex Team,\n\nI'd like to arrange a reciprocal visit to ${clubName}.\n\nPlease reach out to them on my behalf and let me know how to proceed.\n\nThank you`);
+            window.location.href = `mailto:concierge@apexclub.com?subject=${subj}&body=${body}`;
+            showToast(`Drafting email request for ${clubName}. Check your mail client!`);
         }
 
-        function haversine(lat1, lon1, lat2, lon2) {
-            const R = 3958.8; // miles
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        function openLOIModal(clubName) {
+            document.getElementById('loiClubName').value = clubName || '';
+            document.getElementById('loiMemberName').value = '';
+            document.getElementById('loiDates').value = '';
+            updateLOIPreview();
+            document.getElementById('loiModal').style.display = 'block';
         }
 
-        async function requestGeoAndSort() {
-            const status = document.getElementById('geoStatus');
-            status.style.display = 'inline';
-            status.textContent = '📍 Finding your location…';
-            if (!navigator.geolocation) {
-                status.textContent = '📍 Location not available.';
+        function closeLOIModal() { document.getElementById('loiModal').style.display = 'none'; }
+
+        function updateLOIPreview() {
+            const name  = document.getElementById('loiMemberName').value || '[Your Name]';
+            const club  = document.getElementById('loiClubName').value   || '[Club Name]';
+            const dates = document.getElementById('loiDates').value      || '[Preferred Visit Dates]';
+            
+            document.getElementById('loiPreview').textContent = 
+`Subject: Letter of Introduction Request – ${club}
+
+Dear Concierge Team,
+
+Please issue a formal Letter of Introduction for my upcoming travel.
+Name: ${name}
+Target Club: ${club}
+Visit Dates: ${dates}
+
+Thank you.`;
+        }
+
+        function sendLOIEmail() {
+            const club  = document.getElementById('loiClubName').value || 'Target Club';
+            const name  = document.getElementById('loiMemberName').value || 'Member';
+            
+            if(!document.getElementById('loiMemberName').value) {
+                alert("Please enter your name to submit the request.");
                 return;
             }
-            navigator.geolocation.getCurrentPosition(
-                pos => {
-                    userLat = pos.coords.latitude;
-                    userLon = pos.coords.longitude;
-                    status.style.display = 'none';
-                    sortByDistance([...filteredClubs]);
-                },
-                err => {
-                    status.textContent = '📍 Location access denied.';
-                }
-            );
+
+            closeLOIModal();
+            showToast(`LOI Request generated for ${name}! Our concierge team is verifying your status.`);
+            
+            const subj  = encodeURIComponent(`Letter of Introduction Request – ${club}`);
+            const body  = encodeURIComponent(`Dear Concierge Team,\n\nPlease issue a formal Letter of Introduction for my upcoming travel.\n\nName: ${name}\nTarget Club: ${club}\nVisit Dates: ${document.getElementById('loiDates').value}\n\nThank you.`);
+            
+            setTimeout(() => {
+                window.location.href = `mailto:concierge@apexclub.com?subject=${subj}&body=${body}`;
+            }, 800);
         }
 
-        async function sortByDistance(clubs) {
-            const status = document.getElementById('geoStatus');
-            status.style.display = 'inline';
-            status.textContent = '📍 Calculating distances…';
+        function openVisitScript(clubName, network) {
+            const scripts = {
+                SONATO:  { channel:'the Sonato platform', lines:[`"Hi, I'm a member of Apex Club. I'd love to arrange a visit to ${clubName}."`,`"I'm booking through the Sonato network — looking at [DATE] for [NUMBER OF GUESTS]."`] },
+                IAC:     { channel:'IAC Worldwide', lines:[`"Hello, my name is [YOUR NAME] and I'm a member of Apex Club."`,`"I'm reaching out through IAC Worldwide — I'd love to visit ${clubName}."`] },
+                INVITED: { channel:'ClubLine — 1-800-433-5079', lines:[`"Hi, I'm calling through the Invited Club Network. I'm a member of Apex Club."`,`"I'd like to arrange a visit to ${clubName} on [DATE]."`] },
+                DIRECT:  { channel:'Apex concierge at (415) 555-0199', lines:[`"Hello, I'm a member of Apex Club — we have a direct partnership with ${clubName}."`,`"I'd like to arrange a reciprocal visit on [DATE] for [NUMBER OF GUESTS]."`] }
+            };
+            const s = scripts[(network||'').toUpperCase()] || scripts.DIRECT;
             
-            await Promise.all(clubs.map(async club => {
-                if (club._dist !== undefined) return;
-                try {
-                    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(club.city)}&count=1&language=en&format=json`);
-                    const j = await r.json();
-                    const loc = j.results && j.results[0];
-                    if (loc) {
-                        club._dist = haversine(userLat, userLon, loc.latitude, loc.longitude);
-                    } else { club._dist = Infinity; }
-                } catch(e) { club._dist = Infinity; }
-            }));
-
-            clubs.sort((a,b) => a._dist - b._dist);
-            status.style.display = 'none';
-            renderClubs(clubs); // Note: Simplified for the portfolio demo, omits the visual distance badge
-        }
-
-        function openModal(id) {
-            const club = clubsData.find(c => c.id === id);
-            if (!club) return;
-            document.getElementById('modalClubName').textContent = club.name;
-            document.getElementById('modalLocation').textContent = `${club.city}, ${club.country}`;
-            document.getElementById('modalBadges').innerHTML = `<div class="network-badge badge-${(club.network||'').toLowerCase()}" style="position:static;">${club.network}</div>`;
-            document.getElementById('modalDescription').textContent = club.description;
-            
-            const accessHTML = `
-                <div class="access-btn-group">
-                    <button class="access-button access-${(club.network||'').toLowerCase()}"><i class="fas fa-calendar-check"></i> Request Access via ${club.network}</button>
-                </div>
+            document.getElementById('visitScriptBody').innerHTML = `
+                <p style="font-size:14px;color:#888;margin-bottom:20px;">Use this script when reaching out through <strong>${s.channel}</strong>.</p>
+                ${s.lines.map((l,i) => `<div style="display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;"><div style="background:var(--teal);color:white;border-radius:50%;width:26px;height:26px;min-width:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;margin-top:2px;">${i+1}</div><div style="font-size:15px;line-height:1.75;color:var(--charcoal);font-style:italic;">${l}</div></div>`).join('')}
             `;
-            document.getElementById('accessSection').innerHTML = accessHTML;
-
-            loadDestinationPanel(club.city, club.country);
-            document.getElementById('clubModal').style.display = 'block';
+            document.getElementById('visitScriptClubName').textContent = clubName;
+            document.getElementById('visitScriptModal').style.display = 'block';
         }
 
-        function closeModal() {
-            document.getElementById('clubModal').style.display = 'none';
-            if (window._timeInterval) { clearInterval(window._timeInterval); window._timeInterval = null; }
-        }
-
-        const WX_CODES = { 0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️', 51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️', 71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️', 95:'⛈️',96:'⛈️',99:'⛈️' };
-
-        async function loadDestinationPanel(city, country) {
-            document.getElementById('destWeather').innerHTML = '<span class="dest-panel-label"><i class="fas fa-cloud-sun"></i> Local Weather</span><div class="dest-loading"><i class="fas fa-circle-notch fa-spin"></i> Loading…</div>';
-            document.getElementById('destTime').innerHTML    = '<span class="dest-panel-label"><i class="fas fa-clock"></i> Local Time</span><div class="dest-loading"><i class="fas fa-circle-notch fa-spin"></i> Loading…</div>';
-            document.getElementById('destinationMap').innerHTML = '<div class="map-loading"><i class="fas fa-circle-notch fa-spin" style="margin-right:6px;color:var(--teal);"></i> Loading map…</div>';
-
-            const query = encodeURIComponent(`${city}, ${country}`);
-            try {
-                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=1&language=en&format=json`);
-                const geoJson = await geoRes.json();
-                const loc = geoJson.results && geoJson.results[0];
-                if (!loc) throw new Error('Location not found');
-
-                const { latitude: lat, longitude: lon, timezone } = loc;
-
-                document.getElementById('destinationMap').innerHTML = `
-                    <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${lon-0.05},${lat-0.05},${lon+0.05},${lat+0.05}&layer=mapnik&marker=${lat},${lon}" style="width:100%;height:100%;border:none;"></iframe>`;
-
-                const wxRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=${encodeURIComponent(timezone)}`);
-                const wxJson = await wxRes.json();
-                const cur = wxJson.current;
-                
-                document.getElementById('destWeather').innerHTML = `
-                    <span class="dest-panel-label"><i class="fas fa-cloud-sun"></i> Local Weather</span>
-                    <div class="dest-weather-main">
-                        <div class="dest-weather-icon">${WX_CODES[cur.weather_code] || '🌡️'}</div>
-                        <div>
-                            <div class="dest-temp">${Math.round(cur.temperature_2m)}<sup>°F</sup></div>
-                        </div>
-                    </div>`;
-
-                if (window._timeInterval) clearInterval(window._timeInterval);
-                function updateTime() {
-                    const now = new Date();
-                    const timeStr  = now.toLocaleTimeString('en-US', { timeZone: timezone, hour: '2-digit', minute: '2-digit', hour12: true });
-                    document.getElementById('destTime').innerHTML = `
-                        <span class="dest-panel-label"><i class="fas fa-clock"></i> Local Time</span>
-                        <div class="dest-time-display">${timeStr}</div>
-                        <div class="dest-time-zone">${timezone.replace(/_/g,' ')}</div>`;
-                }
-                updateTime();
-                window._timeInterval = setInterval(updateTime, 1000);
-
-            } catch(e) {
-                document.getElementById('destWeather').innerHTML = '<p>Weather unavailable</p>';
-                document.getElementById('destTime').innerHTML = '<p>Time unavailable</p>';
-                document.getElementById('destinationMap').innerHTML = `<div class="map-loading">Map unavailable</div>`;
-            }
-        }
+        function closeVisitScript() { document.getElementById('visitScriptModal').style.display = 'none'; }
       </script>
     </body>
     </html>
   </template>
 
-  <!-- ==========================================================================
-       TEMPLATE 7: MARKETING & MEDIA OPS
-       ========================================================================== -->
+  <!-- MARKETING & MEDIA OPERATIONS -->
   <template id="tpl-marketing">
     <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Marketing Campaigns Gallery</title>
+      <title>Marketing &amp; Media Operations</title>
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
       <style>
@@ -2494,12 +2369,16 @@ function handleIntake(sheet, payload) {
         .campaign-title { font-size: 22px; color: #c7a86d; margin: 0 0 10px 0; display: flex; align-items: center; gap: 12px; font-family: 'Playfair Display', serif; }
         
         .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
-        .asset-card { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
-        .asset-image-wrapper { width: 100%; height: 180px; background: #000; overflow: hidden; }
-        .asset-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .asset-card { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; position: relative; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; }
+        .asset-card:hover { transform: translateY(-4px); border-color: #c7a86d; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); }
+        .asset-image-wrapper { width: 100%; height: 180px; background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center;}
+        .asset-image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .asset-card:hover .asset-image-wrapper img { transform: scale(1.04); }
         .asset-info { padding: 16px; background: #161b22; border-top: 1px solid #30363d; margin-top: auto; }
         .asset-type { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #c7a86d; margin-bottom: 4px; font-weight: 600; }
         .asset-name { font-size: 14px; color: #f0e6d2; font-weight: 500; margin: 0; }
+        .expand-icon { position: absolute; top: 12px; right: 12px; background: rgba(0, 0, 0, 0.7); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 2; }
+        .asset-card:hover .expand-icon { opacity: 1; }
 
         .article-card { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; padding: 24px; transition: border-color 0.3s; }
         .article-card:hover { border-color: #c7a86d; }
@@ -2508,6 +2387,12 @@ function handleIntake(sheet, payload) {
         .article-desc { font-size: 14px; color: #8b949e; line-height: 1.6; margin-bottom: 16px; }
         .read-btn { display: inline-block; padding: 8px 16px; background: transparent; border: 1px solid #c7a86d; color: #c7a86d; text-decoration: none; border-radius: 6px; font-size: 12px; font-weight: 500; transition: all 0.3s; }
         .read-btn:hover { background: #c7a86d; color: #121212; }
+
+        #lightbox { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 24px; }
+        #lightbox.active { opacity: 1; pointer-events: all; }
+        #lightbox img { max-width: 90%; max-height: 88vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); object-fit: contain; }
+        .close-btn { position: absolute; top: 24px; right: 32px; color: #fff; font-size: 36px; cursor: pointer; background: none; border: none; transition: color 0.2s; }
+        .close-btn:hover { color: #c7a86d; }
       </style>
     </head>
     <body>
@@ -2552,35 +2437,105 @@ function handleIntake(sheet, payload) {
           </div>
         </div>
 
-        <!-- Campaign Section -->
+        <!-- Campaign Sections -->
         <div class="campaign-section">
           <div class="campaign-header">
-            <h3 class="campaign-title"><i class="fas fa-mask"></i> Signature Event Campaigns</h3>
+            <h3 class="campaign-title"><i class="fas fa-mask"></i> Signature Event Campaign</h3>
           </div>
-
           <div class="asset-grid">
-            <div class="asset-card">
-              <div class="asset-image-wrapper">
-                <img src="obscura-newsletter.png" alt="Newsletter Layout" onerror="this.src='https://images.unsplash.com/photo-1586769852044-692d6e3703f0?w=600&q=80'">
-              </div>
-              <div class="asset-info">
-                <span class="asset-type">Email Newsletter</span>
-                <h4 class="asset-name">Signature Event Announcement</h4>
-              </div>
+            <div class="asset-card" onclick="openLightbox('obscura-newsletter.png')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="obscura-newsletter.png" alt="Newsletter Layout" onerror="this.src='https://images.unsplash.com/photo-1586769852044-692d6e3703f0?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Email Newsletter</span><h4 class="asset-name">Signature Event Announcement</h4></div>
             </div>
-            <div class="asset-card">
-              <div class="asset-image-wrapper">
-                <img src="Charles hotel .png" alt="Resort Partnership" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80'">
-              </div>
-              <div class="asset-info">
-                <span class="asset-type">Partnership Promo</span>
-                <h4 class="asset-name">Luxury Resort Announcement</h4>
-              </div>
+            <div class="asset-card" onclick="openLightbox('obscura-main-invite.jpg')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="obscura-main-invite.jpg" alt="Key Art" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Digital Flyer</span><h4 class="asset-name">Event Key Art &amp; Poster</h4></div>
+            </div>
+            <div class="asset-card" onclick="openLightbox('obscura-event-banner-4x3.jpg')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="obscura-event-banner-4x3.jpg" alt="Web Banner" onerror="this.src='https://images.unsplash.com/photo-1574169208507-84376144848b?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Web Asset</span><h4 class="asset-name">Portal Hero Header Banner</h4></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="campaign-section">
+          <div class="campaign-header">
+            <h3 class="campaign-title"><i class="fas fa-hotel"></i> Luxury Resort Partnership</h3>
+          </div>
+          <div class="asset-grid">
+            <div class="asset-card" onclick="openLightbox('Charles hotel .png')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="Charles hotel .png" alt="Partner Email" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Email Layout</span><h4 class="asset-name">Partner Announcement Email</h4></div>
+            </div>
+            <div class="asset-card" onclick="openLightbox('Charles_directory_preview.png')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="Charles_directory_preview.png" alt="Directory Page" onerror="this.src='https://images.unsplash.com/photo-1574169208507-84376144848b?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Directory Page</span><h4 class="asset-name">Portal Reciprocal Listing</h4></div>
+            </div>
+            <div class="asset-card" onclick="openLightbox('directory-banner-1920x480.jpg')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="directory-banner-1920x480.jpg" alt="Hero Banner" onerror="this.src='https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Web Asset</span><h4 class="asset-name">Hero Portal Banner Header</h4></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="campaign-section">
+          <div class="campaign-header">
+            <h3 class="campaign-title"><i class="fas fa-calendar-alt"></i> Seasonal Exclusive Events</h3>
+          </div>
+          <div class="asset-grid">
+            <div class="asset-card" onclick="openLightbox('bond-teaser.png')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="bond-teaser.png" alt="Teaser Graphics" onerror="this.src='https://images.unsplash.com/photo-1574169208507-84376144848b?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Social Asset</span><h4 class="asset-name">Themed Teaser Graphics</h4></div>
+            </div>
+            <div class="asset-card" onclick="openLightbox('bond-returns.png')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="bond-returns.png" alt="Digital Invite" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Digital Invite</span><h4 class="asset-name">Themed Digital Invite Card</h4></div>
+            </div>
+            <div class="asset-card" onclick="openLightbox('1-garden-fashion-show.jpg')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="1-garden-fashion-show.jpg" alt="Fashion Poster" onerror="this.src='https://images.unsplash.com/photo-1586769852044-692d6e3703f0?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Event Promo</span><h4 class="asset-name">Fashion Showcase Presentation</h4></div>
+            </div>
+            <div class="asset-card" onclick="openLightbox('fireside-chat.png')">
+              <div class="expand-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div class="asset-image-wrapper"><img src="fireside-chat.png" alt="Speaker Panel" onerror="this.src='https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=600&q=80'"></div>
+              <div class="asset-info"><span class="asset-type">Speaker Series</span><h4 class="asset-name">Speaker Panel &amp; Discussion</h4></div>
             </div>
           </div>
         </div>
 
       </div>
+
+      <div id="lightbox" onclick="closeLightbox()">
+        <button class="close-btn" onclick="closeLightbox()" aria-label="Close Lightbox">&times;</button>
+        <img id="lightbox-img" src="" alt="Expanded Campaign Asset">
+      </div>
+
+      <script>
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        function openLightbox(imageSrc) { 
+          lightboxImg.src = imageSrc; 
+          lightbox.classList.add('active'); 
+        }
+
+        function closeLightbox() { 
+          lightbox.classList.remove('active'); 
+        }
+
+        document.addEventListener('keydown', function (event) { 
+          if (event.key === "Escape") closeLightbox(); 
+        });
+      </script>
     </body>
     </html>
   </template>   
@@ -2616,6 +2571,16 @@ function handleIntake(sheet, payload) {
         .video-details { padding: 16px; }
         .video-category { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #c7a86d; font-weight: 600; }
         .video-title { font-size: 15px; color: #f0e6d2; margin: 0; font-weight: 500; }
+        .play-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.35); display: flex; align-items: center; justify-content: center; transition: background 0.3s ease; }
+        .play-btn { width: 56px; height: 56px; background: #c7a86d; color: #0d1117; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; padding-left: 3px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6); transition: transform 0.3s ease, background 0.3s ease; }
+        .thumbnail-container:hover .play-overlay { background: rgba(0, 0, 0, 0.15); }
+        .thumbnail-container:hover .play-btn { transform: scale(1.15); background: #f0e6d2; }
+        .video-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.94); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 24px; }
+        .video-modal.active { opacity: 1; pointer-events: all; }
+        .modal-body { width: 100%; max-width: 920px; aspect-ratio: 16 / 9; background: #000; border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9); }
+        .modal-body iframe { width: 100%; height: 100%; border: none; }
+        .close-btn { position: absolute; top: -42px; right: 0; background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; transition: color 0.2s ease; }
+        .close-btn:hover { color: #c7a86d; }
       </style>
     </head>
     <body>
@@ -2651,21 +2616,63 @@ function handleIntake(sheet, payload) {
           </div>
           <div class="thumbnail-container" onclick="playVideo('Gw3aWPxtpfE')">
             <img src="https://img.youtube.com/vi/Gw3aWPxtpfE/hqdefault.jpg" alt="Batkid Event">
+            <div class="play-overlay"><div class="play-btn"><i class="fas fa-play"></i></div></div>
           </div>
         </div>
 
-        <div class="video-grid">
-          <div class="video-card">
-            <div class="thumbnail-container">
-              <img src="https://img.youtube.com/vi/bOaCwCHZiPo/hqdefault.jpg" alt="Event">
-            </div>
-            <div class="video-details">
-              <span class="video-category">Immersive Theater</span>
-              <h4 class="video-title">Obscura Event Feature</h4>
-            </div>
-          </div>
+        <div class="video-grid" id="videoGrid"></div>
+      </div>
+      
+      <div class="video-modal" id="videoModal" onclick="closeVideo()">
+        <div class="modal-body" onclick="event.stopPropagation()">
+          <button class="close-btn" onclick="closeVideo()">&times;</button>
+          <iframe id="modalIframe" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
       </div>
+      
+      <script>
+        const archiveVideos = [
+          { id: 'bOaCwCHZiPo', title: 'Immersive Event Feature', category: 'Immersive Theater' },
+          { id: '2Fqn8aQM9XA', title: 'Private Club Cultural Highlights', category: 'Member Events' },
+          { id: 'haaeTKi-wh0', title: 'Sommelier Reserve & Tasting Night', category: 'Wine & Dining' },
+          { id: '-_ksKSl11zA', title: '550 Montgomery Historical Showcase', category: 'Building History' }
+        ];
+
+        function renderGallery() {
+          const grid = document.getElementById('videoGrid');
+          grid.innerHTML = archiveVideos.map(video => `
+            <div class="video-card">
+              <div class="thumbnail-container" onclick="playVideo('${video.id}')">
+                <img src="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" alt="${video.title}">
+                <div class="play-overlay"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+              </div>
+              <div class="video-details">
+                <span class="video-category">${video.category}</span>
+                <h4 class="video-title">${video.title}</h4>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        const modal = document.getElementById('videoModal');
+        const iframe = document.getElementById('modalIframe');
+
+        function playVideo(youtubeId) {
+          iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`;
+          modal.classList.add('active');
+        }
+
+        function closeVideo() {
+          modal.classList.remove('active');
+          iframe.src = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeVideo();
+        });
+
+        document.addEventListener('DOMContentLoaded', renderGallery);
+      </script>
     </body>
     </html>
   </template>
@@ -2686,9 +2693,20 @@ function handleIntake(sheet, payload) {
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--ink); color: var(--bone); font-family: var(--sans); font-size: 16px; padding: 40px 20px; }
+        
         .hero { text-align: center; max-width: 720px; margin: 0 auto 3rem; }
         .hero h1 { font-family: var(--serif); font-size: 3rem; color: var(--bone); margin-bottom: 1rem; }
         .hero h1 em { font-style: italic; color: var(--brass-light); }
+        
+        .tabs-nav-wrapper { overflow-x: auto; margin-bottom: 2rem; }
+        .tabs-nav { display: flex; gap: 0.5rem; justify-content: center; }
+        .tab-pill { background: var(--ink-soft); border: 1px solid var(--border); border-radius: 100px; color: var(--bone-muted); font-family: var(--sans); font-size: 0.875rem; padding: 0.5rem 1.25rem; cursor: pointer; transition: all 0.2s; }
+        .tab-pill.active { background: var(--oxblood); color: var(--ink); font-weight: 600; border-color: var(--oxblood); }
+        
+        .routine-panel { display: none; }
+        .routine-panel.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem; }
         .product-card { background: var(--ink-soft); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
         .product-card h4 { font-family: var(--serif); font-size: 1.1rem; color: var(--bone); margin-bottom: 8px; }
@@ -2701,18 +2719,129 @@ function handleIntake(sheet, payload) {
         <p style="color:var(--bone-muted);">Three steps. Curated by skin type. No guesswork.</p>
       </section>
 
-      <div class="products-grid">
-        <div class="product-card">
-          <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Cleanser</span>
-          <h4>CeraVe Hydrating Cleanser</h4>
-          <p style="font-size:13px; color:var(--bone-muted);">Gentle, non-foaming. Maintains moisture balance without stripping.</p>
-        </div>
-        <div class="product-card">
-          <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Moisturizer</span>
-          <h4>Olay Regenerist Micro-Sculpting Cream</h4>
-          <p style="font-size:13px; color:var(--bone-muted);">Lightweight hydration + firming peptides. Daily use, all year.</p>
+      <div class="tabs-nav-wrapper">
+        <div class="tabs-nav">
+          <button class="tab-pill active" onclick="switchRoutine('normal')">Normal</button>
+          <button class="tab-pill" onclick="switchRoutine('combination')">Combination</button>
+          <button class="tab-pill" onclick="switchRoutine('dry')">Dry</button>
+          <button class="tab-pill" onclick="switchRoutine('oily')">Oily</button>
+          <button class="tab-pill" onclick="switchRoutine('acne')">Acne-Prone</button>
         </div>
       </div>
+
+      <!-- Normal -->
+      <div id="routine-normal" class="routine-panel active">
+        <div class="products-grid">
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Cleanser</span>
+            <h4>CeraVe Hydrating Cleanser</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Gentle, non-foaming. Maintains moisture balance without stripping.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Moisturizer</span>
+            <h4>Olay Regenerist Micro-Sculpting Cream</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Lightweight hydration + firming peptides. Daily use, all year.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--slate);">Bonus Pick</span>
+            <h4>Tatcha The Water Cream</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Weightless gel texture, Japanese botanicals.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Combination -->
+      <div id="routine-combination" class="routine-panel">
+        <div class="products-grid">
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Cleanser</span>
+            <h4>La Roche-Posay Toleriane</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Removes oil without drying out cheeks. Formulated for reactive skin.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Moisturizer</span>
+            <h4>Belif True Cream Aqua Bomb</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Gel-cream that hydrates without heaviness.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">SPF</span>
+            <h4>Supergoop! Unseen Sunscreen</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Mattifying, pore-minimizing primer effect.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dry -->
+      <div id="routine-dry" class="routine-panel">
+        <div class="products-grid">
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Cleanser</span>
+            <h4>Vanicream Gentle Cleanser</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Sulfate-free, fragrance-free, safe for sensitive and dry skin.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Moisturizer</span>
+            <h4>CeraVe Moisturizing Cream</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">24-hour hydration. Ceramides + hyaluronic acid.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--slate);">Bonus Pick</span>
+            <h4>Laneige Lip Mask</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Overnight lip barrier repair.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Oily -->
+      <div id="routine-oily" class="routine-panel">
+        <div class="products-grid">
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Cleanser</span>
+            <h4>CeraVe Foaming Cleanser</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Removes excess oil without compromising the skin barrier.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Moisturizer</span>
+            <h4>Neutrogena Hydro Boost</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Hyaluronic acid gel. Zero heaviness.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--slate);">Bonus Pick</span>
+            <h4>Paula's Choice 2% BHA</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Unclogs pores, smooths texture.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acne -->
+      <div id="routine-acne" class="routine-panel">
+        <div class="products-grid">
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Cleanser</span>
+            <h4>PanOxyl 4% Foaming Wash</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Kills acne-causing bacteria. Use daily or every other day.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">Moisturizer</span>
+            <h4>First Aid Beauty Ultra Repair</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Calms redness, repairs barrier damage.</p>
+          </div>
+          <div class="product-card">
+            <span style="font-size:10px; text-transform:uppercase; color:var(--brass);">SPF</span>
+            <h4>EltaMD UV Clear SPF 46</h4>
+            <p style="font-size:13px; color:var(--bone-muted);">Dermatologist #1 pick for acne-prone skin.</p>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        function switchRoutine(type) {
+            document.querySelectorAll('.tab-pill').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.routine-panel').forEach(p => p.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('routine-' + type).classList.add('active');
+        }
+      </script>
     </body>
     </html>
   </template>
@@ -2725,62 +2854,158 @@ function handleIntake(sheet, payload) {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>The Folsom Skin Shade Lab &amp; Foundation Finder</title>
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
       <style>
-        :root { --ink: #0e0b09; --ink-soft: #161210; --brass: #b8923a; --brass-light: #d4aa52; --bone: #f0e8d8; --bone-muted: #a09080; --border: rgba(184, 146, 58, 0.18); }
+        :root {
+          --ink: #0e0b09; --ink-soft: #161210; 
+          --oxblood: #7a1a1a; --brass: #b8923a; --brass-light: #d4aa52; 
+          --bone: #f0e8d8; --bone-muted: #a09080; --slate: #8a8070; --border: rgba(184, 146, 58, 0.18);
+          --font-serif: 'Cormorant Garamond', Georgia, serif;
+          --font-sans: 'DM Sans', system-ui, sans-serif;
+          --font-mono: 'DM Mono', monospace;
+        }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--ink); color: var(--bone-muted); font-family: 'DM Sans', sans-serif; padding: 40px 20px; }
-        .hero { text-align: center; max-width: 720px; margin: 0 auto 2rem; }
-        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 3rem; color: var(--bone); margin-bottom: 1rem; }
-        .hero h1 em { font-style: italic; color: var(--brass-light); }
-        .search-input { width: 100%; max-width: 500px; padding: 14px 18px; background: var(--ink-soft); border: 1px solid var(--border); color: var(--bone); border-radius: 4px; outline: none; margin-bottom: 20px; }
+        body { background: var(--ink); color: var(--bone-muted); font-family: var(--font-sans); font-size: 15px; line-height: 1.6; padding: 0 0 2rem 0; }
+        a { color: inherit; text-decoration: none; }
+        .container { max-width: 1140px; margin: 0 auto; padding: 0 1.5rem; }
+        .subtle-affiliate-bar { background: transparent; border-bottom: 1px solid var(--border); padding: 0.45rem 1.5rem; text-align: center; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.05em; color: rgba(160, 144, 128, 0.65); margin-bottom: 1.5rem; }
+        .subtle-affiliate-bar a { color: var(--brass-light); text-decoration: underline; }
+        .business-impact { background: #161b22; border: 1px solid #c7a86d; border-radius: 8px; padding: 24px; margin-bottom: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; font-family: 'Inter', sans-serif;}
+        .impact-col h4 { color: #c7a86d; margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .impact-col p { margin: 0; font-size: 13px; line-height: 1.5; color: #e6edf3; }
+        .hero { text-align: center; padding: 1rem 1.5rem 2.5rem; }
+        .hero-eyebrow { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--brass); margin-bottom: 1rem; }
+        .hero-headline { font-family: var(--font-serif); font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 300; color: var(--bone); line-height: 1.15; margin-bottom: 1rem; }
+        .hero-headline em { font-style: italic; color: var(--brass-light); }
+        .hero-sub { color: var(--bone-muted); max-width: 680px; margin: 0 auto 2rem; font-size: 0.95rem; line-height: 1.6; }
+        .search-box-wrap { max-width: 600px; margin: 0 auto 1.5rem; position: relative; }
+        .search-input { width: 100%; background: var(--ink-soft); border: 1px solid var(--border); color: var(--bone); font-family: var(--font-sans); font-size: 0.95rem; padding: 1rem 1.25rem; border-radius: 4px; outline: none; transition: border-color 0.2s; }
+        .search-input:focus { border-color: var(--brass); }
+        .status-text { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--slate); margin-top: 0.5rem; }
+        .dial-title { font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--brass); margin-bottom: 0.75rem; text-align: center; }
+        .dial-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; max-width: 720px; margin: 0 auto 2.5rem; }
+        .dial-btn { background: #120f0d; border: 1px solid rgba(196, 160, 82, 0.2); color: #ae9f8a; font-family: var(--font-sans); font-size: 0.75rem; padding: 0.5rem 1rem; cursor: pointer; border-radius: 2px; transition: all 0.2s; }
+        .dial-btn:hover { border-color: var(--brass-light); color: var(--bone); }
+        .dial-btn.active { background: rgba(196, 160, 82, 0.15); border-color: var(--brass); color: var(--bone); font-weight: 500; }
+        .results-panel { background: var(--ink-soft); border: 1px solid var(--border); border-radius: 6px; padding: 2rem; margin-bottom: 3rem; min-height: 200px; }
+        .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+        .match-card { background: #120f0d; border: 1px solid var(--border); padding: 1.25rem; border-radius: 4px; display: flex; flex-direction: column; gap: 0.75rem; transition: border-color 0.2s, transform 0.2s; }
+        .match-card:hover { border-color: rgba(184, 146, 58, 0.5); transform: translateY(-2px); }
+        .match-card-header { display: flex; gap: 12px; align-items: flex-start; }
+        .swatch-circle { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.2); flex-shrink: 0; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); }
+        .match-brand { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brass); display: block; margin-bottom: 0.2rem; }
+        .match-title { font-family: var(--font-serif); font-size: 1.15rem; color: var(--bone); margin: 0; line-height: 1.2; }
+        .match-why { font-size: 0.82rem; color: var(--bone-muted); line-height: 1.5; }
+        .meta-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .meta-chip { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; background: rgba(196, 160, 82, 0.08); border: 1px solid var(--border); color: var(--brass-light); padding: 0.25rem 0.5rem; border-radius: 2px; }
+        .btn-route { display: inline-block; font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--bone); background: var(--oxblood); border: 1px solid var(--oxblood); padding: 0.65rem 1rem; border-radius: 2px; transition: all 0.2s; text-align: center; margin-top: auto; cursor: pointer; }
+        .btn-route:hover { background: #8a2020; }
+        .banner-card { background: linear-gradient(135deg, #120e0c 0%, #08060a 100%); border: 1px solid var(--border); padding: 3rem 2rem; text-align: center; margin: 2rem 0; border-radius: 6px; }
+        .banner-card h2 { font-family: var(--font-serif); font-size: 2.2rem; color: var(--bone); margin-bottom: 1rem; }
+        .quiz-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem; }
+        .quiz-modal-overlay.active { display: flex; }
+        .quiz-modal-card { background: var(--ink-soft); border: 1px solid var(--brass); border-radius: 8px; padding: 2.5rem; max-width: 650px; width: 100%; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8); }
+        .close-modal-btn { position: absolute; top: 1rem; right: 1.25rem; background: none; border: none; color: var(--bone-muted); font-size: 1.8rem; cursor: pointer; transition: color 0.2s; }
+        .close-modal-btn:hover { color: var(--brass-light); }
+        .option-btn-quiz { background: #120f0d; border: 1px solid var(--border); color: var(--bone-muted); padding: 0.85rem 1.1rem; border-radius: 4px; cursor: pointer; text-align: left; font-family: var(--font-sans); font-size: 0.88rem; transition: all 0.2s; margin-bottom: 0.65rem; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn-quiz:hover { border-color: var(--brass-light); color: var(--bone); background: rgba(196, 160, 82, 0.08); }
       </style>
     </head>
     <body>
-      <div class="hero">
-        <p style="font-size:11px; text-transform:uppercase; color:var(--brass); letter-spacing:2px; margin-bottom:10px;">The Folsom Skin Shade Lab</p>
-        <h1>Tell us what you <em>already wear.</em></h1>
-        <p style="color:var(--bone-muted); margin-bottom: 20px;">Over 3,000+ foundations indexed by tone, depth, and undertone. Translate your exact shade without the guesswork.</p>
-        <input type="search" class="search-input" placeholder="Search brand, line, or shade name (e.g. Armani 2, Fenty 240)...">
+      <div class="subtle-affiliate-bar">
+        As an Amazon Associate, Folsom Skin earns from qualifying purchases at no extra cost to you.
       </div>
-    </body>
-    </html>
-  </template>
+      <div class="container">
+        <div class="business-impact">
+          <div class="impact-col">
+            <h4>Esthetician-Led &amp; Self-Taught Dev</h4>
+            <p>Built out of a passion for skincare and cosmetics. Founded by a California-licensed esthetician who self-taught software engineering to solve complexion-matching challenges.</p>
+          </div>
+          <div class="impact-col">
+            <h4>Affiliate Knowledge Base</h4>
+            <p>Monetized transparently through affiliate marketing while providing educational guides, skin analysis, and shade diagnostics on our primary site.</p>
+          </div>
+          <div class="impact-col">
+            <h4>Algorithmic Solution</h4>
+            <p>Combines esthetician skin theory with custom code to automate shade consultations, replacing manual color-matching queries with real-time math.</p>
+          </div>
+        </div>
 
-  <!-- PORTFOLIO ROUTING JAVASCRIPT -->
-  <script>
-    function loadProject(templateId, el) {
-      document.querySelectorAll('.project-item').forEach(i => i.classList.remove('active'));
-      if (el) el.classList.add('active');
+        <header class="hero container">
+          <p class="hero-eyebrow">The Folsom Skin Shade Lab</p>
+          <h1 class="hero-headline">Tell us what you <em>already wear.</em></h1>
+          <p class="hero-sub">
+            Over 3,000+ foundations indexed by tone, depth, and undertone. Whether matching across luxury brands or finding a drugstore alternative, translate your exact shade without the guesswork.
+          </p>
 
-      const template = document.getElementById(templateId);
-      const frame = document.getElementById('demo-frame');
-      
-      if(template && frame) {
-          frame.style.opacity = '0';
-          setTimeout(() => {
-            frame.srcdoc = template.innerHTML;
-            setTimeout(() => { frame.style.opacity = '1'; }, 100);
-          }, 200);
-      }
-    }
-    
-    function setDevice(type) {
-      const frame = document.getElementById('demo-frame');
-      if (type === 'mobile') {
-        frame.classList.add('mobile-view');
-        document.getElementById('btn-mobile').classList.add('active');
-        document.getElementById('btn-desktop').classList.remove('active');
-      } else {
-        frame.classList.remove('mobile-view');
-        document.getElementById('btn-desktop').classList.add('active');
-        document.getElementById('btn-mobile').classList.remove('active');
-      }
-    }
+          <div class="search-box-wrap">
+            <input type="search" id="shadeSearch" class="search-input" placeholder="Search brand, line, or shade name (e.g., Armani 2, Fenty 240, Haus Labs 260)..." />
+            <div class="status-text" id="statusText">Loading 3,000+ shade database…</div>
+          </div>
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadProject('tpl-home', document.getElementById('nav-home'));
-    });
-  </script>
-</body>
-</html>
+          <div class="dial-title">Or filter by depth</div>
+          <div class="dial-grid" id="dialGrid">
+            <button class="dial-btn active" data-depth="all">All Depths</button>
+            <button class="dial-btn" data-depth="fair">Fair</button>
+            <button class="dial-btn" data-depth="light">Light</button>
+            <button class="dial-btn" data-depth="light-medium">Lt-Med</button>
+            <button class="dial-btn" data-depth="medium">Medium</button>
+            <button class="dial-btn" data-depth="tan">Tan</button>
+            <button class="dial-btn" data-depth="deep">Deep</button>
+            <button class="dial-btn" data-depth="rich">Rich</button>
+            <button class="dial-btn" data-depth="deepest">Deepest</button>
+          </div>
+        </header>
+
+        <main class="container">
+          <section class="results-panel" id="resultsPanel">
+            <p style="text-align: center; color: var(--bone-muted); font-style: italic;">
+              Type your foundation shade above or select a depth to run the matching engine.
+            </p>
+          </section>
+
+          <section class="banner-card">
+            <p class="hero-eyebrow">Don't know your shade yet?</p>
+            <h2>Take the <em>Undertone Discovery Diagnostic.</em></h2>
+            <p style="color: var(--bone-muted); max-width: 600px; margin: 0 auto 1.5rem;">
+              Answer 5 quick esthetician questions right here to determine whether you skew cool, neutral, warm, or olive—and automatically filter your results below.
+            </p>
+            <button class="btn-route" onclick="openQuizModal()">Start Undertone Test →</button>
+          </section>
+        </main>
+
+        <div class="quiz-modal-overlay" id="quizModal">
+          <div class="quiz-modal-card">
+            <button class="close-modal-btn" onclick="closeQuizModal()">&times;</button>
+            <div id="quizContent">
+              <p class="hero-eyebrow" id="quizStepText">Question 1 of 5</p>
+              <h3 style="font-family: var(--font-serif); font-size: 1.8rem; color: var(--bone); margin-bottom: 1.5rem;" id="quizQuestionText">
+                Loading diagnostic question...
+              </h3>
+              <div id="quizOptionsWrap"></div>
+            </div>
+            <div id="quizResultContent" style="display: none; text-align: center;">
+              <p class="hero-eyebrow" style="color: var(--brass-light);" id="quizResultBadge">PROFILE CALCULATED</p>
+              <h3 style="font-family: var(--font-serif); font-size: 2.2rem; color: var(--bone); margin-bottom: 1rem;" id="quizResultTitle">
+                Your Undertone Result
+              </h3>
+              <p style="color: var(--bone-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem;" id="quizResultDesc">
+                Description goes here...
+              </p>
+              <button class="btn-route" onclick="applyQuizResultAndScroll()">Show My Matches Below ↓</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          const AMAZON_AFFILIATE_TAG = "folsomskin-20";
+          const rawShadesDB = [
+            { shade_id: "armani-1-5", brand: "Giorgio Armani Beauty", line: "Luminous Silk Foundation", shade: "1.5", depth: "fair", undertone: "warm", hex: "#F2DFD3", finish: "luminous", price: 69, searchKey: "giorgio+armani+luminous+silk+1.5", why: "Perfect for fair skin with subtle golden warmth seeking a sheer luminous glow." },
+            { shade_id: "armani-2", brand: "Giorgio Armani Beauty", line: "Luminous Silk Foundation", shade: "2", depth: "fair", undertone: "neutral-cool", hex: "#F0D9C8", finish: "luminous", price: 69, searchKey: "giorgio+armani+luminous+silk+2", why: "Pink-leaning fair with cool balance — the Armani 2 most makeup artists agree on." },
+            { shade_id: "armani-2-75", brand: "Giorgio Armani Beauty", line: "Luminous Silk Foundation", shade: "2.75", depth: "fair", undertone: "cool", hex: "#EED5C4", finish: "luminous", price: 69, searchKey: "giorgio+armani+luminous+silk+2.75", why: "A pristine fair tone with rosy undertones that brightens winter skin perfectly." },
+            { shade_id: "armani-3", brand: "Giorgio Armani Beauty", line: "Luminous Silk Foundation", shade: "3", depth: "light",Sorry, something went wrong. Please try your request again.
