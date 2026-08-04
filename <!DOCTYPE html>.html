@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Experience Portfolio - Elevated</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-main: #FCFAF8;
+    --bg-surface: #FFFFFF;
+    --bg-dark: #1F1A17;
+    --text-dark: #2A2421;
+    --text-muted: #6B5E55;
+    --accent-gold: #B89065;
+    --accent-gold-light: #DFCDBA;
+    --accent-gold-dark: #8C6A47;
+    --border-light: rgba(184, 144, 101, 0.2);
+    --shadow-soft: 0 8px 30px rgba(42, 36, 33, 0.04);
+    --shadow-hover: 0 12px 40px rgba(42, 36, 33, 0.08);
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-main);
+    font-family: "Inter", sans-serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-dark);
+  }
+
+  /* Header & Navigation */
+  .portfolio-header {
+    background: var(--bg-dark);
+    color: var(--bg-main);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid var(--accent-gold);
+    flex-wrap: wrap;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .portfolio-header h1 {
+    font-size: 26px;
+    color: var(--bg-main);
+    letter-spacing: 0.02em;
+  }
+
+  .portfolio-nav {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #A3968C;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    padding: 10px 16px;
+    border-radius: 30px;
+    transition: var(--transition);
+  }
+
+  .nav-btn:hover {
+    color: var(--bg-main);
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  .nav-btn.active {
+    background: var(--accent-gold);
+    color: var(--bg-dark);
+    border-color: var(--accent-gold);
+    font-weight: 600;
+  }
+
+  /* Slide Containers */
+  .slide-container {
+    display: none;
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 0 24px;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .slide-container.active {
+    display: block;
+  }
+
+  @keyframes slideUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide-head {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-gold-dark);
+    margin-bottom: 12px;
+  }
+
+  .slide-title {
+    font-size: 38px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .slide-sub {
+    max-width: 700px;
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+  }
+
+  .op-callout {
+    background: var(--bg-surface);
+    border-left: 4px solid var(--accent-gold);
+    padding: 24px;
+    margin-bottom: 40px;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    box-shadow: var(--shadow-soft);
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .op-callout strong {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+  }
+
+  /* Scenarios */
+  .scenario-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 16px;
+  }
+
+  .scenario-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+  }
+
+  .scenario-btn:hover {
+    color: var(--text-dark);
+    background: rgba(184, 144, 101, 0.05);
+  }
+
+  .scenario-btn.active {
+    background: var(--bg-dark);
+    color: var(--accent-gold-light);
+  }
+
+  .scenario-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .scenario-summary {
+    margin-bottom: 32px;
+  }
+
+  .scenario-kicker {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent-gold-dark);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .scenario-summary h4 {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .scenario-card {
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    transition: var(--transition);
+  }
+
+  .scenario-card:hover {
+    border-color: var(--accent-gold);
+    transform: translateY(-2px);
+  }
+
+  .scenario-step {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent-gold-dark);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  .scenario-card h5 {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .scenario-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  /* Timeline & Stages */
+  .ad-timeline {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 40px;
+    padding-top: 20px;
+  }
+
+  .ad-timeline::before {
+    content: '';
+    position: absolute;
+    top: 42px;
+    left: 40px;
+    right: 40px;
+    height: 1px;
+    background: var(--border-light);
+    z-index: 1;
+  }
+
+  .ad-node {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .ad-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg-surface);
+    border: 1px solid var(--accent-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--accent-gold-dark);
+    margin-bottom: 16px;
+    transition: var(--transition);
+  }
+
+  .ad-node:hover .ad-icon {
+    transform: scale(1.1);
+  }
+
+  .ad-node.active .ad-icon {
+    background: var(--bg-dark);
+    color: var(--accent-gold-light);
+    border-color: var(--bg-dark);
+    box-shadow: 0 4px 15px rgba(31, 26, 23, 0.15);
+  }
+
+  .ad-title {
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--text-muted);
+  }
+  
+  .ad-node.active .ad-title {
+    color: var(--text-dark);
+    font-weight: 600;
+  }
+
+  .split-stage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .stage-front, .stage-back {
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 250px;
+  }
+
+  .stage-front {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .stage-back {
+    background: #111;
+    color: #E2DFDB;
+    font-family: "JetBrains Mono", monospace, sans-serif;
+    font-size: 13px;
+    border: 1px solid #333;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .stage-back::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent-gold);
+  }
+
+  .stage-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+
+  .stage-front .stage-label { color: var(--accent-gold-dark); border-bottom: 1px solid var(--border-light); padding-bottom: 12px; }
+  .stage-back .stage-label { color: #8C9975; border-bottom: 1px solid #333; padding-bottom: 12px; }
+
+  .sys-log { color: #8C9975; margin-bottom: 12px; display: block; font-weight: bold; }
+  .sys-cmd { color: #A8B8C2; display: block; padding-left: 12px; border-left: 1px solid #333; margin-bottom: 8px;}
+  .sys-hl { color: var(--accent-gold); }
+
+  /* VIP Grid */
+  .vip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .vip-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .vip-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--accent-gold);
+  }
+
+  .vip-img {
+    height: 180px;
+    background-color: #EFEBE7;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .vip-content {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .vip-category {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent-gold-dark);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .vip-title {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .vip-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    flex-grow: 1;
+  }
+
+  .vip-action {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bg-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .vip-card:hover .vip-action { color: var(--accent-gold-dark); }
+
+  /* Anticipatory Loop */
+  .loop-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .loop-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .loop-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px;
+    background: var(--accent-gold); transition: var(--transition);
+  }
+
+  .loop-card:hover, .loop-card.active {
+    background: var(--bg-main);
+    transform: translateY(-4px);
+  }
+  
+  .loop-card.active::after { width: 100%; }
+
+  .loop-step-num {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent-gold-dark);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .loop-card h4 { font-size: 22px; margin-bottom: 8px; }
+  .loop-card p { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+  .loop-detail-box {
+    background: var(--bg-dark);
+    color: var(--bg-main);
+    padding: 40px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .loop-detail-box h4 {
+    font-size: 28px;
+    color: var(--accent-gold-light);
+    margin-bottom: 12px;
+  }
+
+  .loop-detail-box p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+    max-width: 600px;
+  }
+
+  /* Modals */
+  #ldModalBg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(31, 26, 23, 0.7);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  #ldModalBg.open { display: flex; }
+
+  .modal-box {
+    width: 100%;
+    max-width: 480px;
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-light);
+  }
+
+  .modal-box h4 {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  .modal-box label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+    margin-top: 20px;
+  }
+
+  .modal-box input, .modal-box textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid #E2DFDB;
+    background: #F9F8F6;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    transition: var(--transition);
+  }
+
+  .modal-box input:focus, .modal-box textarea:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+    background: var(--bg-surface);
+  }
+
+  .liability-box {
+    background: rgba(184, 144, 101, 0.05);
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    margin: 24px 0;
+  }
+
+  .liability-box label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 12px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    color: var(--text-dark);
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .ld-btnrow {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 30px;
+    font-weight: 500;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    text-align: center;
+  }
+
+  .btn-primary {
+    background: var(--bg-dark);
+    color: var(--accent-gold-light);
+  }
+
+  .btn-primary:hover {
+    background: black;
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    color: var(--text-muted);
+  }
+
+  .btn-secondary:hover {
+    background: #F9F8F6;
+    color: var(--text-dark);
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .split-stage { grid-template-columns: 1fr; }
+    .loop-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .portfolio-header { padding: 16px 20px; }
+    .slide-title { font-size: 28px; }
+    .scenario-grid { grid-template-columns: 1fr; }
+    .loop-grid { grid-template-columns: 1fr; }
+    .ad-timeline { flex-wrap: wrap; gap: 20px; }
+    .ad-timeline::before { display: none; }
+    .ad-node { width: 45%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="portfolio-header">
+  <h1>Member Experience Architecture</h1>
+  <nav class="portfolio-nav">
+    <button class="nav-btn active" onclick="switchSlide('slide1', this)">1. Intelligence</button>
+    <button class="nav-btn" onclick="switchSlide('slide2', this)">2. Execution</button>
+    <button class="nav-btn" onclick="switchSlide('slide3', this)">3. Partnerships</button>
+    <button class="nav-btn" onclick="switchSlide('slide4', this)">4. Anticipation</button>
+  </nav>
+</header>
+
+<div id="slide1" class="slide-container active">
+  <div class="slide-head">Service Intelligence & Revenue Flow</div>
+  <h3 class="slide-title">Turning Interactions into Actionable Data</h3>
+  <p class="slide-sub">
+    Service isn't just about smiling; it's about structured data capture. Every touchpoint—from arrival to private event inquiries—is engineered to passively build a comprehensive member profile. This shared context eliminates friction, personalizes future visits, and drives operational revenue.
+  </p>
+
+  <div class="op-callout">
+    <strong>Strategic Objective</strong>
+    Shift from reactive note-taking to proactive intelligence gathering. Data flows automatically into CRM (PeopleVine, SevenRooms) so cross-departmental teams operate from a single source of truth, removing the need for members to ever repeat themselves.
+  </div>
+
+  <div class="scenario-tabs">
+    <button class="scenario-btn active" onclick="showScenario(1)" id="scenarioBtn1">Arrival & Recognition</button>
+    <button class="scenario-btn" onclick="showScenario(2)" id="scenarioBtn2">Administrative Handoff</button>
+    <button class="scenario-btn" onclick="showScenario(3)" id="scenarioBtn3">Event Qualification</button>
+  </div>
+
+  <div class="scenario-panel">
+    <div class="scenario-summary" id="scenarioSummary"></div>
+    <div class="scenario-grid" id="scenarioGrid"></div>
+  </div>
+</div>
+
+<div id="slide2" class="slide-container">
+  <div class="slide-head">Operational Execution</div>
+  <h3 class="slide-title">Frictionless Handoffs: Front vs. Back Stage</h3>
+  <p class="slide-sub">
+    The hallmark of luxury hospitality is effortless execution. The member experiences one simple, elegant interaction, while the backend systems handle the complex routing, departmental alerts, and preparation protocols.
+  </p>
+
+  <div class="ad-timeline">
+    <div class="ad-node active" onclick="showTouchpoint(1)" id="node1">
+      <div class="ad-icon">1</div>
+      <div class="ad-title">Initiation</div>
+    </div>
+    <div class="ad-node" onclick="showTouchpoint(2)" id="node2">
+      <div class="ad-icon">2</div>
+      <div class="ad-title">Routing</div>
+    </div>
+    <div class="ad-node" onclick="showTouchpoint(3)" id="node3">
+      <div class="ad-icon">3</div>
+      <div class="ad-title">Staging</div>
+    </div>
+    <div class="ad-node" onclick="showTouchpoint(4)" id="node4">
+      <div class="ad-icon">4</div>
+      <div class="ad-title">Delivery</div>
+    </div>
+  </div>
+
+  <div class="split-stage">
+    <div class="stage-front">
+      <div class="stage-label">Front Stage (Member POV)</div>
+      <div id="frontStageDisplay"></div>
+    </div>
+
+    <div class="stage-back">
+      <div class="stage-label">Back Stage (Operations)</div>
+      <div id="backStageDisplay"></div>
+    </div>
+  </div>
+</div>
+
+<div id="slide3" class="slide-container">
+  <div class="slide-head">VIP & Partner Compliance</div>
+  <h3 class="slide-title">Secure & Seamless Concierge Services</h3>
+  <p class="slide-sub">
+    Managing high-net-worth requests requires strict privacy protocols. Our digital intake system allows members to initiate premium requests while staff retains control over identity verification, authorization, and secure partner introductions.
+  </p>
+
+  <div class="vip-grid">
+    <div class="vip-card" onclick="openVipModal('The Carneros Spa Retreat', 'Wellness Partner', 'spa')">
+      <div class="vip-img" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=900&q=80');"></div>
+      <div class="vip-content">
+        <div class="vip-category">Wellness Integration</div>
+        <h4 class="vip-title">The Carneros Spa</h4>
+        <p class="vip-desc">Streamlined access to priority wellness treatments. Operations handles direct billing authorization and scheduling alignment.</p>
+        <div class="vip-action">Initiate Protocol &rarr;</div>
+      </div>
+    </div>
+
+    <div class="vip-card" onclick="openVipModal('Aero Private Aviation', 'Logistics Partner', 'aviation')">
+      <div class="vip-img" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&w=900&q=80');"></div>
+      <div class="vip-content">
+        <div class="vip-category">Travel Logistics</div>
+        <h4 class="vip-title">Aero Aviation</h4>
+        <p class="vip-desc">Seamless charter integration. Concierge manages strict identity verification and final itinerary execution.</p>
+        <div class="vip-action">Initiate Protocol &rarr;</div>
+      </div>
+    </div>
+
+    <div class="vip-card" onclick="openVipModal('Global Golf Access', 'Reciprocal Network', 'reciprocal')">
+      <div class="vip-img" style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1587304791483-3b102ce20d91?auto=format&fit=crop&w=900&q=80');"></div>
+      <div class="vip-content">
+        <div class="vip-category">Reciprocal Network</div>
+        <h4 class="vip-title">Global Golf Access</h4>
+        <p class="vip-desc">Automated introductory requests. Administration handles letters of introduction, compliance, and host-club relations.</p>
+        <div class="vip-action">Initiate Protocol &rarr;</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="slide4" class="slide-container">
+  <div class="slide-head">The Anticipatory Loop</div>
+  <h3 class="slide-title">Engineering Proactive Service Standards</h3>
+  <p class="slide-sub">
+    We don't just react to member requests; we predict them. By systematizing the observation of habits, we build a service loop that scales highly personalized hospitality across all departments.
+  </p>
+
+  <div class="loop-grid">
+    <div class="loop-card active" onclick="showLoopStep(1)" id="loopCard1">
+      <div class="loop-step-num">Phase 01</div>
+      <h4>Identify</h4>
+      <p>Staff recognize behavioral patterns or undocumented preferences.</p>
+    </div>
+    <div class="loop-card" onclick="showLoopStep(2)" id="loopCard2">
+      <div class="loop-step-num">Phase 02</div>
+      <h4>Document</h4>
+      <p>Data is centralized into the CRM to build global member context.</p>
+    </div>
+    <div class="loop-card" onclick="showLoopStep(3)" id="loopCard3">
+      <div class="loop-step-num">Phase 03</div>
+      <h4>Execute</h4>
+      <p>Departments leverage profile data to elevate the next interaction.</p>
+    </div>
+    <div class="loop-card" onclick="showLoopStep(4)" id="loopCard4">
+      <div class="loop-step-num">Phase 04</div>
+      <h4>Scale</h4>
+      <p>Predictable needs are met before the member has to ask.</p>
+    </div>
+  </div>
+
+  <div class="loop-detail-box" id="loopDetailContent"></div>
+</div>
+
+<!-- Modal -->
+<div id="ldModalBg">
+  <div class="modal-box" id="vipFormContent" style="display:none;">
+    <div id="vipStep1">
+      <div style="font-size:10px; color:var(--accent-gold-dark); text-transform:uppercase; font-weight:600;" id="vipCategoryMeta">Partner Network</div>
+      <h4 id="vipTitle">Partner Name</h4>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:24px;">
+        Submit preliminary details. Our executive concierge will review clearance and coordinate logistics directly.
+      </p>
+
+      <label>Target Dates / Window</label>
+      <input type="text" placeholder="e.g., Oct 12–14 (Flexible)">
+
+      <label>Operational Brief</label>
+      <textarea rows="3" placeholder="e.g., Party of 4, dietary restrictions, preferred routing..."></textarea>
+
+      <div class="liability-box">
+        <label>
+          <input type="checkbox" id="vipLiabilityCheck">
+          <span id="vipLiabilityText">I authorize the execution of this protocol and sharing of required profile data.</span>
+        </label>
+      </div>
+
+      <div class="ld-btnrow">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="processVipBooking()">Authorize Request</button>
+      </div>
+    </div>
+
+    <div id="vipStep2" style="display:none; text-align:center;">
+      <div style="width:60px; height:60px; border-radius:50%; background:var(--bg-main); border:2px solid var(--accent-gold); display:flex; align-items:center; justify-content:center; margin: 0 auto 20px; color:var(--accent-gold-dark); font-size: 24px;">✓</div>
+      <h4 style="margin-bottom:12px;">Protocol Initiated</h4>
+      <p style="font-size:14px; color:var(--text-muted); line-height: 1.6; margin-bottom:30px;">
+        Your submission has been secured in the queue. The operations team is reviewing your profile and will initiate contact shortly.
+      </p>
+      <button class="btn btn-primary" onclick="closeModal()" style="width:100%;">Acknowledge</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchSlide(slideId, btnEl) {
+    document.querySelectorAll('.slide-container').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+    
+    // Add small delay to trigger CSS animation properly
+    const newSlide = document.getElementById(slideId);
+    newSlide.classList.remove('active');
+    void newSlide.offsetWidth; // trigger reflow
+    newSlide.classList.add('active');
+    
+    if (btnEl) btnEl.classList.add('active');
+  }
+
+  const scenarioData = {
+    1: {
+      kicker: "Use Case: Front Desk",
+      title: "Arrival & Recognition",
+      intro: "First impressions set the standard. The reception team identifies the member, confirms status, and logs nuanced preferences to build a stronger profile for future visits.",
+      steps: [
+        { step: "Phase 1", title: "Identity Verification", text: "Host identifies member upon arrival, instantly accessing historical preferences and pending operational notes." },
+        { step: "Phase 2", title: "Live Data Capture", text: "During natural conversation, staff discretely logs arrival cadence, seating biases, or specific guest dynamics." },
+        { step: "Phase 3", title: "System Sync", text: "Observations are pushed to the central CRM, updating the digital dossier across all club departments simultaneously." },
+        { step: "Phase 4", title: "Elevated Return", text: "On the subsequent visit, the floor team utilizes these insights to offer anticipatory service, eliminating redundant inquiries." }
+      ]
+    },
+    2: {
+      kicker: "Use Case: Administration",
+      title: "Administrative Handoffs",
+      intro: "Complex requests require flawless routing. Operations management captures critical context so departments can execute without dropping the ball.",
+      steps: [
+        { step: "Phase 1", title: "Inbound Request", text: "Member submits a high-friction request regarding billing, membership structure, or specialized access." },
+        { step: "Phase 2", title: "Contextual Triage", text: "Management logs intent, urgency protocols, and specific member constraints directly into the ticketing framework." },
+        { step: "Phase 3", title: "Departmental Routing", text: "The request is assigned to specialized teams (Accounting, Concierge) with complete historical context attached." },
+        { step: "Phase 4", title: "Unified Resolution", text: "The member experiences a cohesive, single-point-of-contact resolution, entirely unaware of the complex backend coordination." }
+      ]
+    },
+    3: {
+      kicker: "Use Case: Sales & Catering",
+      title: "Event Qualification",
+      intro: "Private events drive massive revenue. Capturing exact commercial intent and VIP metrics early ensures a personalized, high-conversion proposal.",
+      steps: [
+        { step: "Phase 1", title: "Initial Inquiry", text: "Member expresses intent to utilize club real estate for a high-value personal or corporate function." },
+        { step: "Phase 2", title: "Strategic Qualification", text: "Sales precisely documents F&B requirements, budgetary scope, VIP attendees, and critical timeline markers." },
+        { step: "Phase 3", title: "Operational Briefing", text: "Logistical constraints (AV needs, security protocols, layout) are immediately mapped to avoid downstream friction." },
+        { step: "Phase 4", title: "Tailored Acquisition", text: "The resulting proposal reflects deep understanding of the member's exact needs, drastically improving closing rates." }
+      ]
+    }
+  };
+
+  function showScenario(id) {
+    document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('scenarioBtn' + id).classList.add('active');
+
+    const data = scenarioData[id];
+
+    document.getElementById('scenarioSummary').innerHTML = `
+      <div class="scenario-kicker">${data.kicker}</div>
+      <h4>${data.title}</h4>
+      <p style="font-size: 15px; color: var(--text-muted); max-width: 800px; margin: 0;">${data.intro}</p>
+    `;
+
+    document.getElementById('scenarioGrid').innerHTML = data.steps.map(item => `
+      <div class="scenario-card">
+        <div class="scenario-step">${item.step}</div>
+        <h5>${item.title}</h5>
+        <p>${item.text}</p>
+      </div>
+    `).join('');
+  }
+
+  const stageData = {
+    1: {
+      front: `<div style="text-align:center;"><button class="btn btn-primary" style="font-size:16px; padding: 16px 32px; width:auto;">Confirm Request</button><p style="font-size: 14px; color: var(--text-muted); margin-top: 24px;">The member executes a single, clear action. The interface is intentionally minimal to reduce cognitive load.</p></div>`,
+      back: `<span class="sys-log">[PROTOCOL: INTAKE_01]</span><span class="sys-cmd">> Payload received: <span class="sys-hl">req_id_8842</span></span><span class="sys-cmd">> Validating membership status... <span class="sys-hl">ACTIVE</span></span><span class="sys-cmd">> Compiling historical preferences</span><span class="sys-cmd">> Injecting into operational queue</span>`
+    },
+    2: {
+      front: `<div style="text-align:center;"><p style="font-size: 24px; font-family: 'Cormorant Garamond'; color: var(--text-dark); margin-bottom: 8px;">Zero Friction</p><p style="font-size: 14px; color: var(--text-muted); margin-top: 16px;">The member is not tasked with repeating information, filling redundant forms, or chasing department heads.</p></div>`,
+      back: `<span class="sys-log">[PROTOCOL: ROUTING_CRITICAL]</span><span class="sys-cmd">> Analyzing request parameters</span><span class="sys-cmd">> Cross-referencing department availability</span><span class="sys-cmd">> Alerting: <span class="sys-hl">Concierge / Floor Manager</span></span><span class="sys-cmd">> Syncing CRM data to mobile POS</span>`
+    },
+    3: {
+      front: `<div style="text-align:center;"><p style="font-size: 24px; font-family: 'Cormorant Garamond'; color: var(--text-dark); margin-bottom: 8px;">Invisible Preparation</p><p style="font-size: 14px; color: var(--text-muted); margin-top: 16px;">While the member goes about their day, the club aligns resources to ensure flawless delivery.</p></div>`,
+      back: `<span class="sys-log">[PROTOCOL: STAGE_OPS]</span><span class="sys-cmd">> Task claimed by: <span class="sys-hl">Agent_04</span></span><span class="sys-cmd">> Physical staging commenced</span><span class="sys-cmd">> F&B overrides confirmed</span><span class="sys-cmd">> Status updated: <span style="color:#8C9975;">READY_FOR_GUEST</span></span>`
+    },
+    4: {
+      front: `<div style="text-align:center;"><p style="font-size: 28px; font-family: 'Cormorant Garamond'; color: var(--text-dark); font-weight: 600; margin-bottom: 8px;">Seamless Delivery</p><p style="font-size: 14px; color: var(--text-muted); margin-top: 16px;">The member receives a polished, highly personalized service experience that feels completely organic.</p></div>`,
+      back: `<span class="sys-log">[PROTOCOL: EXECUTION_FINAL]</span><span class="sys-cmd">> Service rendered successfully</span><span class="sys-cmd">> Ledger updated & billed to account</span><span class="sys-cmd">> Feedback loop initialized</span><span class="sys-cmd">> Ticket closed.</span>`
+    }
+  };
+
+  function showTouchpoint(id) {
+    document.querySelectorAll('.ad-node').forEach(n => n.classList.remove('active'));
+    document.getElementById('node' + id).classList.add('active');
+    
+    // Add quick fade effect
+    const front = document.getElementById('frontStageDisplay');
+    const back = document.getElementById('backStageDisplay');
+    
+    front.style.opacity = 0; back.style.opacity = 0;
+    
+    setTimeout(() => {
+      front.innerHTML = stageData[id].front;
+      back.innerHTML = stageData[id].back;
+      front.style.transition = "opacity 0.3s ease";
+      back.style.transition = "opacity 0.3s ease";
+      front.style.opacity = 1; back.style.opacity = 1;
+    }, 150);
+  }
+
+  const loopData = {
+    1: {
+      title: "Identify the Pattern",
+      text: "Exceptional hospitality relies on acute awareness. Floor staff are trained to identify behavioral patterns—such as a preference for sparkling water upon arrival or specific seating requirements for business meetings."
+    },
+    2: {
+      title: "Document into CRM",
+      text: "Observations are useless if siloed. The detail is immediately logged into the central management platform, converting anecdotal observations into actionable data accessible by all departments."
+    },
+    3: {
+      title: "Execute on Return",
+      text: "During the next interaction, the team retrieves the data. The preferred drink is poured before they ask; the favored table is pre-assigned. The service shifts from transactional to relational."
+    },
+    4: {
+      title: "Scale Anticipatory Service",
+      text: "Over time, this aggregated data allows the club to build highly predictive models of member behavior, ensuring a consistently flawless and personalized experience at absolute scale."
+    }
+  };
+
+  function showLoopStep(step) {
+    document.querySelectorAll('.loop-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('loopCard' + step).classList.add('active');
+    const data = loopData[step];
+    
+    const contentBox = document.getElementById('loopDetailContent');
+    contentBox.style.opacity = 0;
+    
+    setTimeout(() => {
+      contentBox.innerHTML = `<h4>${data.title}</h4><p>${data.text}</p>`;
+      contentBox.style.transition = "opacity 0.3s ease";
+      contentBox.style.opacity = 1;
+    }, 150);
+  }
+
+  const modalBg = document.getElementById('ldModalBg');
+
+  function closeModal() {
+    modalBg.classList.remove('open');
+    setTimeout(() => {
+      document.getElementById('vipFormContent').style.display = 'none';
+    }, 300);
+  }
+
+  function openVipModal(title, category, type) {
+    document.getElementById('vipFormContent').style.display = 'block';
+    document.getElementById('vipStep1').style.display = 'block';
+    document.getElementById('vipStep2').style.display = 'none';
+
+    document.getElementById('vipTitle').textContent = title;
+    document.getElementById('vipCategoryMeta').textContent = category;
+
+    let liabilityText = "";
+    if (type === 'aviation') {
+      liabilityText = "I acknowledge that strict identity verification protocols apply prior to itinerary clearance.";
+    } else if (type === 'spa') {
+      liabilityText = "I authorize the concierge division to transmit required profile data to the wellness partner.";
+    } else if (type === 'reciprocal') {
+      liabilityText = "I authorize the club to issue a formal Letter of Introduction and share booking criteria with the host property.";
+    }
+
+    document.getElementById('vipLiabilityText').textContent = liabilityText;
+    document.getElementById('vipLiabilityCheck').checked = false;
+
+    modalBg.classList.add('open');
+  }
+
+  function processVipBooking() {
+    if (!document.getElementById('vipLiabilityCheck').checked) {
+      alert("Authorization required: Please acknowledge the data sharing protocols.");
+      return;
+    }
+    document.getElementById('vipStep1').style.display = 'none';
+    document.getElementById('vipStep2').style.display = 'block';
+  }
+
+  // Initialize
+  showScenario(1);
+  showTouchpoint(1);
+  showLoopStep(1);
+
+  window.addEventListener('click', function(e) {
+    if (e.target === modalBg) closeModal();
+  });
+</script>
+</body>
+</html>

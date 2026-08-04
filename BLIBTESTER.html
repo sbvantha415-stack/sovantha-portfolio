@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Beauty Library | Folsom Skin</title>
+  
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────────────── */
+    :root {
+      --ink: #0e0b09;
+      --ink-soft: #161210;
+      --ink-mid: #1e1916;
+      --oxblood: #7a1a1a;
+      --brass: #b8923a;
+      --brass-light: #d4aa52;
+      --bone: #f0e8d8;
+      --bone-muted: #a09080;
+      --slate: #8a8070;
+      --border: rgba(184,146,58,0.18);
+      --border-soft: rgba(184,146,58,0.08);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --mono: 'DM Mono', 'Courier New', monospace;
+      --bg: #08060a;
+      --nav-height: 64px;
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--bone);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      padding-top: var(--nav-height);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: var(--brass-light); text-decoration: none; }
+    a:hover { color: var(--bone); }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ─── Nav & Protocol Bag ────────────────────────────────────────── */
+    .fs-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-height);
+      background: rgba(8,6,10,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      z-index: 1000;
+    }
+    .fs-nav-logo { display: flex; align-items: center; }
+    .fs-nav-logo img { height: 38px; width: auto; }
+    .fs-nav-links { display: flex; align-items: center; gap: 1rem; }
+    .fs-nav-links > a {
+      color: var(--bone-muted); font-family: var(--sans); font-size: 0.8125rem; font-weight: 500;
+      letter-spacing: 0.02em; padding: 0.5rem; transition: color 0.2s; white-space: nowrap;
+    }
+    .fs-nav-links > a:hover { color: var(--bone); }
+    
+    .protocol-btn {
+      position: relative; display: flex; align-items: center; gap: 0.5rem;
+      color: var(--bone); background: var(--border-soft); padding: 0.5rem 1rem;
+      border-radius: 4px; border: 1px solid var(--border); transition: all 0.2s;
+    }
+    .protocol-btn:hover { background: var(--border); border-color: var(--brass); }
+    .protocol-badge {
+      position: absolute; top: -5px; right: -5px; background: var(--oxblood); color: white;
+      font-family: var(--mono); font-size: 0.65rem; width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center; border-radius: 50%;
+    }
+    .protocol-badge.hidden { display: none; }
+
+    /* ─── Hero (Sun Halo) ────────────────────────────────────────────── */
+    .hero {
+      position: relative; min-height: 70vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 6rem 2rem; overflow: hidden; background: var(--bg);
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 55% 55% at 50% 42%, rgba(255,210,80,0.25) 0%, rgba(230,170,40,0.15) 28%, transparent 65%),
+        radial-gradient(ellipse 60% 80% at 20% 100%, rgba(122,26,26,0.15) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    .hero-inner { position: relative; max-width: 800px; z-index: 1; }
+    .hero h1 { font-family: var(--serif); font-size: clamp(3.5rem, 8vw, 6.5rem); font-weight: 400; line-height: 1.05; color: var(--bone); margin-bottom: 1.5rem; letter-spacing: -0.01em; }
+    .hero-eyebrow { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--brass); margin-bottom: 1.5rem; }
+
+    /* ─── Standardized Sections ──────────────────────────────────────── */
+    .section { padding: 6rem 2rem; border-bottom: 1px solid var(--border-soft); }
+    .section-inner { max-width: 900px; margin: 0 auto; }
+    .section-inner--wide { max-width: 1200px; margin: 0 auto; }
+    .section-eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); margin-bottom: 1rem; display: block; }
+    .section-title { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; color: var(--bone); line-height: 1.15; margin-bottom: 1.5rem; }
+    
+    /* ─── Diagnostic Quiz UI ─────────────────────────────────────────── */
+    .quiz-card {
+      background: var(--ink-soft); border: 1px solid var(--border); border-radius: 12px;
+      padding: 3rem; margin-top: 2rem; position: relative; overflow: hidden;
+    }
+    .quiz-progress-bar { position: absolute; top: 0; left: 0; height: 4px; background: var(--brass); transition: width 0.3s ease; }
+    .quiz-question { font-family: var(--serif); font-size: 2rem; color: var(--bone); margin-bottom: 2rem; line-height: 1.3; }
+    .quiz-options { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media(min-width: 768px) { .quiz-options { grid-template-columns: 1fr 1fr; } }
+    
+    .quiz-opt-btn {
+      background: var(--ink-mid); border: 1px solid var(--border-soft); border-radius: 8px;
+      padding: 1.5rem; text-align: left; color: var(--bone-muted); font-family: var(--sans);
+      font-size: 0.95rem; transition: all 0.2s; display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .quiz-opt-btn:hover { border-color: var(--brass); color: var(--bone); }
+    .quiz-opt-btn.selected { border-color: var(--brass-light); background: rgba(184,146,58,0.1); color: var(--bone); }
+    .quiz-opt-radio { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); margin-top: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .quiz-opt-btn.selected .quiz-opt-radio::after { content: ''; width: 8px; height: 8px; background: var(--brass-light); border-radius: 50%; }
+
+    .quiz-controls { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border-soft); }
+    .btn-nav { font-family: var(--mono); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--bone-muted); }
+    .btn-nav:hover { color: var(--bone); }
+    .btn-next { background: var(--brass); color: var(--ink); padding: 0.75rem 2rem; border-radius: 6px; font-weight: 600; }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Results UI */
+    .results-container.hidden { display: none; }
+    .results-header { text-align: center; margin-bottom: 3rem; }
+    .results-type { font-family: var(--serif); font-size: 3rem; color: var(--brass-light); margin: 0.5rem 0; }
+    .results-routine { display: grid; grid-template-columns: 1fr; gap: 2rem; background: var(--ink-mid); padding: 2rem; border-radius: 8px; border: 1px solid var(--border); }
+    @media(min-width: 768px) { .results-routine { grid-template-columns: 1fr 1fr; } }
+    .routine-list { list-style: none; color: var(--bone-muted); font-size: 0.9rem; }
+    .routine-list li { margin-bottom: 0.5rem; display: flex; gap: 0.5rem; }
+    .routine-list li::before { content: '◆'; color: var(--brass); font-size: 0.7rem; margin-top: 2px; }
+
+    /* ─── Archive Filters & Grid ─────────────────────────────────────── */
+    .archive-controls { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border-soft); }
+    .filter-select {
+      background: var(--ink-soft); color: var(--bone); border: 1px solid var(--border);
+      padding: 0.75rem 1.5rem; border-radius: 6px; font-family: var(--mono); font-size: 0.8rem;
+      text-transform: uppercase; letter-spacing: 0.05em; outline: none; appearance: auto;
+    }
+    .filter-select:focus { border-color: var(--brass-light); }
+    .filter-select.highlight { box-shadow: 0 0 15px rgba(184,146,58,0.4); border-color: var(--brass-light); }
+
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .product-card {
+      background: var(--ink-soft); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.5rem; display: flex; flex-direction: column; transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .product-card:hover { transform: translateY(-4px); border-color: var(--brass); }
+    
+    .pcard-img-wrap {
+      display: flex; align-items: center; justify-content: center; height: 220px;
+      padding: 1.5rem; background: #ffffff; border-radius: 8px; margin-bottom: 1.5rem; overflow: hidden;
+    }
+    .pcard-img { max-height: 100%; max-width: 100%; object-fit: contain; }
+
+    .product-brand { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brass); margin-bottom: 0.4rem; }
+    .product-name { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; color: var(--bone); margin-bottom: 0.5rem; line-height: 1.2; }
+    .product-desc { font-family: var(--sans); font-size: 0.85rem; color: var(--bone-muted); line-height: 1.6; margin-bottom: 1.5rem; flex: 1; }
+    .product-tags { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .ptag { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bone-muted); background: var(--ink-mid); border: 1px solid var(--border); padding: 0.25rem 0.5rem; border-radius: 4px; }
+
+    .product-cta {
+      display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
+      border-radius: 6px; background: var(--brass); color: var(--ink); text-decoration: none;
+      font-family: var(--sans); font-weight: 600; font-size: 0.85rem; transition: background 0.2s; width: 100%;
+    }
+    .product-cta:hover { background: var(--brass-light); }
+
+    /* ─── Protocol Drawer (Slide-out Cart) ───────────────────────────── */
+    .drawer-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      z-index: 1999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .drawer-overlay.is-active { opacity: 1; pointer-events: auto; }
+    
+    .protocol-drawer {
+      position: fixed; top: 0; right: -450px; width: 100%; max-width: 450px; height: 100vh;
+      background: var(--ink); border-left: 1px solid var(--border); z-index: 2000;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+    }
+    .protocol-drawer.is-open { transform: translateX(-450px); }
+    
+    .drawer-header { padding: 2rem; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center; }
+    .drawer-title { font-family: var(--serif); font-size: 2rem; color: var(--bone); }
+    .drawer-close { font-size: 2rem; color: var(--bone-muted); transition: color 0.2s; }
+    .drawer-close:hover { color: var(--bone); }
+    
+    .drawer-items { flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+    .drawer-item { background: var(--ink-soft); border: 1px solid var(--border-soft); border-radius: 8px; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .drawer-item-brand { font-family: var(--mono); font-size: 0.65rem; color: var(--brass); text-transform: uppercase; letter-spacing: 0.1em; }
+    .drawer-item-name { font-family: var(--sans); font-size: 0.95rem; color: var(--bone); margin-top: 0.25rem; }
+    .drawer-item-remove { color: var(--oxblood); font-size: 1.5rem; padding: 0.5rem; }
+    
+    .drawer-footer { padding: 2rem; border-top: 1px solid var(--border-soft); background: var(--ink-soft); }
+    .checkout-btn { width: 100%; background: var(--brass); color: var(--ink); font-family: var(--sans); font-weight: 600; font-size: 1rem; padding: 1rem; border-radius: 6px; text-align: center; display: block; transition: background 0.2s; }
+    .checkout-btn:hover { background: var(--brass-light); }
+  </style>
+</head>
+<body>
+
+  <!-- GLOBAL NAV -->
+  <nav class="fs-nav">
+    <a href="#" class="fs-nav-logo"><img src="/images/logo.svg" alt="Folsom Skin" onerror="this.style.display='none'; this.parentNode.innerHTML='<span style=\'font-family:var(--serif); font-size:1.5rem; color:var(--bone);\'>FOLSOM SKIN</span>';"/></a>
+    <div class="fs-nav-links">
+      <a href="#diagnostic">The Clinic</a>
+      <a href="#archive">The Archive</a>
+      <button class="protocol-btn" onclick="toggleDrawer()">
+        <span style="font-family: var(--mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;">Protocol</span>
+        <div id="cart-badge" class="protocol-badge hidden">0</div>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">The Masterclass</p>
+      <h1>The Beauty Library.</h1>
+      <p class="product-desc" style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Determine your biochemical baseline, understand oppositional color theory, and curate your exact protocol.</p>
+    </div>
+  </header>
+
+  <!-- MODULE 00: THE DIAGNOSTIC -->
+  <section id="diagnostic" class="section">
+    <div class="section-inner">
+      <span class="section-eyebrow">[ 00. The Clinical Inquiry ]</span>
+      <h2 class="section-title">Determine Your Baseline</h2>
+      <p class="product-desc">Before applying pigment, we must understand the canvas. Complete this diagnostic to calibrate your chemical baseline.</p>
+
+      <!-- QUIZ UI -->
+      <div id="quiz-ui" class="quiz-card">
+        <div class="quiz-progress-bar" id="quiz-progress" style="width: 0%;"></div>
+        <p style="font-family: var(--mono); font-size: 0.75rem; color: var(--brass); letter-spacing: 0.1em; margin-bottom: 1rem;" id="quiz-counter">Question 1 of 4</p>
+        <h3 class="quiz-question" id="quiz-question-text">Loading...</h3>
+        
+        <div class="quiz-options" id="quiz-options-container"></div>
+
+        <div class="quiz-controls">
+          <button class="btn-nav" id="quiz-prev" style="visibility: hidden;">← Prev</button>
+          <button class="btn-nav btn-next" id="quiz-next" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- RESULTS UI -->
+      <div id="results-ui" class="quiz-card results-container hidden">
+        <div class="results-header">
+          <span class="section-eyebrow">Diagnostic Complete</span>
+          <h3 class="results-type" id="res-title">Lipid-Dominant (Oily)</h3>
+          <p class="product-desc" id="res-desc" style="max-width: 600px; margin: 0 auto;">Your skin is a natural fountain of youth, but a nightmare for makeup longevity.</p>
+        </div>
+
+        <div class="results-routine">
+          <div>
+            <span class="section-eyebrow" style="color:var(--bone);">AM: Prep</span>
+            <ul class="routine-list" id="res-am"></ul>
+          </div>
+          <div>
+            <span class="section-eyebrow" style="color:var(--bone);">PM: The Reset</span>
+            <ul class="routine-list" id="res-pm"></ul>
+          </div>
+        </div>
+
+        <div style="margin-top: 3rem; text-align: center;">
+          <button id="apply-filters-btn" class="product-cta" style="width: auto; padding: 0 2rem;">Apply Profile to Archive ↓</button>
+          <button onclick="restartQuiz()" class="btn-nav" style="margin-left: 1.5rem;">↺ Retake Diagnostic</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE CURATED ARCHIVE -->
+  <section id="archive" class="section">
+    <div class="section-inner--wide">
+      <span class="section-eyebrow">[ The Archive ]</span>
+      <h2 class="section-title">Curated Formulations</h2>
+      
+      <!-- Filters -->
+      <div class="archive-controls">
+        <select id="filter-skintype" class="filter-select">
+          <option value="all">Skin Type (All)</option>
+          <option value="oily">Oily / Lipid-Dominant</option>
+          <option value="dry">Dry / Compromised</option>
+          <option value="sensitive">Sensitive / Reactive</option>
+          <option value="acne">Acne-Prone</option>
+        </select>
+        <select id="filter-concern" class="filter-select">
+          <option value="all">Primary Concern (All)</option>
+          <option value="texture">Micro-Texture / Pores</option>
+          <option value="erythema">Erythema / Redness</option>
+          <option value="aging">Prevention / Aging</option>
+        </select>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="product-grid" id="product-grid">
+        
+        <!-- ITEM 1 -->
+        <div class="product-card archive-item" data-skintype="dry sensitive" data-concern="erythema aging">
+          <div class="product-tags">
+            <span class="ptag">Dry</span><span class="ptag">Sensitive</span>
+          </div>
+          <div class="pcard-img-wrap">
+            <img class="pcard-img" src="https://media.ulta.com/i/ulta/2577186?w=500&h=500" alt="Aveeno Mineral" loading="lazy" onerror="this.style.display='none';"/>
+          </div>
+          <div class="product-brand">Aveeno</div>
+          <div class="product-name">Positively Mineral SPF 50</div>
+          <p class="product-desc">Pure mineral formula enriched with colloidal oat. Dermatologist-recommended for reactive skin types.</p>
+          <button onclick="addToProtocol('Aveeno', 'Positively Mineral SPF 50', '345678912')" class="product-cta">Add to Protocol +</button>
+        </div>
+
+        <!-- ITEM 2 -->
+        <div class="product-card archive-item" data-skintype="oily acne" data-concern="texture">
+          <div class="product-tags">
+            <span class="ptag">Oily</span><span class="ptag">Acne-Prone</span>
+          </div>
+          <div class="pcard-img-wrap">
+            <img class="pcard-img" src="https://images.ctfassets.net/bcjr30vxh6td/o2w7Iy4OFba40eEicmhCp/7c162041eadf24bd3f09685290ad77d0/NTG_NA_US_086800687900_115801_686879090_UltraSheer_SPF55_p3oz_00000.webp" alt="Neutrogena Ultra Sheer" loading="lazy" onerror="this.style.display='none';"/>
+          </div>
+          <div class="product-brand">Paula's Choice</div>
+          <div class="product-name">2% BHA Liquid Exfoliant</div>
+          <p class="product-desc">Salicylic acid rapidly unclogs pores and smooths texture without physical friction.</p>
+          <button onclick="addToProtocol('Paula\'s Choice', '2% BHA Liquid Exfoliant', '123456789')" class="product-cta">Add to Protocol +</button>
+        </div>
+
+        <!-- ITEM 3 -->
+        <div class="product-card archive-item" data-skintype="dry aging" data-concern="texture aging">
+          <div class="product-tags">
+            <span class="ptag">Dry</span><span class="ptag">Barrier Repair</span>
+          </div>
+          <div class="pcard-img-wrap">
+            <img class="pcard-img" src="https://renewskinsolutions.com/cdn/shop/products/ELTAMDUVCLEARSPFP46.png?v=1598573207&width=1920" alt="Elta MD" loading="lazy" onerror="this.style.display='none';"/>
+          </div>
+          <div class="product-brand">SkinCeuticals</div>
+          <div class="product-name">Triple Lipid Restore</div>
+          <p class="product-desc">Patented 2:4:2 ratio of ceramides, cholesterol, and fatty acids to rebuild cellular walls.</p>
+          <button onclick="addToProtocol('SkinCeuticals', 'Triple Lipid Restore', '987654321')" class="product-cta">Add to Protocol +</button>
+        </div>
+
+        <!-- ITEM 4 -->
+        <div class="product-card archive-item" data-skintype="oily dry sensitive acne" data-concern="texture erythema aging">
+          <div class="product-tags">
+            <span class="ptag">Universal</span><span class="ptag">Color Theory</span>
+          </div>
+          <div class="pcard-img-wrap">
+            <div style="width:100px; height:100px; background:var(--ink-soft); border-radius:50%;"></div>
+          </div>
+          <div class="product-brand">Haus Labs</div>
+          <div class="product-name">Triclone Skin Tech Foundation</div>
+          <p class="product-desc">Featuring 51 shades meticulously calibrated across 6 distinct undertone families.</p>
+          <button onclick="addToProtocol('Haus Labs', 'Triclone Foundation', '456789123')" class="product-cta">Add to Protocol +</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTOCOL DRAWER (Slide-out Cart) -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+  <div class="protocol-drawer" id="protocol-drawer">
+    <div class="drawer-header">
+      <div>
+        <h3 class="drawer-title">Your Protocol</h3>
+        <span class="section-eyebrow" style="margin-bottom:0;">Curated Regimen</span>
+      </div>
+      <button class="drawer-close" onclick="toggleDrawer()">&times;</button>
+    </div>
+    
+    <div class="drawer-items" id="drawer-items">
+      <div style="text-align:center; color:var(--bone-muted); margin-top:3rem;">Your protocol is currently empty.</div>
+    </div>
+    
+    <div class="drawer-footer">
+      <button onclick="transferToCheckout()" class="checkout-btn">Transfer to Shop Checkout →</button>
+      <p style="font-family:var(--mono); font-size:0.65rem; color:var(--bone-muted); text-align:center; margin-top:1rem; text-transform:uppercase; letter-spacing:0.05em;">Items map securely to FolsomSkin.com</p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    /* 1. DIAGNOSTIC QUIZ LOGIC */
+    const questions = [
+      {
+        q: "At 2:00 PM, without touch-ups, how does your skin feel?",
+        options: [
+          { text: "Highly reflective and slick across the entire face.", type: "oily" },
+          { text: "Shiny strictly on the T-Zone.", type: "combo" },
+          { text: "Tight, matte, or visibly flaking.", type: "dry" },
+          { text: "Comfortable, with minimal shine.", type: "normal" }
+        ]
+      },
+      {
+        q: "When exposed to environmental stressors (cold wind, new products):",
+        options: [
+          { text: "High erythema (redness) and burning sensation.", type: "sensitive" },
+          { text: "Skin feels instantly parched and dehydrated.", type: "dry" },
+          { text: "Skin responds by overproducing sebum.", type: "oily" },
+          { text: "Skin remains relatively unchanged.", type: "normal" }
+        ]
+      },
+      {
+        q: "What is the primary structural issue you wish to correct?",
+        options: [
+          { text: "Active breakouts and micro-texture.", type: "acne" },
+          { text: "Volume loss and cellular degradation.", type: "aging" },
+          { text: "Severe redness and barrier pain.", type: "sensitive" },
+          { text: "Excessive shine and enlarged pores.", type: "oily" }
+        ]
+      }
+    ];
+
+    const resultsMap = {
+      oily: { title: "Lipid-Dominant", desc: "We need to balance oil production without stripping your barrier.", am: ["Gentle foam cleanser", "Niacinamide serum", "Mattifying SPF"], pm: ["Cleansing Oil", "Foaming gel", "2% BHA Exfoliant"] },
+      dry: { title: "Compromised Barrier", desc: "Your skin acts like a sponge. We need to flood it with hydration.", am: ["Water rinse", "Milky toner", "Rich SPF cream"], pm: ["Cleansing Balm", "Hydrating cream wash", "Lactic Acid"] },
+      sensitive: { title: "Hyper-Reactive", desc: "Your skin is sending alarm signals. Our goal is putting out the fire.", am: ["Water rinse", "Centella serum", "Mineral SPF"], pm: ["Fragrance-free oil", "Milky cleanser", "Barrier repair cream"] },
+      acne: { title: "Congested Canvas", desc: "We need to gently dissolve blockages without aggressively scrubbing.", am: ["Salicylic Acid wash", "Azelaic Acid", "Oil-free SPF"], pm: ["Cleansing Oil", "Non-stripping gel", "Mandelic Acid"] },
+      aging: { title: "Cellular Degradation", desc: "We need to wake up your skin and stimulate fresh collagen.", am: ["Cream cleanser", "Vitamin C", "Hydrating SPF 50+"], pm: ["Cleansing Balm", "Glycolic Acid", "Retinol & Peptide cream"] },
+      normal: { title: "Equilibrium", desc: "Perfectly balanced. Your only job is to protect this baseline.", am: ["Gentle cleanser", "Vitamin C", "Broad-spectrum SPF"], pm: ["Cleansing Oil", "Hydrating gel", "Elegant moisturizer"] },
+      combo: { title: "Zonal Variance", desc: "Oily center, dry perimeter. We use multi-mapping to balance both.", am: ["Balanced gel", "Antioxidant serum", "Fluid SPF"], pm: ["Cleansing Oil", "BHA on T-zone ONLY", "Gel-cream"] }
+    };
+
+    let currQ = 0;
+    let scores = { oily:0, dry:0, sensitive:0, acne:0, aging:0, combo:0, normal:0 };
+    let selectedType = null;
+    let finalProfile = null;
+
+    const uiBox = document.getElementById('quiz-ui');
+    const resBox = document.getElementById('results-ui');
+    const qText = document.getElementById('quiz-question-text');
+    const qOpts = document.getElementById('quiz-options-container');
+    const btnNext = document.getElementById('quiz-next');
+    const btnPrev = document.getElementById('quiz-prev');
+    const progress = document.getElementById('quiz-progress');
+
+    function renderQ() {
+      const q = questions[currQ];
+      document.getElementById('quiz-counter').innerText = `Question ${currQ + 1} of ${questions.length}`;
+      qText.innerText = q.q;
+      progress.style.width = `${((currQ) / questions.length) * 100}%`;
+      
+      qOpts.innerHTML = '';
+      selectedType = null;
+      btnNext.disabled = true;
+
+      q.options.forEach((opt) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-opt-btn';
+        div.innerHTML = `<div class="quiz-opt-radio"></div><span>${opt.text}</span>`;
+        div.onclick = () => {
+          document.querySelectorAll('.quiz-opt-btn').forEach(d => d.classList.remove('selected'));
+          div.classList.add('selected');
+          selectedType = opt.type;
+          btnNext.disabled = false;
+        };
+        qOpts.appendChild(div);
+      });
+
+      btnPrev.style.visibility = currQ > 0 ? 'visible' : 'hidden';
+      btnNext.innerText = currQ === questions.length - 1 ? 'Analyze Canvas →' : 'Next →';
+    }
+
+    btnNext.onclick = () => {
+      if(selectedType) scores[selectedType]++;
+      if(currQ < questions.length - 1) { currQ++; renderQ(); }
+      else { finishQuiz(); }
+    };
+
+    btnPrev.onclick = () => { if(currQ > 0) { currQ--; renderQ(); } };
+
+    function finishQuiz() {
+      let max = 0;
+      for (const [type, score] of Object.entries(scores)) {
+        if(score > max) { max = score; finalProfile = type; }
+      }
+      if(!finalProfile) finalProfile = 'normal';
+
+      const data = resultsMap[finalProfile];
+      document.getElementById('res-title').innerText = data.title;
+      document.getElementById('res-desc').innerText = data.desc;
+      document.getElementById('res-am').innerHTML = data.am.map(i => `<li>${i}</li>`).join('');
+      document.getElementById('res-pm').innerHTML = data.pm.map(i => `<li>${i}</li>`).join('');
+
+      uiBox.classList.add('hidden');
+      resBox.classList.remove('hidden');
+    }
+
+    function restartQuiz() {
+      currQ = 0; scores = { oily:0, dry:0, sensitive:0, acne:0, aging:0, combo:0, normal:0 }; finalProfile = null;
+      resBox.classList.add('hidden'); uiBox.classList.remove('hidden'); renderQ();
+    }
+
+    renderQ();
+
+    /* 2. ARCHIVE FILTERING */
+    const fSkin = document.getElementById('filter-skintype');
+    const fConcern = document.getElementById('filter-concern');
+    const items = document.querySelectorAll('.archive-item');
+
+    function applyFilters() {
+      const vSkin = fSkin.value;
+      const vCon = fConcern.value;
+      
+      items.forEach(el => {
+        const tSkin = el.getAttribute('data-skintype') || "";
+        const tCon = el.getAttribute('data-concern') || "";
+        
+        const mSkin = vSkin === 'all' || tSkin.includes(vSkin);
+        const mCon = vCon === 'all' || tCon.includes(vCon);
+        
+        el.style.display = (mSkin && mCon) ? 'flex' : 'none';
+      });
+    }
+
+    fSkin.addEventListener('change', applyFilters);
+    fConcern.addEventListener('change', applyFilters);
+
+    document.getElementById('apply-filters-btn').onclick = () => {
+      if(finalProfile) {
+        fSkin.value = finalProfile;
+        applyFilters();
+        fSkin.classList.add('highlight');
+        setTimeout(() => fSkin.classList.remove('highlight'), 2000);
+      }
+      document.getElementById('archive').scrollIntoView({behavior: 'smooth'});
+    };
+
+    /* 3. PROTOCOL DRAWER */
+    let cart = [];
+    const drawer = document.getElementById('protocol-drawer');
+    const overlay = document.getElementById('drawer-overlay');
+    const badge = document.getElementById('cart-badge');
+    const list = document.getElementById('drawer-items');
+
+    function toggleDrawer() {
+      const isOpen = drawer.classList.contains('is-open');
+      if(isOpen) {
+        drawer.classList.remove('is-open');
+        overlay.classList.remove('is-active');
+      } else {
+        drawer.classList.add('is-open');
+        overlay.classList.add('is-active');
+      }
+    }
+
+    window.addToProtocol = function(brand, name, variantId) {
+      if(!cart.some(i => i.variantId === variantId)) {
+        cart.push({ brand, name, variantId, id: Date.now() });
+        updateCartUI();
+      }
+      if(!drawer.classList.contains('is-open')) toggleDrawer();
+    };
+
+    window.removeFromProtocol = function(id) {
+      cart = cart.filter(i => i.id !== id);
+      updateCartUI();
+    };
+
+    function updateCartUI() {
+      badge.innerText = cart.length;
+      badge.classList.toggle('hidden', cart.length === 0);
+
+      if(cart.length === 0) {
+        list.innerHTML = `<div style="text-align:center; color:var(--bone-muted); margin-top:3rem;">Your protocol is currently empty.</div>`;
+      } else {
+        list.innerHTML = cart.map(item => `
+          <div class="drawer-item">
+            <div>
+              <div class="drawer-item-brand">${item.brand}</div>
+              <div class="drawer-item-name">${item.name}</div>
+            </div>
+            <button class="drawer-item-remove" onclick="removeFromProtocol(${item.id})">&times;</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    /* 4. SHOPIFY CHECKOUT ROUTING */
+    window.transferToCheckout = function() {
+      if(cart.length === 0) {
+        alert("Please add formulations to your protocol before checking out.");
+        return;
+      }
+      const string = cart.map(i => `${i.variantId}:1`).join(',');
+      window.location.href = `https://folsomskin.com/cart/${string}`;
+    };
+  </script>
+</body>
+</html>
